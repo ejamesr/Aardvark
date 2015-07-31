@@ -1,0 +1,32 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="jumbotron">
+    <div class="row">
+        <div class="col-sm-3">
+            <h1>Aardvark</h1>
+            <br />
+            <p class="lead">
+                Aardvark seeks out those bugs, won't let 'em hide!
+            </p>
+        </div>
+        <div class="col-sm-3 col-sm-offset-1">
+            <img src="http://img11.deviantart.net/8956/i/2008/025/c/7/the_ant_and_the_aardvark_color_by_granitoons.jpg" height="400" />
+        </div>
+    </div>
+    <br />
+    <p>
+        <a href="@Url.Action("About", "Home")" class="btn btn-primary btn-lg">
+            Learn more &raquo;
+        </a>
+    </p>
+</div>
+<div class="row">
+    <div class="col-sm-4 col-sm-offset-1">
+        <h2>
+            Main Menu
+        </h2>
+        @if (User.IsInRole()
+    </div>
+</div>
