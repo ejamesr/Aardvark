@@ -27,6 +27,7 @@ namespace Aardvark.Models
         public virtual ICollection<TicketHistory> Histories { get; set; }
         public virtual ICollection<TicketNotification> Notifications { get; set; }
         public virtual ICollection<Ticket> TicketsOwned { get; set; }
+        public virtual ICollection<ProjectUser> ProjectUsers { get; set; }
 
         public ApplicationUser()
         {

@@ -21,7 +21,19 @@ namespace Aardvark.Controllers
             return View(projects.ToList());
         }
 
-        // GET: Projects/Details/5
+        // GET: Projects/AssignPM
+        public ActionResult AssignPM()
+        {
+            return View();
+        }
+
+        // GET: Projects/AssignDev
+        public ActionResult AssignDev()
+        {
+            return View();
+        }
+
+        // GET: Projects/Details/
         public ActionResult Details(int? id)
         {
             if (id == null)

@@ -159,8 +159,9 @@ namespace Aardvark.Controllers
                 db.SaveChanges();
 
                 // Something like this will signout the user... but it's not currently working.
-                FormsAuthentication.SignOut();
-                Response.Cookies[FormsAuthentication.FormsCookieName].Expires = DateTime.Now.AddYears(-1); 
+                AuthenticationManager.SignOut();
+                //FormsAuthentication.SignOut();
+                //Response.Cookies[FormsAuthentication.FormsCookieName].Expires = DateTime.Now.AddYears(-1); 
                 //HttpContext.User = null;// new GenericPrincipal(new GenericIdentity(string.Empty), null);
 
                 //Roles.DeleteCookie();

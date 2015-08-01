@@ -12,10 +12,10 @@ namespace Aardvark.Controllers
     {
         public ActionResult Index()
         {
-            // Determine roles of current user...
-            ApplicationDbContext db = new ApplicationDbContext();
-            UserRolesViewModel Roles = new UserRolesViewModel(db.Users.Find(User.Identity.GetUserId()).Roles);
-            return View(Roles);
+            // Create model...
+            var id = User.Identity.GetUserId();
+            UserRolesViewModel Model = new UserRolesViewModel(id);
+            return View(Model);
         }
 
         public ActionResult About()
@@ -28,6 +28,13 @@ namespace Aardvark.Controllers
         public ActionResult Contact()
         {
             ViewBag.Message = "Your contact page.";
+
+            return View();
+        }
+
+        public ActionResult ManageUsers()
+        {
+            ViewBag.Message = "Manage users.";
 
             return View();
         }

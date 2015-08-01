@@ -1,4 +1,8 @@
-﻿div.center, h4.center {
+﻿div.center, h4.center, p.center {
     width: 100%;
     text-align: center;
+}
+.warning {
+    font-style: italic;
+    color: red;
 }

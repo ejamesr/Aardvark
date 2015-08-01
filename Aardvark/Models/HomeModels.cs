@@ -7,12 +7,15 @@ namespace Aardvark.Models
 {
     public class UserRolesViewModel
     {
-        public ICollection<Microsoft.AspNet.Identity.EntityFramework.IdentityUserRole> Roles;
+        public UserRolesHelper Helper = new UserRolesHelper();
+        public IList<string> Roles;
+        public string UserId { get; set; }
 
-        public UserRolesViewModel(ICollection<Microsoft.AspNet.Identity.EntityFramework.IdentityUserRole> roles)
+        public UserRolesViewModel(string userId)
         {
-            Roles = roles;
+            // List all roles for current user
+            UserId = userId;
+            Roles = userId == null ? null : Helper.ListUserRoles(userId);
         }
-
     }
 }

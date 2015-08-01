@@ -74,8 +74,10 @@ namespace Aardvark.Migrations
             //
             // Comment out these two lines to stop debugger
             //
-            //if (System.Diagnostics.Debugger.IsAttached == false)
-            //    System.Diagnostics.Debugger.Launch();
+
+            if (System.Diagnostics.Debugger.IsAttached == false)
+                System.Diagnostics.Debugger.Launch();
+
             //
 
             Stepper Step = new Stepper(20, 10);
@@ -119,18 +121,38 @@ namespace Aardvark.Migrations
 
             SeedRoles(context,
                 new string[] {      // List in hierarchical order - higher has more power
-                        "Guest/Demo",
-                        "Admin",
-                        "Project Manger",
-                        "Developer",
-                        "Submitter"});
+                    R.Guest,
+                    R.Admin,
+                    R.ProjectManager,
+                    R.Developer,
+                    R.Submitter
+                });
 
             // Seed these users...
+            string mainAdmin = "ejames.ruff@gmail.com";
             NewPerson[] users = {
-                new NewPerson("Eric-Dev", "Ruff", "Eric-Dev", "ejamesr@yahoo.com", "Developer", "Eric7777!"),
-                new NewPerson("Eric", "Ruff", "Eric", "ejames.ruff@gmail.com", "Admin", "Eric7777!")
+                new NewPerson("Eric-Dev", "Ruff", "Eric-Dev", "ejamesr@yahoo.com", R.Dev, "Eric7777!"),
+                new NewPerson("Eric", "Ruff", "Eric", mainAdmin, R.Admin, "Eric7777!")
                           };
             NewUserWithRole(context, users);
+            context.SaveChanges();      // Update...
+
+            // Finally, create a first project, if none there yet
+            // Assign it to the Admin...
+            var admin = context.Users.First(a=>a.UserName == mainAdmin);
+            Project project = null;
+            // Now if no projects, add one now.
+            if (context.Projects.Count() == 0)
+            {
+                // Create a project, get its id
+                project = new Project(admin.Id);
+                context.Projects.Add(project);
+                context.SaveChanges();
+                // And generate ProjectUsers entry...
+                ProjectUser pu = new ProjectUser(project.Id, admin.Id);
+                context.ProjectUsers.Add(pu);
+                context.SaveChanges();
+            }
         }
 
         private void SeedRoles(ApplicationDbContext context, string[] roles)

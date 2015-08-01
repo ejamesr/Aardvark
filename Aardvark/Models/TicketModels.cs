@@ -139,6 +139,7 @@ namespace Aardvark.Models
         public Project(string PM_Id)
         {
             ProjectMgrId = PM_Id;
+            Id = 0;
         }
         public Project()
         {
@@ -158,13 +159,15 @@ namespace Aardvark.Models
      * */
     public class ProjectUser
     {
-        public ProjectUser()
+        public ProjectUser(int projectId, string userId)
         {
-
+            ProjectId = projectId;
+            UserId = userId;
         }
+
         public int Id { get; set; }
         public int ProjectId { get; set; }
-        public int UserId { get; set; }
+        public string UserId { get; set; }
 
         public virtual Project Project { get; set; }
         public virtual ApplicationUser User { get; set; }
