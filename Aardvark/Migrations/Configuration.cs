@@ -75,8 +75,8 @@ namespace Aardvark.Migrations
             // Comment out these two lines to stop debugger
             //
 
-            if (System.Diagnostics.Debugger.IsAttached == false)
-                System.Diagnostics.Debugger.Launch();
+            //if (System.Diagnostics.Debugger.IsAttached == false)
+            //    System.Diagnostics.Debugger.Launch();
 
             //
 
@@ -146,6 +146,8 @@ namespace Aardvark.Migrations
             {
                 // Create a project, get its id
                 project = new Project(admin.Id);
+                project.Name = "Our Main Product";
+                project.Description = "All bug and enhancement tickets for our main product";
                 context.Projects.Add(project);
                 context.SaveChanges();
                 // And generate ProjectUsers entry...

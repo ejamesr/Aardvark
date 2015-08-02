@@ -1,8 +1,13 @@
-﻿using System;
+﻿using Aardvark.Models;
+using Microsoft.AspNet.Identity;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Net;
 using System.Web;
+using System.Web.Mvc;
 
 namespace Aardvark.Models
 {
@@ -20,21 +25,27 @@ namespace Aardvark.Models
     {
         public Ticket()
         {
-           
+            AssignedToUserId = null;
         }
         public int Id { get; set; }
         public Project ProjectId { get; set; }
+        //[Display(Name="Ticket Type")]
         public TicketType TicketTypeId { get; set; }
+        //[Display(Name="Ticket Priority")]
         public TicketPriority TicketPriorityId { get; set; }
+        //[Display(Name="Ticket Status")]
         public TicketStatus TicketStatusId { get; set; }
         public string OwnerUserId { get; set; }
+        //[Display(Name="Assigned to User")]
         public string AssignedToUserId { get; set; }
+        //[Display(Name="Skill Required")]
         public SkillLevel SkillRequiredId { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         public DateTimeOffset Created { get; set; }
         public Nullable<DateTimeOffset> Updated { get; set; }
         public DateTimeOffset DueDate { get; set; }
+        //[Display(Name="Hours to Complete")]
         public int HoursToComplete { get; set; }
 
         public virtual Project Project { get; set; }
@@ -50,8 +61,49 @@ namespace Aardvark.Models
         public virtual ICollection<TicketComment> Comments { get; set; }
         public virtual ICollection<TicketHistory> Histories { get; set; }
         public virtual ICollection<TicketNotification> Notifications { get; set; }
-        public virtual ICollection<Ticket> RelatedTickets { get; set; }
+        //public virtual ICollection<Ticket> RelatedTickets { get; set; }
+    }
 
+    public class TicketCreateModel : Ticket
+    {
+        public SelectList Type { get; set; }
+        public SelectList Priority { get; set; }
+        public SelectList Status { get; set; }
+        public SelectList Assignees { get; set; }
+        [Display(Name="Skill Level")]
+        public SelectList SkillLevel { get; set; }
+        public string HighestUserRole { get; set; }
+        public Ticket NewTicket { get; set; }
+
+        public TicketCreateModel()
+        {
+            ApplicationDbContext db = new ApplicationDbContext();
+            UserRolesHelper helper = new UserRolesHelper();
+            NewTicket = new Ticket();
+            NewTicket.DueDate = DateTimeOffset.UtcNow.AddDays(1);
+            var id = HttpContext.Current.User.Identity.GetUserId();
+            var x = helper.IsUserInRole(id, R.Admin);
+            HighestUserRole = helper.GetHighestRole(id);
+            Type = new SelectList(db.TicketTypes, "Id", "Name");
+            Priority = new SelectList(db.TicketPriorities, "Id", "Name");
+            Status = new SelectList(db.TicketStatuses, "Id", "Name");
+            SkillLevel = new SelectList(db.SkillLevels, "Id", "Name");
+
+            if (HighestUserRole == R.Admin || HighestUserRole == R.Guest || HighestUserRole == R.PM)
+            {
+                // OK to assign list of users...
+                var roleDev = db.Roles.FirstOrDefault(r => r.Name == R.Developer);
+                if (roleDev != null)
+                {
+                    Assignees = new SelectList(
+                        db.Users
+                            .Where(d => d.Roles.FirstOrDefault(r => r.RoleId == roleDev.Id) != null)
+                            .Select(r => r.Email)
+                            );
+                }
+            }
+            else Assignees = null;
+        }
     }
 
 

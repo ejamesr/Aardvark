@@ -4,6 +4,8 @@ using System.Data.Entity;
 using System.Linq;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
+using System.Web;
+using System.Web.Mvc;
 
 namespace Aardvark.Models
 {
@@ -77,7 +79,29 @@ namespace Aardvark.Models
 
         public IList<string> ListUserRoles(string userId)
         {
-            return manager.GetRoles(userId);
+            UserManager<ApplicationUser> manager2 =
+            new UserManager<ApplicationUser>(
+                new UserStore<ApplicationUser>(
+                    new ApplicationDbContext()));
+            var roles = manager2.GetRoles(userId);
+            return roles;
+        }
+
+        public string GetHighestRole(string userId)
+        {
+            if (manager.IsInRole(userId, R.Admin))
+                return R.Admin;
+            if (manager.IsInRole(userId, R.Guest))
+                return R.Guest;
+            if (manager.IsInRole(userId, R.PM))
+                return R.PM;
+            if (manager.IsInRole(userId, R.Developer))
+                return R.Developer;
+            if (manager.IsInRole(userId, R.Submitter))
+                return R.Submitter;
+
+            // Not in any role...
+            return "";
         }
 
         public bool AddUserToRole(string userId, string roleName)
@@ -117,5 +141,14 @@ namespace Aardvark.Models
 
         }
 
+        // Zap all cookies, see if that clears things up...
+        public void ZapCookies()
+        {
+            string[] myCookies = HttpContext.Current.Request.Cookies.AllKeys;
+            foreach (string cookie in myCookies)
+            {
+                HttpContext.Current.Response.Cookies[cookie].Expires = DateTime.Now.AddDays(-1);
+            }
+        }
     }
 }

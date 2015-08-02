@@ -12,8 +12,13 @@ namespace Aardvark.Controllers
     {
         public ActionResult Index()
         {
+            //// Code to get rid of all cookies...
+            //UserRolesHelper helper = new UserRolesHelper();
+            //helper.ZapCookies();
+
             // Create model...
             var id = User.Identity.GetUserId();
+            var altId = HttpContext.User.Identity.GetUserId();
             UserRolesViewModel Model = new UserRolesViewModel(id);
             return View(Model);
         }
