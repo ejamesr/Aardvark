@@ -132,6 +132,8 @@ namespace Aardvark.Migrations
             string mainAdmin = "ejames.ruff@gmail.com";
             NewPerson[] users = {
                 new NewPerson("Eric-Dev", "Ruff", "Eric-Dev", "ejamesr@yahoo.com", R.Dev, "Eric7777!"),
+                new NewPerson("Patty", "Whack", "Patty-PM", "PattyWhack@ThisOldMan.com", R.PM, "Ab1234."),
+                new NewPerson("John", "Smith", "John", "john@me.com", R.Submitter, "Ab1234."),
                 new NewPerson("Eric", "Ruff", "Eric", mainAdmin, R.Admin, "Eric7777!")
                           };
             NewUserWithRole(context, users);
@@ -150,10 +152,12 @@ namespace Aardvark.Migrations
                 project.Description = "All bug and enhancement tickets for our main product";
                 context.Projects.Add(project);
                 context.SaveChanges();
-                // And generate ProjectUsers entry...
-                ProjectUser pu = new ProjectUser(project.Id, admin.Id);
-                context.ProjectUsers.Add(pu);
-                context.SaveChanges();
+
+                // This next step should be handled automatically by EF
+                //// And generate ProjectUsers entry...
+                //ProjectUser pu = new ProjectUser(project.Id, admin.Id);
+                //context.ProjectUsers.Add(pu);
+                //context.SaveChanges();
             }
         }
 
@@ -203,8 +207,14 @@ namespace Aardvark.Migrations
                     }
                     manager.Create(au, user.Password);
                     manager.AddToRole(au.Id, user.Role);
+                    // Add additional roles for me...
+                    if (user.Email == "ejames.ruff@gmail.com")
+                    {
+                        manager.AddToRole(au.Id, R.Dev);
+                        manager.AddToRole(au.Id, R.PM);
+                        manager.AddToRole(au.Id, R.Submitter);
+                    }
                 }
-                var me = context.Users.Where(m => m.Email == "ejames.ruff@gmail.com");
             }
         }
     }

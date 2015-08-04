@@ -163,6 +163,7 @@
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\ProjectsController.cs" />
     <Compile Include="Controllers\TicketsController.cs" />
+    <Compile Include="Controllers\TicketsController_orig.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -171,7 +172,9 @@
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\HomeModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\ManageUsersModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="Models\Ticket.cs" />
     <Compile Include="Models\TicketModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />

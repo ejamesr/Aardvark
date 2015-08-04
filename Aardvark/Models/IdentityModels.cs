@@ -1,10 +1,10 @@
-﻿using System.Data.Entity;
+﻿using System;
+using System.Collections.Generic;
+using System.Data.Entity;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
-using System;
-using System.Collections.Generic;
 
 namespace Aardvark.Models
 {
@@ -63,7 +63,7 @@ namespace Aardvark.Models
         public DbSet<TicketType> TicketTypes { get; set; }
         public DbSet<TicketPriority> TicketPriorities { get; set; }
         public DbSet<Project> Projects { get; set; }
-        public DbSet<ProjectUser> ProjectUsers { get; set; }
+        //public DbSet<ProjectUser> ProjectUsers { get; set; }
         public DbSet<SkillLevel> SkillLevels { get; set; }
         public DbSet<TicketNotification> TicketNotifications { get; set; }
         public DbSet<TicketHistory> TicketHistories { get; set; }

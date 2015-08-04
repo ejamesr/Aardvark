@@ -1,7 +1,128 @@
-﻿@{
+﻿@using Aardvark.Models;
+@model Aardvark.Models.ManageUsersModel
+@{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <h1>Manage Users</h1>
 <h3>Assign to and from roles</h3>
+
+<div class="container">
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        <div class="row">
+            <h3>Users and Roles</h3>
+            @* Create table of users with all roles *@
+            @{
+        int nRoles = Model.UserRoles.Count;
+        int uCount = -1;
+        int SelectCounter = 0;
+        //At the top, store all the role types so we can check on return
+        string x = "";
+        for (int i = 0; i < nRoles; i++)
+        {
+            x += "~" + Model.UserRoles[i];
+        }
+        <input type="hidden" name="Select" value="@x" />
+            }
+            <table class="table table-responsive">
+                <thead>
+                    <tr>
+                        <th class="col-sm-3">User</th>
+                        @for (int i = 0; i < nRoles; i++)
+                        {
+                            <th class="col-sm-1 text-center">
+                                @Model.UserRoles[i]
+                            </th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in Model.UserInfo)
+                    {
+                        uCount++;
+                        string inputName = "Data[" + uCount + "].U";
+                        <tr>
+                            @{
+                        string name = "";
+                        string isChecked = "";
+                        if (user.First != "")
+                        {
+                            name += @user.First + "-";
+                        }
+                        if (user.Last != "")
+                        {
+                            name += user.Last + "-";
+                        }
+                        if (user.DisplayName != "")
+                        {
+                            name += user.DisplayName + "-";
+                        }
+                        name += user.UserName;
+                        <td class="col-sm-3">
+                            @name
+                            @* List all the original values here... starting with ID, then role values *@
+                            <input type="hidden" name="Select" value="@user.Id" />
+                            @for (int i = 0; i < nRoles; i++)
+                            {
+                                <input type="hidden" name="Select" value="@(user.OrigRoles[i] == true ? "T" : "F")" />
+                            }
+                        </td>
+                        for (int i = 0; i < nRoles; i++)
+                        {
+                            isChecked = user.OrigRoles[i] == true ? " checked" : "";
+                            <td class="col-sm-1 text-center">
+                                @if (i == 0)
+                                {
+                                    <input type="hidden" name="@(inputName + "Id")" value="@user.Id" />
+                                }
+                                <input type="checkbox" name="Select" value="@(""+i)" @isChecked />
+                            </td>
+                        }
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="row">
+            <div class="col-sm-offset-5 col-sm-1">
+                <input type="submit" value="Update" class="btn btn-success" />
+            </div>
+        </div>
+    @*<div class="row">
+        <input type="hidden" name="Select" value="guiid-99872q46872134-abasdsadsf" />
+        <input type="checkbox" name="Select" value="1" />
+        <input type="checkbox" name="Select" value="2" />
+        <input type="checkbox" name="Select" value="3" />
+        <input type="checkbox" name="Select" value="4" />
+        <input type="hidden" name="Select" value="guiid-234324-23-324234-23--234134134--3413241324" />
+        <input type="checkbox" name="Select" value="5" />
+        <input type="checkbox" name="Select" value="6" />
+        <input type="submit" value="Submit" />
+    </div>*@
+    }
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

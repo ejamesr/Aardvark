@@ -21,73 +21,40 @@ namespace Aardvark.Models
      * 
      * */
 
-    public class Ticket
-    {
-        public Ticket()
-        {
-            AssignedToUserId = null;
-        }
-        public int Id { get; set; }
-        public Project ProjectId { get; set; }
-        //[Display(Name="Ticket Type")]
-        public TicketType TicketTypeId { get; set; }
-        //[Display(Name="Ticket Priority")]
-        public TicketPriority TicketPriorityId { get; set; }
-        //[Display(Name="Ticket Status")]
-        public TicketStatus TicketStatusId { get; set; }
-        public string OwnerUserId { get; set; }
-        //[Display(Name="Assigned to User")]
-        public string AssignedToUserId { get; set; }
-        //[Display(Name="Skill Required")]
-        public SkillLevel SkillRequiredId { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public DateTimeOffset Created { get; set; }
-        public Nullable<DateTimeOffset> Updated { get; set; }
-        public DateTimeOffset DueDate { get; set; }
-        //[Display(Name="Hours to Complete")]
-        public int HoursToComplete { get; set; }
-
-        public virtual Project Project { get; set; }
-        public virtual TicketType TicketType { get; set; }
-        public virtual TicketPriority TicketPriority { get; set; }
-        public virtual TicketStatus TicketStatus { get; set; }
-        public virtual ApplicationUser OwnerUser { get; set; }
-        public virtual ApplicationUser AssignedToUser { get; set; }
-        public virtual SkillLevel SkillRequired { get; set; }
-
-        // And show any/all tickets related to this one
-        public virtual ICollection<TicketAttachment> Attachments { get; set; }
-        public virtual ICollection<TicketComment> Comments { get; set; }
-        public virtual ICollection<TicketHistory> Histories { get; set; }
-        public virtual ICollection<TicketNotification> Notifications { get; set; }
-        //public virtual ICollection<Ticket> RelatedTickets { get; set; }
-    }
-
     public class TicketCreateModel : Ticket
     {
-        public SelectList Type { get; set; }
-        public SelectList Priority { get; set; }
-        public SelectList Status { get; set; }
-        public SelectList Assignees { get; set; }
+        [NotMapped]
+        public SelectList ProjectList { get; set; }
+        [NotMapped]
+        public SelectList TypeList { get; set; }
+        [NotMapped]
+        public SelectList PriorityList { get; set; }
+        [NotMapped]
+        public SelectList StatusList { get; set; }
+        [NotMapped]
+        public SelectList AssigneesList { get; set; }
         [Display(Name="Skill Level")]
-        public SelectList SkillLevel { get; set; }
+        [NotMapped]
+        public SelectList SkillLevelList { get; set; }
+        [NotMapped]
         public string HighestUserRole { get; set; }
-        public Ticket NewTicket { get; set; }
 
+
+        // Try NOT using this model, go to ViewBag instead
         public TicketCreateModel()
         {
             ApplicationDbContext db = new ApplicationDbContext();
             UserRolesHelper helper = new UserRolesHelper();
-            NewTicket = new Ticket();
-            NewTicket.DueDate = DateTimeOffset.UtcNow.AddDays(1);
+            DueDate = DateTimeOffset.UtcNow.AddDays(1);
             var id = HttpContext.Current.User.Identity.GetUserId();
             var x = helper.IsUserInRole(id, R.Admin);
             HighestUserRole = helper.GetHighestRole(id);
-            Type = new SelectList(db.TicketTypes, "Id", "Name");
-            Priority = new SelectList(db.TicketPriorities, "Id", "Name");
-            Status = new SelectList(db.TicketStatuses, "Id", "Name");
-            SkillLevel = new SelectList(db.SkillLevels, "Id", "Name");
+            TypeList = new SelectList(db.TicketTypes, "Id", "Name");
+            PriorityList = new SelectList(db.TicketPriorities, "Id", "Name");
+            StatusList = new SelectList(db.TicketStatuses, "Id", "Name");
+            SkillLevelList = new SelectList(db.SkillLevels, "Id", "Name");
+            ProjectList = new SelectList(db.Projects, "Id", "Name");
+            HoursToComplete = 1;
 
             if (HighestUserRole == R.Admin || HighestUserRole == R.Guest || HighestUserRole == R.PM)
             {
@@ -95,14 +62,21 @@ namespace Aardvark.Models
                 var roleDev = db.Roles.FirstOrDefault(r => r.Name == R.Developer);
                 if (roleDev != null)
                 {
-                    Assignees = new SelectList(
+                    AssigneesList = new SelectList(
                         db.Users
-                            .Where(d => d.Roles.FirstOrDefault(r => r.RoleId == roleDev.Id) != null)
-                            .Select(r => r.Email)
-                            );
+                            .Where(d => d.Roles.FirstOrDefault(r => r.RoleId == roleDev.Id) != null),
+                            "Id", "UserName");
+                            //.Select(assignee => 
+                            //    new SelectListItem 
+                            //    { 
+                            //        Selected = false,
+                            //        Text = assignee.UserName,
+                            //        Value = assignee.Id
+                            //    }
+                            //));
                 }
             }
-            else Assignees = null;
+            else AssigneesList = null;
         }
     }
 

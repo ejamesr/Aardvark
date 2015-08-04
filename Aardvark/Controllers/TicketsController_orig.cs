@@ -11,15 +11,15 @@ using Microsoft.AspNet.Identity;
 
 namespace Aardvark.Controllers
 {
-    public class TicketsController : Controller
+    public class TicketsController_orig : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: Tickets
         public ActionResult Index()
         {
-            var tickets = db.Tickets.Include(t => t.AssignedToUser).Include(t => t.OwnerUser).Include(t => t.Project).Include(t => t.SkillRequired).Include(t => t.TicketPriority).Include(t => t.TicketStatus).Include(t => t.TicketType);
-            return View(tickets.ToList());
+            var tickets = db.Tickets.Include(p => p.TicketPriority).Include(p => p.TicketType).ToList();
+            return View(tickets);
         }
 
         // GET: Tickets/Details/5
@@ -40,34 +40,45 @@ namespace Aardvark.Controllers
         // GET: Tickets/Create
         public ActionResult Create()
         {
+            //TicketCreateModel model = new TicketCreateModel();
+            ////ViewBag.AssignedToUserId = new SelectList(db.Users, "Id", "UserName");
+            ////ViewBag.OwnerUserId = new SelectList(db.Users, "Id", "UserName");
+            ////ViewBag.Due = DateTime.UtcNow;
+
             Ticket model = new Ticket();
             model.DueDate = DateTimeOffset.UtcNow.AddDays(1);
             model.HoursToComplete = 1;
             UserRolesHelper helper = new UserRolesHelper();
-            var id = User.Identity.GetUserId();
+            var id = HttpContext.User.Identity.GetUserId();
             var highest = helper.GetHighestRole(id);
             ViewBag.HighestUserRole = highest;
+            ViewBag.TypeList = new SelectList(db.TicketTypes, "Id", "Name");
+            ViewBag.PriorityList = new SelectList(db.TicketPriorities, "Id", "Name");
+            ViewBag.StatusList = new SelectList(db.TicketStatuses, "Id", "Name");
+            ViewBag.SkillLevelList = new SelectList(db.SkillLevels, "Id", "Name");
+            ViewBag.ProjectList = new SelectList(db.Projects, "Id", "Name");
 
-            // If Admin, allow to select Developer when creating the ticket
-            if (helper.IsUserInRole(id, R.Admin) || helper.IsUserInRole(id, R.ProjectManager) || helper.IsUserInRole(id, R.Guest))
+            if (highest == R.Admin || highest == R.Guest || highest == R.PM)
             {
+                // OK to assign list of users...
                 var roleDev = db.Roles.FirstOrDefault(r => r.Name == R.Developer);
                 if (roleDev != null)
                 {
-                    ViewBag.AssignedToUserId =
-                        new SelectList(db.Users
-                            .Where(d => d.Roles.FirstOrDefault(r => r.RoleId == roleDev.Id) != null), "Id", "UserName");
+                    ViewBag.AssigneesList = new SelectList(
+                        db.Users
+                            .Where(d => d.Roles.FirstOrDefault(r => r.RoleId == roleDev.Id) != null),
+                            "Id", "UserName");
+                    //.Select(assignee => 
+                    //    new SelectListItem 
+                    //    { 
+                    //        Selected = false,
+                    //        Text = assignee.UserName,
+                    //        Value = assignee.Id
+                    //    }
+                    //));
                 }
-                else ViewBag.AssignedToUserId = null;
             }
-            else ViewBag.AssignedToUserId = null;
-
-            ViewBag.OwnerUserId = new SelectList(db.Users, "Id", "FirstName");
-            ViewBag.ProjectId = new SelectList(db.Projects, "Id", "Name");
-            ViewBag.SkillRequiredId = new SelectList(db.SkillLevels, "Id", "Name");
-            ViewBag.TicketPriorityId = new SelectList(db.TicketPriorities, "Id", "Name");
-            ViewBag.TicketStatusId = new SelectList(db.TicketStatuses, "Id", "Name");
-            ViewBag.TicketTypeId = new SelectList(db.TicketTypes, "Id", "Name");
+            else ViewBag.AssigneesList = null;
             return View(model);
         }
 
@@ -76,12 +87,12 @@ namespace Aardvark.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ProjectId,TicketTypeId,TicketPriorityId,TicketStatusId,OwnerUserId,AssignedToUserId,SkillRequiredId,Title,Description,DueDate,HoursToComplete")] Ticket ticket)
+        public ActionResult Create([Bind(Include = "Id,Title,ProjectId,AssignedToUserId,SkillRequiredId,TicketPriorityId,TicketStatusId,TicketTypeId,Description,DueDate,HoursToComplete")] Ticket ticket)
         {
             if (ModelState.IsValid)
             {
+                ticket.Created = DateTimeOffset.UtcNow;
                 ticket.OwnerUserId = User.Identity.GetUserId();
-                ticket.AssignedToUserId = null;
                 db.Tickets.Add(ticket);
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -89,11 +100,6 @@ namespace Aardvark.Controllers
 
             ViewBag.AssignedToUserId = new SelectList(db.Users, "Id", "FirstName", ticket.AssignedToUserId);
             ViewBag.OwnerUserId = new SelectList(db.Users, "Id", "FirstName", ticket.OwnerUserId);
-            ViewBag.ProjectId = new SelectList(db.Projects, "Id", "Name", ticket.ProjectId);
-            ViewBag.SkillRequiredId = new SelectList(db.SkillLevels, "Id", "Name", ticket.SkillRequiredId);
-            ViewBag.TicketPriorityId = new SelectList(db.TicketPriorities, "Id", "Name", ticket.TicketPriorityId);
-            ViewBag.TicketStatusId = new SelectList(db.TicketStatuses, "Id", "Name", ticket.TicketStatusId);
-            ViewBag.TicketTypeId = new SelectList(db.TicketTypes, "Id", "Name", ticket.TicketTypeId);
             return View(ticket);
         }
 
@@ -111,11 +117,6 @@ namespace Aardvark.Controllers
             }
             ViewBag.AssignedToUserId = new SelectList(db.Users, "Id", "FirstName", ticket.AssignedToUserId);
             ViewBag.OwnerUserId = new SelectList(db.Users, "Id", "FirstName", ticket.OwnerUserId);
-            ViewBag.ProjectId = new SelectList(db.Projects, "Id", "Name", ticket.ProjectId);
-            ViewBag.SkillRequiredId = new SelectList(db.SkillLevels, "Id", "Name", ticket.SkillRequiredId);
-            ViewBag.TicketPriorityId = new SelectList(db.TicketPriorities, "Id", "Name", ticket.TicketPriorityId);
-            ViewBag.TicketStatusId = new SelectList(db.TicketStatuses, "Id", "Name", ticket.TicketStatusId);
-            ViewBag.TicketTypeId = new SelectList(db.TicketTypes, "Id", "Name", ticket.TicketTypeId);
             return View(ticket);
         }
 
@@ -124,7 +125,7 @@ namespace Aardvark.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,ProjectId,TicketTypeId,TicketPriorityId,TicketStatusId,OwnerUserId,AssignedToUserId,SkillRequiredId,Title,Description,Created,Updated,DueDate,HoursToComplete")] Ticket ticket)
+        public ActionResult Edit([Bind(Include = "Id,OwnerUserId,AssignedToUserId,Title,Description,Created,Updated,DueDate,HoursToComplete")] Ticket ticket)
         {
             if (ModelState.IsValid)
             {
@@ -134,11 +135,6 @@ namespace Aardvark.Controllers
             }
             ViewBag.AssignedToUserId = new SelectList(db.Users, "Id", "FirstName", ticket.AssignedToUserId);
             ViewBag.OwnerUserId = new SelectList(db.Users, "Id", "FirstName", ticket.OwnerUserId);
-            ViewBag.ProjectId = new SelectList(db.Projects, "Id", "Name", ticket.ProjectId);
-            ViewBag.SkillRequiredId = new SelectList(db.SkillLevels, "Id", "Name", ticket.SkillRequiredId);
-            ViewBag.TicketPriorityId = new SelectList(db.TicketPriorities, "Id", "Name", ticket.TicketPriorityId);
-            ViewBag.TicketStatusId = new SelectList(db.TicketStatuses, "Id", "Name", ticket.TicketStatusId);
-            ViewBag.TicketTypeId = new SelectList(db.TicketTypes, "Id", "Name", ticket.TicketTypeId);
             return View(ticket);
         }
 
