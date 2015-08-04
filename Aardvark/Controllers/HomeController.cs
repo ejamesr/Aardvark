@@ -90,8 +90,24 @@ namespace Aardvark.Controllers
             {
                 // Make sure there is still somebody with Admin privileges!!
                 // So, scoop everything up first and recreate the original model
+                if (Select != null)
+                {
+                    // The first string should be the actions, to parse it
+                    string[] roles = Select[0].Split('~');
+                    // Find where Admin is so we can make sure somebody is still Admin!
+                    int posAdmin = Array.IndexOf(roles, R.Admin);
+                    if (posAdmin > -1)
+                    {
+                        // We found the Admin role, assume at this point the list of roles is correct
+                        int nRoles = roles.Count() - 1;
+                        // Now, each User is represented by his Id, followed by a T or F for each role he is
+                        // currently enrolled in,
+                    }
 
 
+                    // Something went wrong, so show error
+                    return RedirectToAction("Index");
+                }
 
 
 

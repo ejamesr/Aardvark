@@ -21,16 +21,15 @@ namespace Aardvark.Models
         public bool TextNotification { get; set; }
 
         public virtual SkillLevel SkillLevel { get; set; }
-        public virtual ICollection<Ticket> Tickets { get; set; }
-        public virtual ICollection<TicketAttachment> Attachments { get; set; }
-        public virtual ICollection<TicketComment> Comments { get; set; }
-        public virtual ICollection<TicketHistory> Histories { get; set; }
-        public virtual ICollection<TicketNotification> Notifications { get; set; }
+        public virtual ICollection<Ticket> TicketsAssigned { get; set; }
         public virtual ICollection<Ticket> TicketsOwned { get; set; }
-        public virtual ICollection<ProjectUser> ProjectUsers { get; set; }
+        public virtual ICollection<Project> Projects { get; set; }
 
         public ApplicationUser()
         {
+            this.Projects = new HashSet<Project>();
+            this.TicketsOwned = new HashSet<Ticket>();
+            this.TicketsAssigned = new HashSet<Ticket>();
             SkillLevelId = null;
             TextMsgNumber = "";
             EmailNotification = true;           // Default notification method

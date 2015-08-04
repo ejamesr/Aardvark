@@ -53,6 +53,10 @@ namespace Aardvark.Models
         public Ticket()
         {
             AssignedToUserId = null;
+            this.Attachments = new HashSet<TicketAttachment>();
+            this.Comments = new HashSet<TicketComment>();
+            this.Histories = new HashSet<TicketHistory>();
+            this.Notifications = new HashSet<TicketNotification>();
         }
     }
 }

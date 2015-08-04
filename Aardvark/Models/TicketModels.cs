@@ -81,6 +81,20 @@ namespace Aardvark.Models
     }
 
 
+    // This class is inherited by several others, all needing an Id, Name, and ICollection<Ticket> Ticket.
+    public class Lookup
+    {
+        public Lookup()
+        {
+            this.Tickets = new HashSet<Ticket>();
+        }
+        public int Id { get; set; }
+        public string Name { get; set; }
+
+        public virtual ICollection<Ticket> Tickets { get; set; }
+    }
+
+
     /* Valid reasons to resolve a ticket early (each of these results in "Resolved" status):
      *
      * "Rejected"           // Was bogus, didn't make sense, etc.
@@ -105,17 +119,10 @@ namespace Aardvark.Models
      * */
 
     [Table("TicketStatuses")]
-    public class TicketStatus
+    public class TicketStatus : Lookup
     {
-        public TicketStatus()
-        {
-
-        }
-        public int Id { get; set; }
-        public string Name { get; set; }    // Name of this status
-        public int Step { get; set; }       // Numerical sequence until Reseolved (final step)
-
-        public virtual ICollection<Ticket> Tickets { get; set; }
+        public int Step { get; set; }
+        public TicketStatus() : base(){}
     }
 
     /* List of all Ticket types
@@ -125,16 +132,9 @@ namespace Aardvark.Models
      * "Not Sure"
      * 
      * */
-    public class TicketType
+    public class TicketType : Lookup
     {
-        public TicketType()
-        {
-
-        }
-        public int Id { get; set; }
-        public string Name { get; set; }
-
-        public virtual ICollection<Ticket> Tickets { get; set; }
+        public TicketType() : base(){}
     }
 
     /* List of all TicketPriorities
@@ -145,60 +145,56 @@ namespace Aardvark.Models
      * "Optional"
      * 
      * */
-    public class TicketPriority
+    public class TicketPriority : Lookup
     {
-        public TicketPriority()
-        {
-
-        }
-        public int Id { get; set; }
-        public string Name { get; set; }
         public int Val { get; set; }
-
-        public virtual ICollection<Ticket> Tickets { get; set; }
+        public TicketPriority() : base() { }
     }
 
     /* Describes all Projects
      * */
-    public class Project
+    public class Project : Lookup
     {
-        public Project(string PM_Id)
+        public Project(string PM_Id) : base()
         {
+            Init();
             ProjectMgrId = PM_Id;
-            Id = 0;
         }
-        public Project()
+        public Project() : base()
         {
-           
+            Init();
         }
-        public int Id { get; set; }
-        public string Name { get; set; }
+        private void Init()
+        {
+            this.Users = new HashSet<ApplicationUser>();
+        }
+
         public string Description { get; set; }
         public string ProjectMgrId { get; set; }
 
         public virtual ApplicationUser ProjectMgr { get; set; }
-        public virtual ICollection<ProjectUser> ProjectUsers { get; set; }
-        public virtual ICollection<Ticket> Tickets { get; set; }
+        public virtual ICollection<ApplicationUser> Users { get; set; }
     }
 
     /* Describes all ProjectUsers
      * */
-    public class ProjectUser
-    {
-        public ProjectUser(int projectId, string userId)
-        {
-            ProjectId = projectId;
-            UserId = userId;
-        }
+    // Let Entity Framework automatically create this... so comment it out
+    //public class ProjectUser
+    //{
+    //    public ProjectUser(int projectId, string userId)
+    //    {
+    //        ProjectId = projectId;
+    //        UserId = userId;
+    //    }
 
-        public int Id { get; set; }
-        public int ProjectId { get; set; }
-        public string UserId { get; set; }
+    //    public int Id { get; set; }
+    //    public int ProjectId { get; set; }
+    //    public string UserId { get; set; }
 
-        public virtual Project Project { get; set; }
-        public virtual ApplicationUser User { get; set; }
+    //    public virtual Project Project { get; set; }
+    //    public virtual ApplicationUser User { get; set; }
 
-    }
+    //}
 
     /* List of all SkillLevels
      * 
@@ -207,17 +203,14 @@ namespace Aardvark.Models
      * "Senior", 3
      * 
      * */
-    public class SkillLevel
+    public class SkillLevel : Lookup
     {
-        public SkillLevel()
+        public SkillLevel() : base()
         {
-
+            this.Users = new HashSet<ApplicationUser>();
         }
-        public int Id { get; set; }
-        public string Name { get; set; }
         public int Weight { get; set; }     // Higher number = higher relative skill
 
-        public virtual ICollection<Ticket> Tickets { get; set; }
         public virtual ICollection<ApplicationUser> Users { get; set; }
     }
 
