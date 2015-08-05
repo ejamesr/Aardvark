@@ -1,4 +1,5 @@
 ﻿@using Aardvark.Models;
+@using Aardvark.Helpers;
 @model Aardvark.Models.ManageUsersModel
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -17,6 +18,7 @@
         int nRoles = Model.UserRoles.Count;
         int uCount = -1;
         int SelectCounter = 0;
+        UserRolesHelper helper = new UserRolesHelper();
         //At the top, store all the role types so we can check on return
         string x = "";
         for (int i = 0; i < nRoles; i++)
@@ -44,29 +46,21 @@
                         string inputName = "Data[" + uCount + "].U";
                         <tr>
                             @{
-                        string name = "";
+                        string name = helper.GetDisplayName(user);
                         string isChecked = "";
-                        if (user.First != "")
-                        {
-                            name += @user.First + "-";
-                        }
-                        if (user.Last != "")
-                        {
-                            name += user.Last + "-";
-                        }
-                        if (user.DisplayName != "")
-                        {
-                            name += user.DisplayName + "-";
-                        }
-                        name += user.UserName;
+
                         <td class="col-sm-3">
-                            @name
-                            @* List all the original values here... starting with ID, then role values *@
-                            <input type="hidden" name="Select" value="@user.Id" />
-                            @for (int i = 0; i < nRoles; i++)
-                            {
-                                <input type="hidden" name="Select" value="@(user.OrigRoles[i] == true ? "T" : "F")" />
+                            @{
+                                @name
+                                @* List all the original values here... starting with ID, then role values *@
+                                <input type="hidden" name="Select" value="@user.Id" />
+                                string tf = "";
+                                for (int i = 0; i < nRoles; i++)
+                                {
+                                    tf += user.OrigRoles[i] == true ? 'T' : 'F';
+                                }
                             }
+                            <input type="hidden" name="Select" value="@tf" />
                         </td>
                         for (int i = 0; i < nRoles; i++)
                         {
@@ -86,43 +80,12 @@
             </table>
         </div>
         <div class="row">
-            <div class="col-sm-offset-5 col-sm-1">
+            <div class="col-sm-2 col-sm-offset-3">
+                @Html.ActionLink("Return to Index", "Index")
+            </div>
+            <div class="col-sm-1">
                 <input type="submit" value="Update" class="btn btn-success" />
             </div>
         </div>
-    @*<div class="row">
-        <input type="hidden" name="Select" value="guiid-99872q46872134-abasdsadsf" />
-        <input type="checkbox" name="Select" value="1" />
-        <input type="checkbox" name="Select" value="2" />
-        <input type="checkbox" name="Select" value="3" />
-        <input type="checkbox" name="Select" value="4" />
-        <input type="hidden" name="Select" value="guiid-234324-23-324234-23--234134134--3413241324" />
-        <input type="checkbox" name="Select" value="5" />
-        <input type="checkbox" name="Select" value="6" />
-        <input type="submit" value="Submit" />
-    </div>*@
     }
 </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

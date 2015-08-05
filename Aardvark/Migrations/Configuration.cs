@@ -7,6 +7,7 @@ namespace Aardvark.Migrations
     using System.Data.Entity.Migrations;
     using System.Linq;
     using Microsoft.AspNet.Identity;
+    using Aardvark.Helpers;
 
     internal sealed class Configuration : DbMigrationsConfiguration<Aardvark.Models.ApplicationDbContext>
     {

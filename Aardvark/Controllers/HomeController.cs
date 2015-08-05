@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
+using Aardvark.Helpers;
 
 namespace Aardvark.Controllers
 {
@@ -96,28 +97,104 @@ namespace Aardvark.Controllers
                     string[] roles = Select[0].Split('~');
                     // Find where Admin is so we can make sure somebody is still Admin!
                     int posAdmin = Array.IndexOf(roles, R.Admin);
+                    int nRoles;
+                    List<ManageUsersData> muList = new List<ManageUsersData>();
+                    bool isAdminChecked = false;
                     if (posAdmin > -1)
                     {
                         // We found the Admin role, assume at this point the list of roles is correct
-                        int nRoles = roles.Count() - 1;
+                        nRoles = roles.Count() - 1;
+
                         // Now, each User is represented by his Id, followed by a T or F for each role he is
-                        // currently enrolled in,
+                        // currently enrolled in. So now, reconvert all the data back to the original mode, with
+                        // the new 
+                        int index = 1;
+                        while (index < Select.Length)
+                        {
+                            // Scoop up all the returned data
+                            ManageUsersData mu = new ManageUsersData(nRoles);
+
+                            // Get the user Id
+                            mu.Id = Select[index++];
+
+                            // Now get all the original settings for roles...
+                            for (int z = 0; z < nRoles; z++)
+                            {
+                                mu.OrigRoles[z] = Select[index][z] == 'T' ? true : false;
+                            }
+                            index++;        // Advance to next line
+
+                            // Now get any checked roles...
+                            int num;
+                            while (index < Select.Length && Select[index].Length < 32)
+                            {
+                                // The next char is an index represented a selected role
+                                if (Int32.TryParse(Select[index], out num))
+                                {
+                                    mu.NewRoles[num] = true;
+                                    index++;
+                                }
+                                else
+                                {
+                                    break;
+                                }
+                            }
+                            if (mu.NewRoles[posAdmin])
+                            {
+                                isAdminChecked = true;
+                            }
+
+                            // Add this mu to the list
+                            muList.Add(mu);
+                        }
+                        if (!isAdminChecked)
+                        {
+                            // Need to keep an Admin!
+                            return RedirectToAction("NeedAdmin");
+                        }
+
+                        // Now, we are ready to update all the roles for each user
+                        UserRolesHelper helper = new UserRolesHelper();
+                        foreach (var mu in muList)
+                        {
+                            // See if any role changed...
+                            for (int i = 0; i < nRoles; i++)
+                            {
+                                if (mu.NewRoles[i] != mu.OrigRoles[i])
+                                {
+                                    // Role changed...
+                                    if (mu.NewRoles[i])
+                                    {
+                                        helper.AddUserToRole(mu.Id, roles[i]);
+                                    }
+                                    else
+                                    {
+                                        helper.RemoveUserFromRole(mu.Id, roles[i]);
+                                    }
+                                }
+                            }
+                        }
+
+                        // All went according to plan, so return to Main Menu!
+                        return RedirectToAction("Index");
                     }
-
-
-                    // Something went wrong, so show error
-                    return RedirectToAction("Index");
                 }
-
-
-
-                //ticket.OwnerUserId = User.Identity.GetUserId();
-                //ticket.AssignedToUserId = null;
-                //db.Tickets.Add(ticket);
-                //db.SaveChanges();
-                return RedirectToAction("Index");
             }
-            return RedirectToAction("Index");
+            return RedirectToAction("UsersPostError");
+        }
+
+        // Home/NeedAdmin
+        public ActionResult NeedAdmin()
+        {
+            ViewBag.Message = "Always need at least one user with Admin role";
+            return View();
+        }
+
+        // Home/NeedAdmin
+        public ActionResult UsersPostError()
+        {
+            ViewBag.Message = "An error occurred during POST -- no changes mad.";
+            return View();
         }
     }
 }

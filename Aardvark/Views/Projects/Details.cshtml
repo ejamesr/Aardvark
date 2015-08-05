@@ -1,4 +1,6 @@
 ﻿@model Aardvark.Models.Project
+@using Aardvark.Models;
+@using Aardvark.Helpers;
 
 @{
     ViewBag.Title = "Details";
@@ -37,6 +39,9 @@
     </dl>
 </div>
 <p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+@if (ViewBag.Roles.Contains(R.Admin) || ViewBag.Roles.Contains(R.Guest))
+{
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) <text>|</text>
+}
     @Html.ActionLink("Back to List", "Index")
 </p>

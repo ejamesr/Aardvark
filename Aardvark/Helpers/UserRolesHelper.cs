@@ -6,8 +6,9 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using System.Web;
 using System.Web.Mvc;
+using Aardvark.Models;
 
-namespace Aardvark.Models
+namespace Aardvark.Helpers
 {
     // Avoid errors in typing the role names -- use this class
     public static class R
@@ -104,6 +105,46 @@ namespace Aardvark.Models
             return "";
         }
 
+
+        // Two different versions, depending on user model
+        public string GetDisplayName(ApplicationUser user)
+        {
+            string name = "";
+            if (user.FirstName != "")
+            {
+                name += user.FirstName + "-";
+            }
+            if (user.LastName != "")
+            {
+                name += user.LastName + "-";
+            }
+            if (user.DisplayName != "")
+            {
+                name += user.DisplayName + "-";
+            }
+            name += user.UserName;
+            return name;
+        }
+
+        public string GetDisplayName(ManageUsersData user)
+        {
+            string name = "";
+            if (user.First != "")
+            {
+                name += user.First + "-";
+            }
+            if (user.Last != "")
+            {
+                name += user.Last + "-";
+            }
+            if (user.DisplayName != "")
+            {
+                name += user.DisplayName + "-";
+            }
+            name += user.UserName;
+            return name;
+        }
+
         public bool AddUserToRole(string userId, string roleName)
         {
             var result = manager.AddToRole(userId, roleName);
@@ -119,26 +160,16 @@ namespace Aardvark.Models
         public IList<ApplicationUser> UsersInRole(string roleName)
         {
             var db = new ApplicationDbContext();
-            var resultList = new List<ApplicationUser>();
-
-            // Not sure of difference between x and y below
-            var x = db.Users.Where(u => IsUserInRole(u.Id, roleName));
-            var y = manager.Users.Where(u => IsUserInRole(u.Id, roleName));
-            
-            return (IList<ApplicationUser>) x;
+            string roleId = db.Roles.SingleOrDefault(n => n.Name == roleName).Id; 
+            return db.Users.Where(u => u.Roles.Any(r => r.RoleId == roleId)).ToList();
+            //return db.Users.Where(u => IsUserInRole(u.Id, roleName)).ToList();
         }
 
         public IList<ApplicationUser> UsersNotInRole(string roleName)
         {
             var db = new ApplicationDbContext();
-            var resultList = new List<ApplicationUser>();
-
-            // Not sure of difference between x and y below
-            var x = db.Users.Where(u => IsUserInRole(u.Id, roleName) == false);
-            var y = manager.Users.Where(u => IsUserInRole(u.Id, roleName) == false);
-
-            return (IList<ApplicationUser>)x;
-
+            string roleId = db.Roles.SingleOrDefault(n => n.Name == roleName).Id;
+            return db.Users.Where(u => !u.Roles.Any(r => r.RoleId == roleId)).ToList();
         }
 
         // Zap all cookies, see if that clears things up...

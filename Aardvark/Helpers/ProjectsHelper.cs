@@ -13,7 +13,7 @@ namespace Aardvark.Helpers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
-        public IList<Project> ListProjects()
+        public IList<Project> ListAllProjects()
         {
             return db.Projects.ToList();
         }
@@ -65,6 +65,42 @@ namespace Aardvark.Helpers
         public ICollection<ApplicationUser> ListUsersNotOnProject(int projectId)
         {
             return db.Users.Where(u => !u.Projects.Any(x => x.Id == projectId)).ToList();
+        }
+
+        // Create new model to help in assigning developers...
+        public class Developer{
+            public string Id {get; set;}        // User Id
+            public string Name {get; set;}
+            public bool OrigWasAssigned {get; set;}
+            public bool NewIsAssigned {get; set;}
+            public int NumTicketsThisProject {get; set;}
+            public int NumTicketsTotal {get; set;}
+        }
+        public class AssignDevelopersModel
+        {
+            public ICollection<Developer> Assigned = null;
+            public ICollection<Developer> NotAssigned = null;
+            public AssignDevelopersModel()
+            {
+               
+            }
+        }
+        private ICollection<Developer> QueryDevStats(int id)
+        {
+            // Process all the stats for the specified id
+        }
+        public AssignDevelopersModel GetDevStats(int id)
+        {
+            // Collect all the stats for each developer
+            AssignDevelopersModel model = new AssignDevelopersModel();
+            var listDev = ListUsersOnProject((int)id);
+            var listNotDev = ListUsersNotOnProject((int)id);
+
+            // Now process each list and gather some stats on each developer
+            int x = 34;
+            model.Assigned = QueryDevStats((int)id);
+            model.NotAssigned = QueryDevStats(0);
+            return model;
         }
     }
 }

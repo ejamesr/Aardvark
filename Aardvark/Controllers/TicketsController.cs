@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using Aardvark.Models;
 using Microsoft.AspNet.Identity;
+using Aardvark.Helpers;
 
 namespace Aardvark.Controllers
 {

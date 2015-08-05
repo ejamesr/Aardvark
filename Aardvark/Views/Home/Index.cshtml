@@ -3,6 +3,7 @@
     ViewBag.Title = "Home Page";
 }
 @using Aardvark.Models;
+@using Aardvark.Helpers;
 
 <div class="jumbotron">
     <div class="row">
@@ -55,9 +56,9 @@
             <h3>Projects</h3>
             <ul>
                 <li><h4>@Html.ActionLink("Create new project","Create","Projects")</h4></li>
-                <li><h4>@Html.ActionLink("View projects", "Index", "Projects")</h4></li>
-                <li><h4>@Html.ActionLink("Assign Project Manager to projects", "AssignPM","Projects")</h4></li>
-                <li><h4>@Html.ActionLink("Assign Developers to projects","AssignDev","Projects")</h4></li>
+                <li><h4>@Html.ActionLink("View/Edit projects (all)", "Index", "Projects")</h4></li>
+                <li><h4>@Html.ActionLink("Assign Project Manager to projects", "Index","Projects")</h4></li>
+                <li><h4>@Html.ActionLink("Assign Developers to projects","Index","Projects")</h4></li>
             </ul>
 
             <h3>Tickets</h3>
@@ -73,8 +74,8 @@
             </h2>
             <h3>Projects</h3>
             <ul>
-                <li><h4>@Html.ActionLink("View projects", "Index", "Projects")</h4></li>
-                <li><h4>@Html.ActionLink("Assign Developers to projects", "AssignDev", "Projects")</h4></li>
+                <li><h4>@Html.ActionLink("View projects assigned to me", "Index", "Projects")</h4></li>
+                <li><h4>@Html.ActionLink("Assign Developers to projects", "Index", "Projects")</h4></li>
             </ul>
 
             <h3>Tickets</h3>
@@ -90,7 +91,7 @@
             </h2>
             <h3>Projects</h3>
             <ul>
-                <li><h4>@Html.ActionLink("View projects", "Index", "Projects")</h4></li>
+                <li><h4>@Html.ActionLink("View projects assigned to me", "Index", "Projects")</h4></li>
             </ul>
 
             <h3>Tickets</h3>

@@ -1,4 +1,5 @@
-﻿using Aardvark.Models;
+﻿using Aardvark.Helpers;
+using Aardvark.Models;
 using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
@@ -170,6 +171,7 @@ namespace Aardvark.Models
         }
 
         public string Description { get; set; }
+        [Display(Name="Project Mgr")]
         public string ProjectMgrId { get; set; }
 
         public virtual ApplicationUser ProjectMgr { get; set; }

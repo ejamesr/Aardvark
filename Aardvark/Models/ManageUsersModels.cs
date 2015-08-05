@@ -18,9 +18,19 @@ namespace Aardvark.Models
         public bool[] OrigRoles;
         public bool[] NewRoles;
 
+        public ManageUsersData()
+        {
+
+        }
+        public ManageUsersData(int nRoles)
+        {
+            OrigRoles = new bool[nRoles];
+            NewRoles = new bool[nRoles];
+            Array.Clear(OrigRoles,0,nRoles);
+        }
     }
 
-       public class ManageUsersModel
+    public class ManageUsersModel
     {
         public List<ManageUsersData> UserInfo = null;
         public List<string> UserRoles = null;

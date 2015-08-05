@@ -1,23 +1,36 @@
 ﻿@model IEnumerable<Aardvark.Models.Project>
+@using Aardvark.Models;
+@using Aardvark.Helpers;
 
 @{
     ViewBag.Title = "Index";
 }
 
-<h2>Index</h2>
+<h2>Project Index</h2>
 
 <p>
-    @Html.ActionLink("Create New", "Create")
+    @if (ViewBag.Roles.Contains(R.Admin) || ViewBag.Roles.Contains(R.Guest))
+    {
+        @Html.ActionLink("Create New Project", "Create")
+    }
+    else
+    {
+        <br />
+    }
 </p>
+@{
+    UserRolesHelper helper = new UserRolesHelper();
+}
 <table class="table">
     <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.ProjectMgr.FirstName)
+        <th class="col-sm-2">
+            @Html.Label("Project Manager")
+            @*@Html.DisplayNameFor(model => model.ProjectMgr.FirstName)*@
         </th>
-        <th>
+        <th class="col-sm-2">
             @Html.DisplayNameFor(model => model.Name)
         </th>
-        <th>
+        <th class="col-sm-3">
             @Html.DisplayNameFor(model => model.Description)
         </th>
         <th></th>
@@ -25,19 +38,31 @@
 
 @foreach (var item in Model) {
     <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.ProjectMgr.FirstName)
+        <td class="col-sm-2">
+            @{
+                string name = helper.GetDisplayName(item.ProjectMgr);
+            }
+            @name
+            @*@Html.Label(helper.GetDisplayName(item.ProjectMgr))*@
+            @*@Html.DisplayFor(modelItem => item.ProjectMgr.FirstName)*@
         </td>
-        <td>
+        <td class="col-sm-2">
             @Html.DisplayFor(modelItem => item.Name)
         </td>
-        <td>
+        <td class="col-sm-3">
             @Html.DisplayFor(modelItem => item.Description)
         </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
+        <td class="col-sm-2">
+            @if (ViewBag.Roles.Contains(R.Admin) || ViewBag.Roles.Contains(R.Guest))
+            {
+                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) <text>|</text>
+                @Html.ActionLink("Details", "Details", new { id = item.Id }) <text>|</text>
+                @Html.ActionLink("Delete", "Delete", new { id = item.Id, title = "Deleted projects are actually not deleted, and can be restored later." })
+            }
+            else
+            {
+                @Html.ActionLink("Details", "Details", new { id = item.Id })
+            }
         </td>
     </tr>
 }
