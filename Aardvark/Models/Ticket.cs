@@ -21,9 +21,6 @@ namespace Aardvark.Models
         public int TicketPriorityId { get; set; }
         [Display(Name="Ticket Status")]
         public int TicketStatusId { get; set; }
-        public string OwnerUserId { get; set; }
-        [Display(Name="Assigned to User")]
-        public string AssignedToUserId { get; set; }
         [Display(Name="Skill Required")]
         public int SkillRequiredId { get; set; }
         [Required]
@@ -36,12 +33,17 @@ namespace Aardvark.Models
         [Display(Name="Hours to Complete")]
         public int HoursToComplete { get; set; }
 
+        public string OwnerUserId { get; set; }
+        public virtual ApplicationUser OwnerUser { get; set; }
+
+        [Display(Name="Assigned to User")]
+        public string AssignedToUserId { get; set; }
+        public virtual ApplicationUser AssignedToUser { get; set; }
+
         public virtual Project Project { get; set; }
         public virtual TicketType TicketType { get; set; }
         public virtual TicketPriority TicketPriority { get; set; }
         public virtual TicketStatus TicketStatus { get; set; }
-        public virtual ApplicationUser OwnerUser { get; set; }
-        public virtual ApplicationUser AssignedToUser { get; set; }
         public virtual SkillLevel SkillRequired { get; set; }
 
         // And show any/all tickets related to this one
@@ -49,7 +51,7 @@ namespace Aardvark.Models
         public virtual ICollection<TicketComment> Comments { get; set; }
         public virtual ICollection<TicketHistory> Histories { get; set; }
         public virtual ICollection<TicketNotification> Notifications { get; set; }
-        //public virtual ICollection<Ticket> RelatedTickets { get; set; }
+
         public Ticket()
         {
             AssignedToUserId = null;

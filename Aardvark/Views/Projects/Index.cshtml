@@ -59,8 +59,9 @@
                 @Html.ActionLink("Details", "Details", new { id = item.Id }) <text>|</text>
                 @Html.ActionLink("Delete", "Delete", new { id = item.Id, title = "Deleted projects are actually not deleted, and can be restored later." })
             }
-            else
+            else if (ViewBag.Roles.Contains(R.PM))
             {
+                @Html.ActionLink("Assign Developers", "AssignDev", new { id = item.Id }) <text>|</text>
                 @Html.ActionLink("Details", "Details", new { id = item.Id })
             }
         </td>

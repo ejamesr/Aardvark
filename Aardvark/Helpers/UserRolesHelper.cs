@@ -121,6 +121,14 @@ namespace Aardvark.Helpers
             return db.Roles.FirstOrDefault(r => r.Name == roleName).Id;
         }
 
+        public string GetDisplayName(string userId)
+        {
+            if (userId == null || userId == "")
+                return "(no user)";
+            var db = new ApplicationDbContext();
+            var user = db.Users.Find(userId);
+            return GetDisplayName(user);
+        }
         public string GetDisplayName(ApplicationUser user)
         {
             if (user == null)

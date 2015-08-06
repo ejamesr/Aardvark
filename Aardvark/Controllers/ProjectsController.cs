@@ -172,10 +172,6 @@ namespace Aardvark.Controllers
             // Practice getting list of all Project Managers, and list of all except PMs...
             UserRolesHelper helper = new UserRolesHelper();
             var pmList = helper.UsersInRole(R.ProjectManager);
-            var nonPmList = helper.UsersNotInRole(R.ProjectManager);
-
-            string rolePm = db.Roles.FirstOrDefault(r => r.Name == R.ProjectManager).Id;
-
             ViewBag.ProjectMgrId = pmList != null
                 ? new SelectList(pmList, "Id", "UserName")
                 : null;
@@ -200,8 +196,8 @@ namespace Aardvark.Controllers
                 return RedirectToAction("Index");
             }
 
-            ViewBag.ProjectMgrId = new SelectList(db.Users, "Id", "FirstName");//, project.ProjectMgr.Id);
-            return View(project);
+            // If not valid, return to Index
+            return RedirectToAction("Index");
         }
 
         // GET: Projects/Edit/5
@@ -217,15 +213,20 @@ namespace Aardvark.Controllers
             {
                 return HttpNotFound();
             }
-            string rolePm = db.Roles.FirstOrDefault(r => r.Name == R.ProjectManager).Id;
-            if (rolePm != null)
-            {
-                ViewBag.ProjectMgrId =
-                    new SelectList(db.Users
-                        .Where(d => d.Roles.FirstOrDefault(r => r.RoleId == rolePm) != null), 
-                        "Id", "UserName");//, project.ProjectMgr.Id);
-            }
-            else ViewBag.ProjectMgrId = null;
+
+            // Get list of all PMs, put into a SelectList...
+            UserRolesHelper helper = new UserRolesHelper();
+            var pmList = helper.UsersInRole(R.ProjectManager);
+
+            // Get the current PM...
+            var PM = ProjectsHelper.GetProjectManager((int)id);
+            // And remember it to pass on to POST...
+            ViewBag.OrigPmId = PM.Id;
+
+            // Make sure original PM is selected in SelectList...
+            ViewBag.ProjectMgrId = pmList != null
+                ? new SelectList(pmList, "Id", "UserName", PM.Id)
+                : null;
             return View(project);
         }
 
@@ -235,10 +236,16 @@ namespace Aardvark.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
-        public ActionResult Edit([Bind(Include = "Id,Name,Description,ProjectMgrId")] Project project)
+        public ActionResult Edit([Bind(Include = "Id,Name,Description")] Project project, string ProjectMgrId, string OrigPmId)
         {
             if (ModelState.IsValid)
             {
+                if (OrigPmId != null && ProjectMgrId != null && OrigPmId != ProjectMgrId)
+                {
+                    // If they are different, then remove the old and add the new
+                    ProjectsHelper.RemoveUserFromProject(OrigPmId, project.Id);
+                    ProjectsHelper.AddUserToProject(ProjectMgrId, project.Id);
+                }
                 db.Entry(project).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");

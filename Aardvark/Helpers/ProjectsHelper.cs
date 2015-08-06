@@ -37,7 +37,7 @@ namespace Aardvark.Helpers
             {
                 var project = db.Projects.Find(projectId);
                 project.Users.Add(db.Users.Find(userId));
-                db.Entry(project).State = EntityState.Modified;
+                //db.Entry(project).State = EntityState.Modified;
                 db.SaveChanges();
             }
         }
@@ -46,9 +46,10 @@ namespace Aardvark.Helpers
         {
             if (IsUserOnProject(userId, projectId))
             {
+                bool retVal;
                 var project = db.Projects.Find(projectId);
-                project.Users.Remove(db.Users.Find(userId));
-                db.Entry(project).State = EntityState.Modified;
+                retVal = project.Users.Remove(db.Users.Find(userId));
+                //db.Entry(project).State = EntityState.Modified;
                 db.SaveChanges();
             }
         }

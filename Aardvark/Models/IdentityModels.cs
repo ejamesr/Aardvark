@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Aardvark.Models
 {
@@ -21,7 +22,9 @@ namespace Aardvark.Models
         public bool TextNotification { get; set; }
 
         public virtual SkillLevel SkillLevel { get; set; }
+        [InverseProperty("AssignedToUser")]
         public virtual ICollection<Ticket> TicketsAssigned { get; set; }
+        [InverseProperty("OwnerUser")]
         public virtual ICollection<Ticket> TicketsOwned { get; set; }
         public virtual ICollection<Project> Projects { get; set; }
 
