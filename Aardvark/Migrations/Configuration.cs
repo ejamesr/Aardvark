@@ -148,10 +148,15 @@ namespace Aardvark.Migrations
             if (context.Projects.Count() == 0)
             {
                 // Create a project, get its id
-                project = new Project(admin.Id);
+                project = new Project();
+
+                // Need to fix -- add creator name to list -- ejr
                 project.Name = "Our Main Product";
                 project.Description = "All bug and enhancement tickets for our main product";
                 context.Projects.Add(project);
+
+                // Preserve many-to-many link by adding 'admin' to the project.Users table
+                project.Users.Add(admin);
                 context.SaveChanges();
 
                 // This next step should be handled automatically by EF

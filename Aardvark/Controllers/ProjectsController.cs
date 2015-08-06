@@ -26,14 +26,14 @@ namespace Aardvark.Controllers
             if (Roles.Contains(R.Admin) || Roles.Contains(R.Guest))
             {
                 // Show all projects without restriction
-                var projects = db.Projects.Include(p => p.ProjectMgr);
+                var projects = db.Projects.Include(p => p.Users);
                 return View(projects.ToList());
             }
             else if (Roles.Contains(R.ProjectManager))
             {
                 // Person is both PM and Dev, so show union...ed
                 var projects = db.Users.Find(uId).Projects
-                    .Union(db.Projects.Where(u => u.ProjectMgrId == uId));
+                    .Union(db.Projects.Where(r => r.Users.Any(u => u.Id == uId)));
                 return View(projects.ToList());
             }
             else
@@ -50,22 +50,101 @@ namespace Aardvark.Controllers
             return View();
         }
 
+        // GET: Projects/ProjectsPostError
+        public ActionResult ProjectsPostError()
+        {
+            return View();
+        }
+
         // GET: Projects/AssignDev
-        [Authorize(Roles="Admin, Project Manager")]
-        public ActionResult AssignDev(int? id)
+        [Authorize(Roles="Admin, Guest, Project Manager")]
+        public ActionResult AssignDev(int? id)      // Assign developers to this project
         {
             // Assign developers to this project
             if (id != null)
             {
                 // First, get complete list of all developers, whether assigned or not
-                ProjectsHelper ph = new ProjectsHelper();
-                var stats = ph.GetDevStats((int)id);
+                var stats = ProjectsHelper.GetDevStats((int)id);
                 // Now, pass all this to the View model...
                 return View(stats);
             }
 
             return View();
         }
+
+
+        // POST: Home/ManageUsers
+        [HttpPost]
+        [Authorize(Roles = "Admin, Guest, Project Manager")]
+        [ValidateAntiForgeryToken]
+        //public ActionResult ManageUsers(IEnumerable<UsersCheckboxes> UserInfo)
+        public ActionResult AssignDev(string[] Select, int Id)
+        {
+            if (ModelState.IsValid)
+            {
+                // Select has data strings that come in the following order:
+                //
+                //   1st: UserId
+                //   2nd: "T" if developer was originally assigned to project, else "F"
+                //   3rd: Optional: "T" only if the checkbox was checked at time of Submit, else no string
+                //
+                //   If there is a 3rd string (which will only be "T"), there was no change if 2nd string is also "T".
+                //   - If 2nd is "F", this user needs to be added to the project
+                //
+                //   If there is not a third string (i.e., end of list encountered, or next is a long UserId), then:
+                //   - if the 2nd is "F", there was no change (i.e., developer still not in project)
+                //   - else if the 2nd is "T", the developer needs to be removed from the project
+                //
+                // So, scoop everything up first and recreate the original model
+                if (Select != null && Select.Length > 0)
+                {
+                    int index = 0;
+                    string userId;
+                    string origVal;
+
+                    while (index < Select.Length)
+                    {
+                        // Get a user
+                        if (index + 1 >= Select.Length)
+                            return RedirectToAction("ProjectsPostError");
+                        // Grab id and origVal
+                        userId = Select[index];
+                        origVal = Select[index + 1];
+                        index += 2;
+                        if (index >= Select.Length) 
+                        {
+                            // No more data, so if origVal was "F' we are finished
+                            if (origVal == "T") {
+                                // User was just desselected
+                                ProjectsHelper.RemoveUserFromProject(userId, Id);
+                            }
+                            // Since this is the end of the list, exit now
+                            break;
+                        }
+
+                        // If the next item is one char wide, grab it, else its a userId
+                        if (Select[index].Length == 1) {
+                            // This developer was checked, so see if we need to add him
+                            index++;        // Skip over
+                            if (origVal == "F")
+                                // User was just added
+                                ProjectsHelper.AddUserToProject(userId, Id);
+                        }
+                        else
+                        {
+                            // The next item is a userId... so check origVal
+                            if (origVal == "T")
+                                ProjectsHelper.RemoveUserFromProject(userId, Id);
+                        }
+                    }
+                    // All went according to plan, so return to Main Menu!
+                    return RedirectToAction("Index");
+                }
+            }
+            // There was an error of some kind, so show it
+            return RedirectToAction("ProjectsPostError");
+        }
+
 
         // GET: Projects/Details/
         public ActionResult Details(int? id)
@@ -79,7 +158,9 @@ namespace Aardvark.Controllers
             {
                 return HttpNotFound();
             }
-            var Roles = new UserRolesHelper().ListUserRoles(User.Identity.GetUserId());
+            UserRolesHelper helper = new UserRolesHelper();
+            ViewBag.ProjectManagerDisplayName = helper.GetProjectManagerDisplayName((int)id);
+            var Roles = helper.ListUserRoles(User.Identity.GetUserId());
             ViewBag.Roles = Roles;
             return View(project);
         }
@@ -94,13 +175,10 @@ namespace Aardvark.Controllers
             var nonPmList = helper.UsersNotInRole(R.ProjectManager);
 
             string rolePm = db.Roles.FirstOrDefault(r => r.Name == R.ProjectManager).Id;
-            if (rolePm != null)
-            {
-                ViewBag.ProjectMgrId =
-                    new SelectList(db.Users
-                        .Where(d => d.Roles.FirstOrDefault(r => r.RoleId == rolePm) != null), "Id", "UserName");
-            }
-            else ViewBag.ProjectMgrId = null;
+
+            ViewBag.ProjectMgrId = pmList != null
+                ? new SelectList(pmList, "Id", "UserName")
+                : null;
             return View();
         }
 
@@ -114,12 +192,15 @@ namespace Aardvark.Controllers
         {
             if (ModelState.IsValid)
             {
+                var pmId = Request["ProjectMgrId"];
+                UserRolesHelper helper = new UserRolesHelper();
                 db.Projects.Add(project);
+                project.Users.Add(db.Users.Find(pmId));
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
 
-            ViewBag.ProjectMgrId = new SelectList(db.Users, "Id", "FirstName", project.ProjectMgrId);
+            ViewBag.ProjectMgrId = new SelectList(db.Users, "Id", "FirstName");//, project.ProjectMgr.Id);
             return View(project);
         }
 
@@ -142,7 +223,7 @@ namespace Aardvark.Controllers
                 ViewBag.ProjectMgrId =
                     new SelectList(db.Users
                         .Where(d => d.Roles.FirstOrDefault(r => r.RoleId == rolePm) != null), 
-                        "Id", "UserName", project.ProjectMgrId);
+                        "Id", "UserName");//, project.ProjectMgr.Id);
             }
             else ViewBag.ProjectMgrId = null;
             return View(project);
@@ -162,7 +243,7 @@ namespace Aardvark.Controllers
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            ViewBag.ProjectMgrId = new SelectList(db.Users, "Id", "FirstName", project.ProjectMgrId);
+            ViewBag.ProjectMgrId = new SelectList(db.Users, "Id", "FirstName");//, project.ProjectMgr.Id);
             return View(project);
         }
 

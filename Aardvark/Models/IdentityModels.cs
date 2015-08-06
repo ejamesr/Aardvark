@@ -62,12 +62,19 @@ namespace Aardvark.Models
         public DbSet<TicketType> TicketTypes { get; set; }
         public DbSet<TicketPriority> TicketPriorities { get; set; }
         public DbSet<Project> Projects { get; set; }
-        //public DbSet<ProjectUser> ProjectUsers { get; set; }
         public DbSet<SkillLevel> SkillLevels { get; set; }
         public DbSet<TicketNotification> TicketNotifications { get; set; }
         public DbSet<TicketHistory> TicketHistories { get; set; }
         public DbSet<TicketComment> TicketComments { get; set; }
         public DbSet<TicketAttachment> TicketAttachments { get; set; }
-        
+    }
+
+    // Create context with Eager loading as default
+    public class DbFast : ApplicationDbContext
+    {
+        public DbFast()
+        {
+            this.Configuration.LazyLoadingEnabled = false;
+        }
     }
 }

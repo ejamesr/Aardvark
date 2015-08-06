@@ -17,7 +17,6 @@
             @{
         int nRoles = Model.UserRoles.Count;
         int uCount = -1;
-        int SelectCounter = 0;
         UserRolesHelper helper = new UserRolesHelper();
         //At the top, store all the role types so we can check on return
         string x = "";
@@ -42,37 +41,31 @@
                 <tbody>
                     @foreach (var user in Model.UserInfo)
                     {
-                        uCount++;
-                        string inputName = "Data[" + uCount + "].U";
                         <tr>
                             @{
-                        string name = helper.GetDisplayName(user);
-                        string isChecked = "";
+                                string name = helper.GetDisplayName(user);
+                                string isChecked = "";
 
-                        <td class="col-sm-3">
-                            @{
-                                @name
-                                @* List all the original values here... starting with ID, then role values *@
-                                <input type="hidden" name="Select" value="@user.Id" />
-                                string tf = "";
+                                <td class="col-sm-3">
+                                    @{
+                                        @name
+                                        @* List all the original values here... starting with ID, then role values *@
+                                        <input type="hidden" name="Select" value="@user.Id" />
+                                        string tf = "";
+                                        for (int i = 0; i < nRoles; i++)
+                                        {
+                                            tf += user.OrigRoles[i] == true ? 'T' : 'F';
+                                        }
+                                    }
+                                    <input type="hidden" name="Select" value="@tf" />
+                                </td>
                                 for (int i = 0; i < nRoles; i++)
                                 {
-                                    tf += user.OrigRoles[i] == true ? 'T' : 'F';
+                                    isChecked = user.OrigRoles[i] == true ? " checked" : "";
+                                    <td class="col-sm-1 text-center">
+                                        <input type="checkbox" name="Select" value="@(""+i)" @isChecked />
+                                    </td>
                                 }
-                            }
-                            <input type="hidden" name="Select" value="@tf" />
-                        </td>
-                        for (int i = 0; i < nRoles; i++)
-                        {
-                            isChecked = user.OrigRoles[i] == true ? " checked" : "";
-                            <td class="col-sm-1 text-center">
-                                @if (i == 0)
-                                {
-                                    <input type="hidden" name="@(inputName + "Id")" value="@user.Id" />
-                                }
-                                <input type="checkbox" name="Select" value="@(""+i)" @isChecked />
-                            </td>
-                        }
                             }
                         </tr>
                     }

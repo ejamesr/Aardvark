@@ -40,7 +40,7 @@
     <tr>
         <td class="col-sm-2">
             @{
-                string name = helper.GetDisplayName(item.ProjectMgr);
+                string name = helper.GetDisplayName(ProjectsHelper.GetProjectManager(item.Id));
             }
             @name
             @*@Html.Label(helper.GetDisplayName(item.ProjectMgr))*@

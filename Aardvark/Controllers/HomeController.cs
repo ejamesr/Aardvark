@@ -1,11 +1,11 @@
-﻿using Aardvark.Models;
+﻿using Aardvark.Helpers;
+using Aardvark.Models;
+using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using Microsoft.AspNet.Identity;
-using Aardvark.Helpers;
 
 namespace Aardvark.Controllers
 {
@@ -80,7 +80,7 @@ namespace Aardvark.Controllers
             return View(new ManageUsersModel(users, roles));
         }
 
-        // GET: Home/ManageUsers
+        // POST: Home/ManageUsers
         [HttpPost]
         [Authorize(Roles = "Admin, Guest")]
         [ValidateAntiForgeryToken]

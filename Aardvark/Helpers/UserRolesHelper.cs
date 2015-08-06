@@ -1,12 +1,12 @@
-﻿using System;
+﻿using Aardvark.Models;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.EntityFramework;
 using System.Web;
 using System.Web.Mvc;
-using Aardvark.Models;
 
 namespace Aardvark.Helpers
 {
@@ -73,6 +73,16 @@ namespace Aardvark.Helpers
                 new UserStore<ApplicationUser>(
                     new ApplicationDbContext()));
 
+        public string GetCurrentUserId()
+        {
+            return HttpContext.Current.User.Identity.GetUserId();
+        }
+
+        public ApplicationUser GetCurrentUser()
+        {
+            return (ApplicationUser)HttpContext.Current.User;
+        }
+
         public bool IsUserInRole(string userId, string roleName)
         {
             return manager.IsInRole(userId, roleName);
@@ -105,10 +115,16 @@ namespace Aardvark.Helpers
             return "";
         }
 
+        public string GetRoleId(string roleName)
+        {
+            var db = new ApplicationDbContext();
+            return db.Roles.FirstOrDefault(r => r.Name == roleName).Id;
+        }
 
-        // Two different versions, depending on user model
         public string GetDisplayName(ApplicationUser user)
         {
+            if (user == null)
+                return "(no user)";
             string name = "";
             if (user.FirstName != "")
             {
@@ -126,24 +142,31 @@ namespace Aardvark.Helpers
             return name;
         }
 
-        public string GetDisplayName(ManageUsersData user)
+        public string GetProjectManagerDisplayName(int projectId)
         {
-            string name = "";
-            if (user.First != "")
-            {
-                name += user.First + "-";
-            }
-            if (user.Last != "")
-            {
-                name += user.Last + "-";
-            }
-            if (user.DisplayName != "")
-            {
-                name += user.DisplayName + "-";
-            }
-            name += user.UserName;
-            return name;
+            return GetDisplayName(ProjectsHelper.GetProjectManager(projectId));
         }
+
+        //public string GetDisplayName(ManageUsersData user)
+        //{
+        //    if (user == null)
+        //        return "(no user)";
+        //    string name = "";
+        //    if (user.First != "")
+        //    {
+        //        name += user.First + "-";
+        //    }
+        //    if (user.Last != "")
+        //    {
+        //        name += user.Last + "-";
+        //    }
+        //    if (user.DisplayName != "")
+        //    {
+        //        name += user.DisplayName + "-";
+        //    }
+        //    name += user.UserName;
+        //    return name;
+        //}
 
         public bool AddUserToRole(string userId, string roleName)
         {
