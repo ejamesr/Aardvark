@@ -50,18 +50,24 @@ namespace Aardvark.Controllers
             ViewBag.HighestUserRole = highest;
 
             // If Admin, allow to select Developer when creating the ticket
-            if (helper.IsUserInRole(id, R.Admin) || helper.IsUserInRole(id, R.ProjectManager) || helper.IsUserInRole(id, R.Guest))
+            var roles = helper.ListUserRoles(id);
+            if (roles.Contains(R.Admin) || roles.Contains(R.Guest) || roles.Contains(R.ProjectManager))
             {
                 var roleDev = db.Roles.FirstOrDefault(r => r.Name == R.Developer);
+                ViewBag.CanAssignDeveloper = true;
                 if (roleDev != null)
                 {
                     ViewBag.AssignedToUserId =
                         new SelectList(db.Users
                             .Where(d => d.Roles.FirstOrDefault(r => r.RoleId == roleDev.Id) != null), "Id", "UserName");
                 }
-                else ViewBag.AssignedToUserId = null;
+                else ViewBag.AssignedToUserId = Enumerable.Empty<SelectListItem>();
             }
-            else ViewBag.AssignedToUserId = null;
+            else
+            {
+                ViewBag.AssignedToUserId = Enumerable.Empty<SelectListItem>();
+                ViewBag.CanAssignDeveloper = false;
+            }
 
             ViewBag.OwnerUserId = new SelectList(db.Users, "Id", "FirstName");
             ViewBag.ProjectId = new SelectList(db.Projects, "Id", "Name");
@@ -82,7 +88,9 @@ namespace Aardvark.Controllers
             if (ModelState.IsValid)
             {
                 ticket.OwnerUserId = User.Identity.GetUserId();
-                ticket.AssignedToUserId = null;
+                ticket.Created = DateTimeOffset.UtcNow;
+                if (ticket.TicketStatusId == 0)
+                    ticket.TicketStatusId = 1;  // Point to New status
                 db.Tickets.Add(ticket);
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -110,7 +118,31 @@ namespace Aardvark.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.AssignedToUserId = new SelectList(db.Users, "Id", "FirstName", ticket.AssignedToUserId);
+
+            UserRolesHelper helper = new UserRolesHelper();
+            var userId = helper.GetCurrentUserId();
+            var roles = helper.ListUserRoles(userId);
+
+            // If Admin, allow to select Developer when creating the ticket
+            if (roles.Contains(R.Admin) || roles.Contains(R.Guest) || roles.Contains(R.ProjectManager))
+            {
+                var roleDev = db.Roles.FirstOrDefault(r => r.Name == R.Developer);
+                ViewBag.CanAssignDeveloper = true;
+                if (roleDev != null)
+                {
+                    ViewBag.AssignedToUserId =
+                        new SelectList(db.Users
+                            .Where(d => d.Roles.FirstOrDefault(r => r.RoleId == roleDev.Id) != null), "Id", "UserName",
+                            ticket.AssignedToUserId);
+                }
+                else ViewBag.AssignedToUserId = Enumerable.Empty<SelectListItem>();
+            }
+            else
+            {
+                ViewBag.AssignedToUserId = Enumerable.Empty<SelectListItem>();
+                ViewBag.CanAssignDeveloper = false;
+            }
+
             ViewBag.OwnerUserId = new SelectList(db.Users, "Id", "FirstName", ticket.OwnerUserId);
             ViewBag.ProjectId = new SelectList(db.Projects, "Id", "Name", ticket.ProjectId);
             ViewBag.SkillRequiredId = new SelectList(db.SkillLevels, "Id", "Name", ticket.SkillRequiredId);
@@ -129,6 +161,7 @@ namespace Aardvark.Controllers
         {
             if (ModelState.IsValid)
             {
+                ticket.Updated = DateTimeOffset.UtcNow;
                 db.Entry(ticket).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");

@@ -1,105 +1,134 @@
 ﻿@model IEnumerable<Aardvark.Models.Ticket>
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Tickets";
 }
 
-<h2>Index</h2>
+<h2>Tickets</h2>
 
 <p>
-    @Html.ActionLink("Create New", "Create")
+    @Html.ActionLink("Create New Ticket", "Create")
 </p>
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.AssignedToUser.FirstName)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.OwnerUser.FirstName)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Project.Name)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.SkillRequired.Name)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.TicketPriority.Name)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.TicketStatus.Name)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.TicketType.Name)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Title)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Description)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Created)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Updated)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.DueDate)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.HoursToComplete)
-        </th>
-        <th></th>
-    </tr>
+<br />
+<table id="table_id" class="display compact">
+    <colgroup>
+        <col width="90"/> <!-- Assigned -->
+        <col width="90" /> <!-- Owner -->
+        <col width="90" /> <!-- Project -->
+        <col width="90" /> <!-- Skill -->
+        <col width="90" /> <!-- Priority -->
+        <col width="90" /> <!-- Status -->
+        <col width="90" /> <!-- Type -->
+        <col width="120" /> <!-- Title -->
+        <col width="180" /> <!-- Description -->
+        <col width="90" /> <!-- Created -->
+        <col width="90" /> <!-- Updated -->
+        <col width="90" /> <!-- Due -->
+        <col width="90" /> <!-- Hours -->
+        <col width="90" /> <!-- Links -->
+    </colgroup>
+    <thead class="dt-head-center">
+        <tr>
+            <th class="dt-head-center">
+                Assigned
+            </th>
+            <th class="dt-head-center">
+                Owner
+            </th>
+            <th class="dt-head-center">
+                Project
+            </th>
+            <th class="dt-head-center">
+                Skill
+            </th>
+            <th>
+                Priority
+            </th>
+            <th>
+                Status
+            </th>
+            <th>
+                Type
+            </th>
+            <th>
+                Title
+            </th>
+            <th>
+                Description
+            </th>
+            <th>
+                Created
+            </th>
+            <th>
+                Updated
+            </th>
+            <th>
+                Due
+            </th>
+            <th>
+                Hours
+            </th>
+            <th></th>
+        </tr>
+    </thead>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.AssignedToUser.FirstName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.OwnerUser.FirstName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Project.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.SkillRequired.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.TicketPriority.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.TicketStatus.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.TicketType.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Title)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Description)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Created)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Updated)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.DueDate)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.HoursToComplete)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
-        </td>
-    </tr>
-}
-
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AssignedToUser.FirstName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.OwnerUser.FirstName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Project.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SkillRequired.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TicketPriority.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TicketStatus.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TicketType.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @item.Created.ToString("G")
+                </td>
+                <td>
+                    @(item.Updated == null ? "" : item.Updated.Value.ToString("G"))
+                </td>
+                <td>
+                    @item.DueDate.ToString("ddd d MMM yyyy")
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.HoursToComplete)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.Id }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                </td>
+            </tr>
+        }
+    </tbody>
 </table>
+@section Scripts {
+@*<script src="~/js/DataTables-1.10.7/media/js/jquery.dataTables.min.js"></script>*@
+<script>
+    $(document).ready(function () {
+        $('#table_id').DataTable();
+    });
+</script>
+}

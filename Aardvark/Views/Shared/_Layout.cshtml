@@ -3,16 +3,24 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - My ASP.NET Application</title>
+    <title>@ViewBag.Title - My Bug Tracker</title>
     <link href="~/js/jquery-ui-1.11.4.custom/jquery-ui.min.css" rel="stylesheet" />
     <link href="~/js/jquery-ui-1.11.4.custom/jquery-ui.structure.min.css" rel="stylesheet" />
     <link href="~/js/jquery-ui-1.11.4.custom/jquery-ui.theme.min.css" rel="stylesheet" />
+
+    <!-- DataTables -->
+    <link href="~/js/DataTables-1.10.7/media/css/jquery.dataTables.css" rel="stylesheet" />
+
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
+
     <!-- My custom stylesheet, put after all other stylesheets -->
     <link href="~/css/ejr-custom.css" rel="stylesheet" />
     <script src="~/js/jquery-2.1.4.min.js"></script>
     <script src="~/js/jquery-ui-1.11.4.custom/jquery-ui.min.js"></script>
+
+    <!-- DataTables -->
+    @*<script src="~/js/DataTables-1.10.7/media/js/jquery.js"></script>*@
 </head>
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top">
@@ -43,13 +51,17 @@
         </footer>
     </div>
     <script>
-        $("#datepicker").datepicker({
-            inline: true
-        });
+        //$("#datepicker").datepicker({
+        //    inline: true,
+        //    dateFormat: "ddd d MMM yyyy"
+        //});
     </script>
 
-    @Scripts.Render("~/bundles/jquery")
+    <!-- DataTables -->
+    <script src="~/js/DataTables-1.10.7/media/js/jquery.dataTables.min.js"></script>
+    @*@Scripts.Render("~/bundles/jquery")*@
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
+
 </body>
 </html>
