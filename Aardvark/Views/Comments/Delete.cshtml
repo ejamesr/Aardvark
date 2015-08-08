@@ -1,0 +1,114 @@
+﻿@model EJR_Profile.Models.Comment
+
+@{
+    ViewBag.Title = "Delete";
+    int page = ViewBag.page;
+    string anchor = ViewBag.anchor;
+}
+
+<div class="wrapper">
+    <!-- Topic Header -->
+    <div class="topic">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-8">
+                    <h3 class="primary-font">
+                        My Blog
+                    </h3>
+                </div>
+                <div class="col-sm-4">
+                    <ol class="breadcrumb pull-right hidden-xs">
+                        <li>@Html.ActionLink("Blog", "Index", "Posts")</li>
+                        <li>
+                            @Html.ActionLink("Details", "Details", "Posts", null, null,
+                                anchor, new { id = ViewBag.id, page = ViewBag.page }, null)
+                        </li>
+                        <li class="active">Delete</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <h3>Are you sure you want to delete this comment?</h3>
+        </div>
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            <div class="form-horizontal">
+                <div class="row">
+                        @Html.LabelFor(model => model.Created, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10 del-adjust">
+                            @Html.Raw(Model.Created.ToLocalTime().ToString("F"))
+                        </div>
+                    </div>
+                    <div class="row">
+                        @Html.LabelFor(model => model.Updated, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10 del-adjust">
+                            @if (Model.Updated != null)
+                            {
+                                Html.Raw(Model.Updated.Value.ToLocalTime().ToString("F"));
+                            }
+                            @Html.DisplayFor(model => model.Updated)
+                        </div>
+                    </div>
+                    <div class="row">
+                        @Html.LabelFor(model => model.Body, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10 del-adjust">
+                            @Html.DisplayFor(model => model.Body)
+                        </div>
+                    </div>
+                    <div class="row">
+                        @Html.LabelFor(model => model.Author.FirstName, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10 del-adjust">
+                            @Html.DisplayFor(model => model.Author.FirstName)
+                        </div>
+                    </div>
+                    <div class="row">
+                        @Html.LabelFor(model => model.Post.Title, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10 del-adjust">
+                            @Html.DisplayFor(model => model.Post.Title)
+                        </div>
+                    </div>
+                    <div class="row">
+                        @Html.LabelFor(model => model.Author.FirstName, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10 del-adjust">
+                            @Html.DisplayFor(model => model.Author.FirstName)
+                        </div>
+                    </div>
+                    <div class="row">
+                        @Html.LabelFor(model => model.Author.DisplayName, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10 del-adjust">
+                            @Html.DisplayFor(model => model.Author.DisplayName)
+                        </div>
+                    </div>
+                    <div class="row">
+                        @Html.LabelFor(model => model.UpdateReason, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10 del-adjust">
+                            @Html.DisplayFor(model => model.UpdateReason)
+                        </div>
+                    </div>
+
+                @* Add the fragment info here... *@
+                <div class="hidden">
+                    <input type="text" name="id" value=@ViewBag.id />
+                    <input type="text" name="page" value=@ViewBag.page />
+                    <input type="text" name="anchor" value=@ViewBag.anchor />
+                </div>
+                <br />
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-sm-2">
+                            @Html.ActionLink("Back to List", "Details", "Posts", null, null,
+                                anchor, new { id = ViewBag.id, page = ViewBag.page }, null)
+                        </div>
+                        <div class="col-md-4">
+                            <input type="submit" value="Delete" class="btn btn-default btn-blue" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

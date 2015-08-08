@@ -1,0 +1,126 @@
+﻿@model Aardvark.Models.TicketComment
+@using Aardvark.Models;
+@{
+    ViewBag.Title = "Create";
+    int page = ViewBag.page;
+    string anchor = ViewBag.anchor;
+    Ticket ticket = new ApplicationDbContext().Tickets.Find(Model.TicketId);
+}
+
+<div class="wrapper">
+    <!-- Topic Header -->
+    <div class="topic">
+        @*<div class="container">
+            <div class="row">
+                <div class="col-sm-8">
+                    <h3 class="primary-font">
+                        My Blog
+                    </h3>
+                </div>
+                <div class="col-sm-4">
+                    <ol class="breadcrumb pull-right hidden-xs">
+                        <li>@Html.ActionLink("Blog", "Index", "Posts")</li>
+                        <li>
+                            @Html.ActionLink("Details", "Details", "Posts", null, null,
+                                anchor, new { id = ViewBag.id, page = ViewBag.page }, null)
+                        </li>
+                        <li class="active">Comment</li>
+                    </ol>
+                </div>
+            </div>
+        </div>*@
+    </div>
+    <div class="container">
+        <h4>Add comment for ticket # @Model.TicketId</h4>
+        <hr />
+        <div class="row">
+            <div class="col-sm-2">
+                Ticket Summary
+            </div>
+            <div class="col-sm-4">
+                Type: @ticket.TicketType.Name; Priority: @ticket.TicketPriority.Name;
+                Status: @ticket.TicketStatus.Name; Skill: @ticket.SkillRequired.Name;
+                Due Date: @ticket.DueDate.ToLocalTime().ToString("D"); Est. Hrs to Complete: @ticket.HoursToComplete
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-2">
+                Created
+            </div>
+            <div class="col-sm-4">
+                @ticket.Created.ToLocalTime().ToString("ddd d MMM yyyy")
+            </div>
+        </div>
+        @if (ticket.Updated != null)
+        {
+            <div class="row">
+                <div class="col-sm-2">
+                    Updated
+                </div>
+                <div class="col-sm-4">
+                    @ticket.Updated.Value.ToLocalTime().ToString("ddd d MMM yyyy")
+                </div>
+            </div>
+        }
+        <br />
+        <div class="row">
+            <div class="col-sm-2">
+                Title
+            </div>
+            <div class="col-sm-4">
+                @ticket.Title
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-2">
+                Description
+            </div>
+            <div class="col-sm-4">
+                @ticket.Description
+            </div>
+        </div>
+        <br />
+        <br />
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-horizontal">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                @Html.HiddenFor(m => m.ParentCommentId)
+                @Html.HiddenFor(m => m.Level)
+                @Html.HiddenFor(t => t.TicketId)
+
+                <div class="form-group">
+                    @Html.Label("Comment", htmlAttributes: new { @class = "control-label col-sm-2" })
+                    <div class="col-sm-10">
+                        @Html.TextAreaFor(model => model.Body, 4, 200,
+                            new { htmlAttributes = new { @class = "form-control", title="Enter your comments here" } })
+                        @Html.ValidationMessageFor(model => model.Body, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                @* Add the fragment info here... *@
+                <div class="hidden">
+                    <input type="text" name="id" value=@ViewBag.id />
+                    <input type="text" name="page" value=@ViewBag.page />
+                    <input type="text" name="anchor" value=@ViewBag.anchor />
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-sm-2">
+                            @Html.ActionLink("Back to List", "Index", "Posts", null, new { @page = ViewBag.PageNumber })
+                        </div>
+                        <div class="col-md-4">
+                            <input type="submit" value="Create" class="btn btn-primary" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+        @section Scripts {
+            @Scripts.Render("~/bundles/jqueryval")
+        }

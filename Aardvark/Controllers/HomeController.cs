@@ -100,6 +100,7 @@ namespace Aardvark.Controllers
                     int nRoles;
                     List<ManageUsersData> muList = new List<ManageUsersData>();
                     bool isAdminChecked = false;
+                    
                     if (posAdmin > -1)
                     {
                         // We found the Admin role, assume at this point the list of roles is correct

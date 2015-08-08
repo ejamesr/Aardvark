@@ -19,6 +19,23 @@ namespace Aardvark.Controllers
         // GET: Tickets
         public ActionResult Index()
         {
+            // Fix the Created date for all tickets...
+            //var tk = db.Tickets;
+            //var zero = new DateTimeOffset();
+            //var now = DateTimeOffset.UtcNow.AddDays(-2.0);
+            //DateTimeOffset max;
+            //foreach (var ticket in tk) {
+            //    if (ticket.Created == zero)
+            //        ticket.Created = now;
+            //    max = ticket.Created;
+            //    if (ticket.Updated != null)
+            //        max = ticket.Updated > max ? ticket.Updated.Value : max;
+            //    if (max > ticket.MostRecentUpdate)
+            //        ticket.MostRecentUpdate = max;
+            //}
+            //db.SaveChanges();
+
+
             var tickets = db.Tickets.Include(t => t.AssignedToUser).Include(t => t.OwnerUser).Include(t => t.Project).Include(t => t.SkillRequired).Include(t => t.TicketPriority).Include(t => t.TicketStatus).Include(t => t.TicketType);
             return View(tickets.ToList());
         }

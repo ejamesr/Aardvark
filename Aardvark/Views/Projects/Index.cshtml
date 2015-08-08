@@ -24,6 +24,9 @@
 <table class="table">
     <tr>
         <th class="col-sm-2">
+            Project #
+        </th>
+        <th class="col-sm-2">
             @Html.Label("Project Manager")
             @*@Html.DisplayNameFor(model => model.ProjectMgr.FirstName)*@
         </th>
@@ -38,6 +41,7 @@
 
 @foreach (var item in Model) {
     <tr>
+        <td>@item.Id</td>
         <td class="col-sm-2">
             @{
                 string name = helper.GetDisplayName(ProjectsHelper.GetProjectManager(item.Id));

@@ -12,7 +12,8 @@
 <br />
 <table id="table_id" class="display compact">
     <colgroup>
-        <col width="90"/> <!-- Assigned -->
+        <col width="90" /> <!-- Rec # -->
+        <col width="90" /> <!-- Assigned -->
         <col width="90" /> <!-- Owner -->
         <col width="90" /> <!-- Project -->
         <col width="90" /> <!-- Skill -->
@@ -23,12 +24,16 @@
         <col width="180" /> <!-- Description -->
         <col width="90" /> <!-- Created -->
         <col width="90" /> <!-- Updated -->
+        <col width="90" /> <!-- MostRecentChange -->
         <col width="90" /> <!-- Due -->
         <col width="90" /> <!-- Hours -->
         <col width="90" /> <!-- Links -->
     </colgroup>
     <thead class="dt-head-center">
         <tr>
+            <th class="dt-head-center">
+                #
+            </th>
             <th class="dt-head-center">
                 Assigned
             </th>
@@ -63,6 +68,9 @@
                 Updated
             </th>
             <th>
+                Most Recent
+            </th>
+            <th>
                 Due
             </th>
             <th>
@@ -76,6 +84,9 @@
         @foreach (var item in Model)
         {
             <tr>
+                <td>
+                    @item.Id
+                </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.AssignedToUser.FirstName)
                 </td>
@@ -110,14 +121,17 @@
                     @(item.Updated == null ? "" : item.Updated.Value.ToString("G"))
                 </td>
                 <td>
+                    @(item.MostRecentUpdate.ToString("G"))
+                </td>
+                <td>
                     @item.DueDate.ToString("ddd d MMM yyyy")
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.HoursToComplete)
                 </td>
                 <td>
-                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-                    @Html.ActionLink("Details", "Details", new { id = item.Id }) |
+                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }) <br />
+                    @Html.ActionLink("Details", "Details", new { id = item.Id }) <br />
                     @Html.ActionLink("Delete", "Delete", new { id = item.Id })
                 </td>
             </tr>

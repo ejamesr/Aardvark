@@ -29,6 +29,11 @@ namespace Aardvark.Models
         public string Description { get; set; }
         public DateTimeOffset Created { get; set; }
         public Nullable<DateTimeOffset> Updated { get; set; }
+
+        // This field keeps track of the most recent activity to occur:
+        //   Ticket was created, updated, comment or attachment created.
+        public DateTimeOffset MostRecentUpdate { get; set; }
+
         public DateTimeOffset DueDate { get; set; }
         [Display(Name="Hours to Complete")]
         public int HoursToComplete { get; set; }
@@ -59,6 +64,23 @@ namespace Aardvark.Models
             this.Comments = new HashSet<TicketComment>();
             this.Histories = new HashSet<TicketHistory>();
             this.Notifications = new HashSet<TicketNotification>();
+        }
+
+        public void SetCreated()
+        {
+            Created = MostRecentUpdate = DateTimeOffset.UtcNow;
+        }
+        public void SetUpdated()
+        {
+            Updated = MostRecentUpdate = DateTimeOffset.UtcNow;
+        }
+        public void SetMostRecentUpdate()
+        {
+            MostRecentUpdate = DateTimeOffset.UtcNow;
+        }
+        public void SetMostRecentUpdate(DateTimeOffset now)
+        {
+            MostRecentUpdate = now;
         }
     }
 }
