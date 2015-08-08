@@ -55,16 +55,16 @@
 
             <h3>Projects</h3>
             <ul>
+                <li><h4>@Html.ActionLink("My Projects", "Index", "Projects", new { scope = "My" }, null)</h4></li>
+                <li><h4>@Html.ActionLink("All Projects", "Index", "Projects" )</h4></li>
                 <li><h4>@Html.ActionLink("Create new project","Create","Projects")</h4></li>
-                <li><h4>@Html.ActionLink("View/Edit projects (all)", "Index", "Projects")</h4></li>
-                <li><h4>@Html.ActionLink("Assign Project Manager to projects", "Index","Projects")</h4></li>
-                <li><h4>@Html.ActionLink("Assign Developers to projects","Index","Projects")</h4></li>
             </ul>
 
             <h3>Tickets</h3>
             <ul>
+                <li><h4>@Html.ActionLink("My Tickets", "Index", "Tickets", new { scope = "My" }, null)</h4></li>
+                <li><h4>@Html.ActionLink("All Tickets", "Index", "Tickets" )</h4></li>
                 <li><h4>@Html.ActionLink("Create new ticket","Create","Tickets")</h4></li>
-                <li><h4>@Html.ActionLink("View tickets","Index","Tickets")</h4></li>
             </ul>
         }
         else if (Model.Roles.Contains(R.ProjectManager))
@@ -74,14 +74,13 @@
             </h2>
             <h3>Projects</h3>
             <ul>
-                <li><h4>@Html.ActionLink("View projects assigned to me", "Index", "Projects")</h4></li>
-                <li><h4>@Html.ActionLink("Assign Developers to projects", "Index", "Projects")</h4></li>
+                <li><h4>@Html.ActionLink("My Projects", "Index", "Projects", new { scope = "My" }, null)</h4></li>
             </ul>
 
             <h3>Tickets</h3>
             <ul>
-                <li><h4>@Html.ActionLink("View tickets for my projects", "Index", "Tickets")</h4></li>
-                <li><h4>@Html.ActionLink("View tickets", "Index", "Tickets")</h4></li>
+                <li><h4>@Html.ActionLink("My Tickets", "Index", "Tickets", new { scope = "My" }, null)</h4></li>
+                <li><h4>@Html.ActionLink("All Tickets", "Index", "Tickets" )</h4></li>
                 <li><h4>@Html.ActionLink("Create new ticket", "Create", "Tickets")</h4></li>
             </ul>
         }
@@ -92,13 +91,14 @@
             </h2>
             <h3>Projects</h3>
             <ul>
-                <li><h4>@Html.ActionLink("View projects assigned to me", "Index", "Projects")</h4></li>
+                <li><h4>@Html.ActionLink("My Projects", "Index", "Projects", new { scope = "My" }, null)</h4></li>
             </ul>
 
             <h3>Tickets</h3>
             <ul>
+                <li><h4>@Html.ActionLink("My Tickets", "Index", "Tickets", new { scope = "My" }, null)</h4></li>
+                <li><h4>@Html.ActionLink("All Tickets", "Index", "Tickets" )</h4></li>
                 <li><h4>@Html.ActionLink("Create new ticket", "Create", "Tickets")</h4></li>
-                <li><h4>@Html.ActionLink("View tickets", "Index", "Tickets")</h4></li>
             </ul>
         }
         else if (Model.Roles.Contains(R.Submitter))
@@ -109,8 +109,9 @@
             </h2>
             <h3>Tickets</h3>
             <ul>
+                <li><h4>@Html.ActionLink("My Tickets", "Index", "Tickets", new { scope = "My" }, null)</h4></li>
+                <li><h4>@Html.ActionLink("All Tickets", "Index", "Tickets" )</h4></li>
                 <li><h4>@Html.ActionLink("Create new ticket", "Create", "Tickets")</h4></li>
-                <li><h4>@Html.ActionLink("View tickets", "Index", "Tickets")</h4></li>
             </ul>
         }
         else

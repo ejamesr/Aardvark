@@ -17,9 +17,11 @@ namespace Aardvark.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: Tickets
-        public ActionResult Index()
+        public ActionResult Index(string scope)
         {
-            // Fix the Created date for all tickets...
+            //
+            // Code to run to fix the Created date for all tickets...
+            //
             //var tk = db.Tickets;
             //var zero = new DateTimeOffset();
             //var now = DateTimeOffset.UtcNow.AddDays(-2.0);
@@ -34,14 +36,33 @@ namespace Aardvark.Controllers
             //        ticket.MostRecentUpdate = max;
             //}
             //db.SaveChanges();
+            //
 
+            // First, get this user...
+            UserRolesHelper helper = new UserRolesHelper();
+            var userId = helper.GetCurrentUserId();
 
-            var tickets = db.Tickets.Include(t => t.AssignedToUser).Include(t => t.OwnerUser).Include(t => t.Project).Include(t => t.SkillRequired).Include(t => t.TicketPriority).Include(t => t.TicketStatus).Include(t => t.TicketType);
-            return View(tickets.ToList());
+            if (scope == "My")
+            {
+                // Need to track all places where User could be attached to a ticket:
+                // - as PM (then follow ticket chain)
+                // - as Developer (follow ticket chain)
+                // - as ticket creator
+                // - as ticket commenter
+                var tickets = db.Users.Find(userId).TicketsAssigned
+                    .Union(db.Users.Find(userId).TicketsOwned);
+                return View(tickets.ToList());
+            }
+            else
+            {
+                // Come here in all other cases
+                var tickets = db.Tickets.Include(t => t.AssignedToUser).Include(t => t.OwnerUser).Include(t => t.Project).Include(t => t.SkillRequired).Include(t => t.TicketPriority).Include(t => t.TicketStatus).Include(t => t.TicketType);
+                return View(tickets.ToList());
+            }
         }
 
         // GET: Tickets/Details/5
-        public ActionResult Details(int? id)
+        public ActionResult Details(string anchor, int? id, int? page)
         {
             if (id == null)
             {
@@ -56,6 +77,7 @@ namespace Aardvark.Controllers
         }
 
         // GET: Tickets/Create
+        [Authorize(Roles="Admin,Guest,Project Manager,Developer,Submitter")]
         public ActionResult Create()
         {
             Ticket model = new Ticket();
@@ -63,11 +85,14 @@ namespace Aardvark.Controllers
             model.HoursToComplete = 1;
             UserRolesHelper helper = new UserRolesHelper();
             var id = User.Identity.GetUserId();
+            var roles = helper.ListUserRoles(id);
             var highest = helper.GetHighestRole(id);
             ViewBag.HighestUserRole = highest;
 
+            // If user is Submitter only (or has no role), don't allow Skill, Due Date, or HoursToComplete to show
+            ViewBag.BaseOptionsOnly = (roles == null || ((roles.Count == 1) && (roles[0] == R.Submitter))) ? true : false;
+
             // If Admin, allow to select Developer when creating the ticket
-            var roles = helper.ListUserRoles(id);
             if (roles.Contains(R.Admin) || roles.Contains(R.Guest) || roles.Contains(R.ProjectManager))
             {
                 var roleDev = db.Roles.FirstOrDefault(r => r.Name == R.Developer);
@@ -104,10 +129,13 @@ namespace Aardvark.Controllers
         {
             if (ModelState.IsValid)
             {
+                // Set default info...
                 ticket.OwnerUserId = User.Identity.GetUserId();
-                ticket.Created = DateTimeOffset.UtcNow;
+                if (ticket.SkillRequiredId == 0)
+                    ticket.SkillRequiredId = 1;     // Set to default
                 if (ticket.TicketStatusId == 0)
                     ticket.TicketStatusId = 1;  // Point to New status
+                ticket.SetCreated();
                 db.Tickets.Add(ticket);
                 db.SaveChanges();
                 return RedirectToAction("Index");

@@ -18,29 +18,40 @@ namespace Aardvark.Controllers
 
         // GET: Projects
         [Authorize(Roles="Admin,Project Manager,Guest,Developer")]
-        public ActionResult Index()
+        public ActionResult Index(string scope)
         {
-            string uId = User.Identity.GetUserId();
-            var Roles = new UserRolesHelper().ListUserRoles(uId);
+            string userId = User.Identity.GetUserId();
+            var Roles = new UserRolesHelper().ListUserRoles(userId);
             ViewBag.Roles = Roles;
-            if (Roles.Contains(R.Admin) || Roles.Contains(R.Guest))
+
+            if (scope == "My")
             {
-                // Show all projects without restriction
-                var projects = db.Projects.Include(p => p.Users);
-                return View(projects.ToList());
-            }
-            else if (Roles.Contains(R.ProjectManager))
-            {
-                // Person is both PM and Dev, so show union...ed
-                var projects = db.Users.Find(uId).Projects
-                    .Union(db.Projects.Where(r => r.Users.Any(u => u.Id == uId)));
+                // Get all projects according to userId
+                var projects = db.Users.Find(userId).Projects;
                 return View(projects.ToList());
             }
             else
             {
-                // Show only projects assigned to Dev
-                var projects = db.Users.Find(uId).Projects;
-                return View(projects.ToList());
+                // Restrict list according to role
+                if (Roles.Contains(R.Admin) || Roles.Contains(R.Guest))
+                {
+                    // Show all projects without restriction
+                    var projects = db.Projects.Include(p => p.Users);
+                    return View(projects.ToList());
+                }
+                else if (Roles.Contains(R.ProjectManager))
+                {
+                    // Person is both PM and Dev, so show union...ed
+                    var projects = db.Users.Find(userId).Projects
+                        .Union(db.Projects.Where(r => r.Users.Any(u => u.Id == userId)));
+                    return View(projects.ToList());
+                }
+                else
+                {
+                    // Show only projects assigned to Dev
+                    var projects = db.Users.Find(userId).Projects;
+                    return View(projects.ToList());
+                }
             }
         }
 
@@ -161,7 +172,18 @@ namespace Aardvark.Controllers
             UserRolesHelper helper = new UserRolesHelper();
             ViewBag.ProjectManagerDisplayName = helper.GetProjectManagerDisplayName((int)id);
             var Roles = helper.ListUserRoles(User.Identity.GetUserId());
+            // Determine if OK to assign Developers...
+            if (Roles.Contains(R.Admin) || Roles.Contains(R.Guest) || Roles.Contains(R.ProjectManager))
+            {
+                ViewBag.CanAssignDeveloper = true;
+            }
+            else
+            {
+                ViewBag.CanAssignDeveloper = false;
+            }
+
             ViewBag.Roles = Roles;
+            ViewBag.Tickets = db.Projects.Find(id).Tickets;
             return View(project);
         }
 

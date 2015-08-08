@@ -19,6 +19,7 @@ namespace Aardvark.Models
         public Nullable<DateTimeOffset> Updated { get; set; }
         public int TicketId { get; set; }
         public string UserId { get; set; }
+        public string DisplayName { get; set; }
         public Nullable<int> ParentCommentId { get; set; }
         public Nullable<int> Level { get; set; } // the nesting depth
         public bool Deleted { get; set; }
@@ -31,6 +32,7 @@ namespace Aardvark.Models
         public void SetCreated()
         {
             Created = DateTimeOffset.UtcNow;
+            Updated = null;
             var db = new ApplicationDbContext();
             var ticket = db.Tickets.Find(TicketId);
             ticket.MostRecentUpdate = Created;

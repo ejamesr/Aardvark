@@ -52,7 +52,9 @@ namespace Aardvark.Controllers
             ViewBag.page = page;
 
             TicketComment newComment = new TicketComment();
-            newComment.UserId = new UserRolesHelper().GetCurrentUserId();
+            var user = new UserRolesHelper().GetCurrentUser();
+            newComment.UserId = user.Id;
+            newComment.DisplayName = user.DisplayName != "" ? user.DisplayName : user.UserName;
 
             if (cid == null)
             {
@@ -76,13 +78,14 @@ namespace Aardvark.Controllers
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "TicketId,UserId,ParentCommentId,Level,Body")] TicketComment comment,
+        public ActionResult Create([Bind(Include = "TicketId,DisplayName,UserId,ParentCommentId,Level,Body")] TicketComment comment,
             int? id, int? page, string anchor)
         {
             if (ModelState.IsValid)
             {
-                comment.Created = DateTime.UtcNow;
-                comment.Updated = null;
+                comment.SetCreated();
+                if (comment.DisplayName == "")
+                    comment.DisplayName = "(no name)";
                 db.TicketComments.Add(comment);
                 db.SaveChanges();
 
@@ -100,7 +103,7 @@ namespace Aardvark.Controllers
                 //  route, null,Url.RequestContext, false);
                 // return new RedirectResult(url);
 
-                return RedirectToAction("Edit", "Tickets", route);
+                return RedirectToAction("Details", "Tickets", route);
             }
             return View(comment);
         }

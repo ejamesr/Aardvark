@@ -80,7 +80,8 @@ namespace Aardvark.Helpers
 
         public ApplicationUser GetCurrentUser()
         {
-            return (ApplicationUser)HttpContext.Current.User;
+            var db = new ApplicationDbContext();
+            return db.Users.Find(HttpContext.Current.User.Identity.GetUserId());
         }
 
         public bool IsUserInRole(string userId, string roleName)

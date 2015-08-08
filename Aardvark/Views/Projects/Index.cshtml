@@ -59,14 +59,21 @@
         <td class="col-sm-2">
             @if (ViewBag.Roles.Contains(R.Admin) || ViewBag.Roles.Contains(R.Guest))
             {
-                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) <text>|</text>
-                @Html.ActionLink("Details", "Details", new { id = item.Id }) <text>|</text>
-                @Html.ActionLink("Delete", "Delete", new { id = item.Id, title = "Deleted projects are actually not deleted, and can be restored later." })
+                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) <br />
+                @Html.ActionLink("Assign Developers", "AssignDev", new { id = item.Id }) <br />
+                @Html.ActionLink("Details/Tickets", "Details", new { id = item.Id })
+                @*<br />
+                @Html.ActionLink("Delete", "Delete", new { id = item.Id, 
+                title = "Deleted projects are actually not deleted, and can be restored later." })*@
             }
             else if (ViewBag.Roles.Contains(R.PM))
             {
-                @Html.ActionLink("Assign Developers", "AssignDev", new { id = item.Id }) <text>|</text>
-                @Html.ActionLink("Details", "Details", new { id = item.Id })
+                @Html.ActionLink("Assign Developers", "AssignDev", new { id = item.Id }) <br />
+                @Html.ActionLink("Details/Tickets", "Details", new { id = item.Id })
+            }
+            else if (ViewBag.Roles.Contains(R.Dev))
+            {
+                @Html.ActionLink("Details/Tickets", "Details", new { id = item.Id })
             }
         </td>
     </tr>

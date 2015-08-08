@@ -11,30 +11,30 @@
     <!-- Topic Header -->
     <div class="topic">
         @*<div class="container">
-            <div class="row">
-                <div class="col-sm-8">
-                    <h3 class="primary-font">
-                        My Blog
-                    </h3>
+                <div class="row">
+                    <div class="col-sm-8">
+                        <h3 class="primary-font">
+                            My Blog
+                        </h3>
+                    </div>
+                    <div class="col-sm-4">
+                        <ol class="breadcrumb pull-right hidden-xs">
+                            <li>@Html.ActionLink("Blog", "Index", "Posts")</li>
+                            <li>
+                                @Html.ActionLink("Details", "Details", "Posts", null, null,
+                                    anchor, new { id = ViewBag.id, page = ViewBag.page }, null)
+                            </li>
+                            <li class="active">Comment</li>
+                        </ol>
+                    </div>
                 </div>
-                <div class="col-sm-4">
-                    <ol class="breadcrumb pull-right hidden-xs">
-                        <li>@Html.ActionLink("Blog", "Index", "Posts")</li>
-                        <li>
-                            @Html.ActionLink("Details", "Details", "Posts", null, null,
-                                anchor, new { id = ViewBag.id, page = ViewBag.page }, null)
-                        </li>
-                        <li class="active">Comment</li>
-                    </ol>
-                </div>
-            </div>
-        </div>*@
+            </div>*@
     </div>
     <div class="container">
         <h4>Add comment for ticket # @Model.TicketId</h4>
         <hr />
         <div class="row">
-            <div class="col-sm-2">
+            <div class="col-sm-2 col-sm-offset-1">
                 Ticket Summary
             </div>
             <div class="col-sm-4">
@@ -44,7 +44,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-2">
+            <div class="col-sm-2 col-sm-offset-1">
                 Created
             </div>
             <div class="col-sm-4">
@@ -54,7 +54,7 @@
         @if (ticket.Updated != null)
         {
             <div class="row">
-                <div class="col-sm-2">
+                <div class="col-sm-2 col-sm-offset-1">
                     Updated
                 </div>
                 <div class="col-sm-4">
@@ -62,9 +62,10 @@
                 </div>
             </div>
         }
+
         <br />
         <div class="row">
-            <div class="col-sm-2">
+            <div class="col-sm-2 col-sm-offset-1">
                 Title
             </div>
             <div class="col-sm-4">
@@ -72,7 +73,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-2">
+            <div class="col-sm-2 col-sm-offset-1">
                 Description
             </div>
             <div class="col-sm-4">
@@ -80,6 +81,27 @@
             </div>
         </div>
         <br />
+        @if (Model.ParentCommentId != null)
+        {
+            // Let's display the parent comment here...
+            var parent = new ApplicationDbContext().TicketComments.Find(Model.ParentCommentId);
+            <div class="row">
+                <div class="col-sm-4 col-sm-offset-1">
+                    <h4>Commenting on this comment:</h4>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4 col-sm-offset-1">
+                    <div class="panel panel-default">
+                        <div class="panel-body comment">
+                            <p>
+                                @parent.Body
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
         <br />
         @using (Html.BeginForm())
         {
@@ -95,8 +117,18 @@
                     @Html.Label("Comment", htmlAttributes: new { @class = "control-label col-sm-2" })
                     <div class="col-sm-10">
                         @Html.TextAreaFor(model => model.Body, 4, 200,
-                            new { htmlAttributes = new { @class = "form-control", title="Enter your comments here" } })
+                            new { htmlAttributes = new { @class = "form-control", title = "Enter your comments here" } })
                         @Html.ValidationMessageFor(model => model.Body, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.DisplayName,
+                        htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.DisplayName,
+                            new { htmlAttributes = new { @class = "form-control", title = "This is the name that displays as creator of this comment" } })
+                        @Html.ValidationMessageFor(model => model.DisplayName, "", new { @class = "text-danger" })
                     </div>
                 </div>
 
@@ -121,6 +153,8 @@
     </div>
 </div>
 
-        @section Scripts {
-            @Scripts.Render("~/bundles/jqueryval")
-        }
+
+
+            @section Scripts {
+                @Scripts.Render("~/bundles/jqueryval")
+            }

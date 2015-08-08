@@ -4,47 +4,195 @@
 
 @{
     ViewBag.Title = "Details";
+    ICollection<Ticket> tickets = ViewBag.Tickets;
 }
 
 <h2>Details</h2>
 
-<div>
-    <h4>Project # @Model.Id</h4>
+<div class="container">
+    <div>
+        <h4>Project # @Model.Id</h4>
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                Project Name
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Name)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Description)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Description)
+            </dd>
+
+            <dt>
+                Manager
+            </dt>
+            <dd>
+                @ViewBag.ProjectManagerDisplayName
+                @*@Html.Display("this is a name")*@
+                @*@Html.DisplayFor(model => model.ProjectMgr.FirstName)*@
+            </dd>
+        </dl>
+    </div>
+    @if (ViewBag.CanAssignDeveloper)
+    {
+        <div class="row">
+            <div class="col-md-2">
+                @Html.ActionLink("Assign Developers", "AssignDev", new { id = Model.Id }, new { @class = "btn btn-success" })
+            </div>
+        </div>
+
+    }
     <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            Project Manager
-            @*@Html.DisplayNameFor(model => model.ProjectMgr.FirstName)*@
-        </dt>
+    <h4>Tickets attached to this project:</h4>
 
-        <dd>
-            @ViewBag.ProjectManagerDisplayName
-            @*@Html.Display("this is a name")*@
-            @*@Html.DisplayFor(model => model.ProjectMgr.FirstName)*@
-        </dd>
+    <table id="table_id" class="display compact">
+        <colgroup>
+            <col width="90" /> <!-- Rec # -->
+            <col width="90" /> <!-- Assigned -->
+            <col width="90" /> <!-- Owner -->
+            <col width="90" /> <!-- Skill -->
+            <col width="90" /> <!-- Priority -->
+            <col width="90" /> <!-- Status -->
+            <col width="90" /> <!-- Type -->
+            <col width="120" /> <!-- Title -->
+            <col width="180" /> <!-- Description -->
+            <col width="90" /> <!-- Created -->
+            <col width="90" /> <!-- Updated -->
+            <col width="90" /> <!-- MostRecentChange -->
+            <col width="90" /> <!-- Due -->
+            <col width="90" /> <!-- Hours -->
+            <col width="90" /> <!-- Links -->
+        </colgroup>
+        <thead class="dt-head-center">
+            <tr>
+                <th class="dt-head-center">
+                    #
+                </th>
+                <th class="dt-head-center">
+                    Assigned
+                </th>
+                <th class="dt-head-center">
+                    Owner
+                </th>
+                <th class="dt-head-center">
+                    Skill
+                </th>
+                <th>
+                    Priority
+                </th>
+                <th>
+                    Status
+                </th>
+                <th>
+                    Type
+                </th>
+                <th>
+                    Title
+                </th>
+                <th>
+                    Description
+                </th>
+                <th>
+                    Created
+                </th>
+                <th>
+                    Updated
+                </th>
+                <th>
+                    Most Recent
+                </th>
+                <th>
+                    Due
+                </th>
+                <th>
+                    Hours
+                </th>
+                <th></th>
+            </tr>
+        </thead>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-
-    </dl>
+        <tbody>
+            @foreach (var item in tickets)
+            {
+                <tr>
+                    <td>
+                        @item.Id
+                    </td>
+                    <td>
+                        @if (item.AssignedToUser != null)
+                        {
+                            @item.AssignedToUser.FirstName
+                        }
+                    </td>
+                    <td>
+                        @if (item.OwnerUser != null)
+                        {
+                            @item.OwnerUser.FirstName
+                        }
+                    </td>
+                    <td>
+                        @item.SkillRequired.Name
+                    </td>
+                    <td>
+                        @item.TicketPriority.Name
+                    </td>
+                    <td>
+                        @item.TicketStatus.Name
+                    </td>
+                    <td>
+                        @item.TicketType.Name
+                    </td>
+                    <td>
+                        @item.Title
+                    </td>
+                    <td>
+                        @item.Description
+                    </td>
+                    <td>
+                        @item.Created.ToString("G")
+                    </td>
+                    <td>
+                        @(item.Updated == null ? "" : item.Updated.Value.ToString("G"))
+                    </td>
+                    <td>
+                        @(item.MostRecentUpdate.ToString("G"))
+                    </td>
+                    <td>
+                        @item.DueDate.ToString("ddd d MMM yyyy")
+                    </td>
+                    <td>
+                        @item.HoursToComplete
+                    </td>
+                    <td>
+                        @Html.ActionLink("Edit", "Edit", "Tickets", new { id = item.Id }, null) <br />
+                        @Html.ActionLink("Details", "Details", "Tickets", new { id = item.Id }, null)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 </div>
 <p>
 @if (ViewBag.Roles.Contains(R.Admin) || ViewBag.Roles.Contains(R.Guest))
 {
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) <text>|</text>
+    @Html.ActionLink("Edit", "Edit", "Tickets", new { id = Model.Id }, null) 
+    <br />
 }
     @Html.ActionLink("Back to List", "Index")
 </p>
+@section Scripts {
+    @*<script src="~/js/DataTables-1.10.7/media/js/jquery.dataTables.min.js"></script>*@
+    <script>
+        $(document).ready(function () {
+            $('#table_id').DataTable({
+                "pageLength": 25
+            });
+        });
+    </script>
+}
+

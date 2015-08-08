@@ -1,0 +1,13 @@
+﻿List of Methods for Debugging
+
+Can't debug the .cshtml file (won't hit breakpoints)
+====================================================
+Some people have suggested to Build/Clean Solution, then removing Bin and Obj folders, then closing and restarting Visual Studio
+
+What I've found:
+- This issue seems to occur when there is some major bug in the .cshtml file.  Once it is removed, the file can be debugged.
+- To test this, comment just about everything except for some small innocuous code, see if that can be debugged.
+  - if so, you are on your way!  Just uncomment out a few areas at a time
+- Or, see if the model is not correct
+
+
