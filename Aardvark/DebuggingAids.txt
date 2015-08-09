@@ -11,3 +11,23 @@ What I've found:
 - Or, see if the model is not correct
 
 
+When the code crashes when creating 'manager' in UserRolesHelper
+================================================================
+This almost always means you just changed something in the database; do 'update-database'.
+
+If you make a field [Required] that was not at first, and there are some records with
+some nulls in that field, the update will abort with an error.  First, put a non-null value
+in those fields.  Things should work fine after that!
+
+
+File won't upload, 'fileUpload' var is null on POST
+===================================================
+First, you need to specify that the from comes in multiple parts; this statement does that:
+
+@* To specify that the form comes in multiple parts: *@
+@using (Html.BeginForm("Create", "Posts", FormMethod.Post, new { enctype = "multipart/form-data" }))
+
+Next, make sure the input element has the name and id set to the value the POST controller expects
+(i.e., set them to 'fileUpload').
+
+

@@ -1,26 +1,22 @@
 ﻿@model Aardvark.Models.TicketAttachment
+@using Aardvark.Models;
 
 @{
     ViewBag.Title = "Create";
 }
 
 <h2>Create</h2>
-
-@using (Html.BeginForm()) 
+@* To specify that the form comes in multiple parts: *@
+@using (Html.BeginForm("Create", "Attachments", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
     @Html.AntiForgeryToken()
     
     <div class="form-horizontal">
-        <h4>TicketAttachment</h4>
+        <h4>Ticket Attachment for Ticket # @Model.TicketId</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        <div class="form-group">
-            @Html.LabelFor(model => model.TicketId, "TicketId", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("TicketId", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.TicketId, "", new { @class = "text-danger" })
-            </div>
-        </div>
+        @Html.HiddenFor(model => model.TicketId)
+        @Html.HiddenFor(model => model.UserId)
 
         <div class="form-group">
             @Html.LabelFor(model => model.FilePath, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -33,24 +29,8 @@
         <div class="form-group">
             @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.TextAreaFor(model => model.Description, 4, 40, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Created, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Created, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Created, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.UserId, "UserId", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("UserId", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.UserId, "", new { @class = "text-danger" })
             </div>
         </div>
 
@@ -63,6 +43,19 @@
         </div>
 
         <div class="form-group">
+            @Html.Label("Image Upload", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <input type="file" id="fileUpload" name="fileUpload" 
+                       class="btn btn-primary form-control" onchange="GotImage(this)" />
+            </div>
+        </div>
+        <br />
+        <div class="col-md-8">
+            <img src="#" id="NewImage" alt="Image to upload" />
+        </div>
+
+
+        <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
                 <input type="submit" value="Create" class="btn btn-default" />
             </div>
@@ -71,5 +64,28 @@
 }
 
 <div>
-    @Html.ActionLink("Back to List", "Index")
+    @Html.ActionLink("Back to List", "Index", new { id = @Model.TicketId })
 </div>
+
+@section Scripts {
+    <script>
+        //$(document).ready(function () {
+        //    $("main-menu").removeClass("active");
+        //    $("#menuBlog").addClass("active");
+        //});
+
+        function GotImage(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $("#NewImage")
+                        .attr('src', e.target.result)
+                        .height(200);
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
+}
+
+

@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using Aardvark.Models;
+using System.IO;
 
 namespace Aardvark.Controllers
 {
@@ -14,11 +15,18 @@ namespace Aardvark.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
-        // GET: Attachments
-        public ActionResult Index()
+        // GET: Attachments -- 'id' is the Ticket.Id
+        public ActionResult Index(int? id)
         {
-            var ticketAttachments = db.TicketAttachments.Include(t => t.Ticket).Include(t => t.User);
-            return View(ticketAttachments.ToList());
+            if (id == null)
+                return View();
+
+            // id is valid...
+            var ticket = db.Tickets.Find(id);
+            ViewBag.Ticket = ticket;
+            return View(ticket.Attachments.ToList());
+            //var ticketAttachments = db.TicketAttachments.Include(t => t.Ticket).Include(t => t.User);
+            //return View(ticketAttachments.ToList());
         }
 
         // GET: Attachments/Details/5
@@ -37,11 +45,15 @@ namespace Aardvark.Controllers
         }
 
         // GET: Attachments/Create
-        public ActionResult Create()
+        public ActionResult Create(int? id)
         {
-            ViewBag.TicketId = new SelectList(db.Tickets, "Id", "Title");
-            ViewBag.UserId = new SelectList(db.ApplicationUsers, "Id", "FirstName");
-            return View();
+            if (id == null)
+                return RedirectToAction("Index");
+
+            TicketAttachment ta = new TicketAttachment();
+            ta.UserId = new Helpers.UserRolesHelper().GetCurrentUserId();
+            ta.TicketId = (int)id;
+            return View(ta);
         }
 
         // POST: Attachments/Create
@@ -49,17 +61,32 @@ namespace Aardvark.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,TicketId,FilePath,Description,Created,UserId,FileUrl")] TicketAttachment ticketAttachment)
+        public ActionResult Create([Bind(Include = "TicketId,FilePath,Description,UserId,FileUrl")] TicketAttachment ticketAttachment, HttpPostedFileBase fileUpload)
         {
             if (ModelState.IsValid)
             {
+                // restrict the valid file formats to images only
+                if (fileUpload != null && fileUpload.ContentLength > 0)
+                {
+                    // Don't need to restrict to images only, allow ANY file to be uploaded
+                    //if (!fileUpload.ContentType.Contains("image"))
+                    //{
+                    //    return new HttpStatusCodeResult(HttpStatusCode.UnsupportedMediaType);
+                    //}
+                    var fileName = Path.GetFileName(fileUpload.FileName);
+                    var p = Path.Combine(Server.MapPath("~/attachments/"), fileName);
+                    fileUpload.SaveAs(p);
+                    ticketAttachment.FilePath = "~/attachments/" + fileName;
+                }
+
+                ticketAttachment.Created = DateTimeOffset.UtcNow;
                 db.TicketAttachments.Add(ticketAttachment);
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", new { id = @ticketAttachment.TicketId });
             }
 
             ViewBag.TicketId = new SelectList(db.Tickets, "Id", "Title", ticketAttachment.TicketId);
-            ViewBag.UserId = new SelectList(db.ApplicationUsers, "Id", "FirstName", ticketAttachment.UserId);
+            ViewBag.UserId = new SelectList(db.Users, "Id", "FirstName", ticketAttachment.UserId);
             return View(ticketAttachment);
         }
 
@@ -76,7 +103,7 @@ namespace Aardvark.Controllers
                 return HttpNotFound();
             }
             ViewBag.TicketId = new SelectList(db.Tickets, "Id", "Title", ticketAttachment.TicketId);
-            ViewBag.UserId = new SelectList(db.ApplicationUsers, "Id", "FirstName", ticketAttachment.UserId);
+            ViewBag.UserId = new SelectList(db.Users, "Id", "FirstName", ticketAttachment.UserId);
             return View(ticketAttachment);
         }
 
@@ -94,7 +121,7 @@ namespace Aardvark.Controllers
                 return RedirectToAction("Index");
             }
             ViewBag.TicketId = new SelectList(db.Tickets, "Id", "Title", ticketAttachment.TicketId);
-            ViewBag.UserId = new SelectList(db.ApplicationUsers, "Id", "FirstName", ticketAttachment.UserId);
+            ViewBag.UserId = new SelectList(db.Users, "Id", "FirstName", ticketAttachment.UserId);
             return View(ticketAttachment);
         }
 

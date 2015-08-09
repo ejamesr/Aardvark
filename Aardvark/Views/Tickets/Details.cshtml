@@ -172,9 +172,9 @@
                 <div class="btn-group btn-color btn-group-justified" role="group" aria-label="...">
                     @Html.ActionLink("Add comment", "Create", "Comments",
                         new { id = Model.Id, anchor = "noneYet", page = "1" }, new { @class = "btn btn-info" })
-                    @Html.ActionLink("Attachments", "Create", "Comments",
-                        new { id = Model.Id, anchor = "noneYet", page = "1" }, new { @class = "btn btn-info" })
-                    @Html.ActionLink("Histories", "Create", "Comments",
+                    @Html.ActionLink("Attachments", "Index", "Attachments",
+                        new { id = Model.Id }, new { @class = "btn btn-info" })
+                    @Html.ActionLink("Histories", "Index", "Comments",
                         new { id = Model.Id, anchor = "noneYet", page = "1" }, new { @class = "btn btn-info" })
                 </div>
             </div>
