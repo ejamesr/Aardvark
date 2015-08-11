@@ -65,6 +65,7 @@ namespace Aardvark.Controllers
                 : message == ManageMessageId.RemovePhoneSuccess ? "Your phone number was removed."
                 : message == ManageMessageId.ChangeDisplayNameSuccess ? "Your display name has been changed."
                 : message == ManageMessageId.ChangeUserNameSuccess ? "Your user name has been changed."
+                : message == ManageMessageId.ChangeUserNameAlreadyTaken ? "Could not change - that UserName already exists."
                 : message == ManageMessageId.ChangeTxtMsgNumberSuccess ? "Your text-message number has been changed."
                 : message == ManageMessageId.SetDisplayNameSuccess ? "Your display name has been set."
                 : message == ManageMessageId.SetUserNameSuccess ? "Your user name has been set."
@@ -152,6 +153,13 @@ namespace Aardvark.Controllers
             var userRec = db.Users.Find(User.Identity.GetUserId());
             if (userRec != null)
             {
+                // See if the new UserName has not yet been spoken for
+                var alreadyThere = db.Users.FirstOrDefault(u => u.UserName == model.UserRec.UserName);
+                if (alreadyThere != null)
+                {
+                    // This name is already taken, so don't try to save it!
+                    return RedirectToAction("Index", new { Message = ManageMessageId.ChangeUserNameAlreadyTaken });
+                }
                 // Update the field and then save
                 userRec.UserName = model.UserRec.UserName;
                 // Let other processes know this has changed...
@@ -478,6 +486,7 @@ namespace Aardvark.Controllers
             AddPhoneSuccess,
             ChangeDisplayNameSuccess,
             ChangeUserNameSuccess,
+            ChangeUserNameAlreadyTaken,
             ChangeTxtMsgNumberSuccess,
             ChangePasswordSuccess,
             SetTwoFactorSuccess,
