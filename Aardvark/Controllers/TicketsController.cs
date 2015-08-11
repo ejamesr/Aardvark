@@ -56,7 +56,7 @@ namespace Aardvark.Controllers
             else
             {
                 // Come here in all other cases
-                var tickets = db.Tickets.Include(t => t.AssignedToUser).Include(t => t.OwnerUser).Include(t => t.Project).Include(t => t.SkillRequired).Include(t => t.TicketPriority).Include(t => t.TicketStatus).Include(t => t.TicketType);
+                var tickets = db.Tickets.Include(t => t.AssignedToDev).Include(t => t.OwnerUser).Include(t => t.Project).Include(t => t.SkillRequired).Include(t => t.TicketPriority).Include(t => t.TicketStatus).Include(t => t.TicketType);
                 return View(tickets.ToList());
             }
         }
@@ -99,15 +99,15 @@ namespace Aardvark.Controllers
                 ViewBag.CanAssignDeveloper = true;
                 if (roleDev != null)
                 {
-                    ViewBag.AssignedToUserId =
+                    ViewBag.AssignedToDevId =
                         new SelectList(db.Users
                             .Where(d => d.Roles.FirstOrDefault(r => r.RoleId == roleDev.Id) != null), "Id", "UserName");
                 }
-                else ViewBag.AssignedToUserId = Enumerable.Empty<SelectListItem>();
+                else ViewBag.AssignedToDevId = Enumerable.Empty<SelectListItem>();
             }
             else
             {
-                ViewBag.AssignedToUserId = Enumerable.Empty<SelectListItem>();
+                ViewBag.AssignedToDevId = Enumerable.Empty<SelectListItem>();
                 ViewBag.CanAssignDeveloper = false;
             }
 
@@ -125,7 +125,7 @@ namespace Aardvark.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ProjectId,TicketTypeId,TicketPriorityId,TicketStatusId,OwnerUserId,AssignedToUserId,SkillRequiredId,Title,Description,DueDate,HoursToComplete")] Ticket ticket)
+        public ActionResult Create([Bind(Include = "ProjectId,TicketTypeId,TicketPriorityId,TicketStatusId,OwnerUserId,AssignedToDevId,SkillRequiredId,Title,Description,DueDate,HoursToComplete")] Ticket ticket)
         {
             if (ModelState.IsValid)
             {
@@ -141,7 +141,7 @@ namespace Aardvark.Controllers
                 return RedirectToAction("Index");
             }
 
-            ViewBag.AssignedToUserId = new SelectList(db.Users, "Id", "FirstName", ticket.AssignedToUserId);
+            ViewBag.AssignedToDevId = new SelectList(db.Users, "Id", "FirstName", ticket.AssignedToDevId);
             ViewBag.OwnerUserId = new SelectList(db.Users, "Id", "FirstName", ticket.OwnerUserId);
             ViewBag.ProjectId = new SelectList(db.Projects, "Id", "Name", ticket.ProjectId);
             ViewBag.SkillRequiredId = new SelectList(db.SkillLevels, "Id", "Name", ticket.SkillRequiredId);
@@ -175,16 +175,17 @@ namespace Aardvark.Controllers
                 ViewBag.CanAssignDeveloper = true;
                 if (roleDev != null)
                 {
-                    ViewBag.AssignedToUserId =
+                    var dev = 
                         new SelectList(db.Users
-                            .Where(d => d.Roles.FirstOrDefault(r => r.RoleId == roleDev.Id) != null), "Id", "UserName",
-                            ticket.AssignedToUserId);
+                            .Where(d => d.Roles.Any(r => r.RoleId == roleDev.Id)), "Id", "UserName",
+                            ticket.AssignedToDevId);
+                    ViewBag.AssignedToDevId = dev;
                 }
-                else ViewBag.AssignedToUserId = Enumerable.Empty<SelectListItem>();
+                else ViewBag.AssignedToDevId = Enumerable.Empty<SelectListItem>();
             }
             else
             {
-                ViewBag.AssignedToUserId = Enumerable.Empty<SelectListItem>();
+                ViewBag.AssignedToDevId = Enumerable.Empty<SelectListItem>();
                 ViewBag.CanAssignDeveloper = false;
             }
 
@@ -202,16 +203,23 @@ namespace Aardvark.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,ProjectId,TicketTypeId,TicketPriorityId,TicketStatusId,OwnerUserId,AssignedToUserId,SkillRequiredId,Title,Description,Created,Updated,DueDate,HoursToComplete")] Ticket ticket)
+        public ActionResult Edit([Bind(Include = "Id,ProjectId,TicketTypeId,TicketPriorityId,TicketStatusId,AssignedToDevId,SkillRequiredId,Title,Description,DueDate,HoursToComplete")] Ticket ticket)
         {
             if (ModelState.IsValid)
             {
-                ticket.Updated = DateTimeOffset.UtcNow;
-                db.Entry(ticket).State = EntityState.Modified;
-                db.SaveChanges();
+                Ticket origTicket = db.Tickets.Find(ticket.Id);
+
+                // Check each field to see if changed.  If so, copy new value to origTicket and create TicketHistory
+                DateTimeOffset dtChanged = ticket.WasChanged(db, origTicket);
+                if (dtChanged != DateTimeOffset.MinValue)
+                {
+                    origTicket.SetUpdated(dtChanged);
+                    db.Entry(origTicket).State = EntityState.Modified;
+                    db.SaveChanges();
+                }
                 return RedirectToAction("Index");
             }
-            ViewBag.AssignedToUserId = new SelectList(db.Users, "Id", "FirstName", ticket.AssignedToUserId);
+            ViewBag.AssignedToDevId = new SelectList(db.Users, "Id", "FirstName", ticket.AssignedToDevId);
             ViewBag.OwnerUserId = new SelectList(db.Users, "Id", "FirstName", ticket.OwnerUserId);
             ViewBag.ProjectId = new SelectList(db.Projects, "Id", "Name", ticket.ProjectId);
             ViewBag.SkillRequiredId = new SelectList(db.SkillLevels, "Id", "Name", ticket.SkillRequiredId);

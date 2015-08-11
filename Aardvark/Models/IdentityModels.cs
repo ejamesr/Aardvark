@@ -22,7 +22,7 @@ namespace Aardvark.Models
         public bool TextNotification { get; set; }
 
         public virtual SkillLevel SkillLevel { get; set; }
-        [InverseProperty("AssignedToUser")]
+        [InverseProperty("AssignedToDev")]
         public virtual ICollection<Ticket> TicketsAssigned { get; set; }
         [InverseProperty("OwnerUser")]
         public virtual ICollection<Ticket> TicketsOwned { get; set; }
