@@ -69,6 +69,8 @@ namespace Aardvark.Controllers
                 newComment.TicketId = oldComment.TicketId;
                 newComment.Level = oldComment.Level + 1 ?? 1;
             }
+            ViewBag.Ticket = db.Tickets.Find(newComment.TicketId);
+            ViewBag.Parent = db.TicketComments.Find(newComment.ParentCommentId);
             return View(newComment);
         }
 
@@ -88,6 +90,8 @@ namespace Aardvark.Controllers
                     comment.DisplayName = "(no name)";
                 db.TicketComments.Add(comment);
                 db.SaveChanges();
+                TicketNotification.Notify(db, comment.Ticket,
+                    comment.Created, Notifications.CommentCreated);
 
                                 //            @Html.ActionLink("Details", "Details", "Posts", null, null,
                                 //anchor, new { id = ViewBag.id, page = ViewBag.page }, null)
@@ -154,6 +158,8 @@ namespace Aardvark.Controllers
                 orig.Updated = DateTime.UtcNow;
                 db.Entry(orig).State = EntityState.Modified;
                 db.SaveChanges();
+                TicketNotification.Notify(db, orig.Ticket,
+                    orig.Updated.Value, Notifications.CommentEdited);
                 return RedirectToAction("Details", "Posts", route);
             }
 
@@ -188,9 +194,12 @@ namespace Aardvark.Controllers
         {
             // Want to delete the comment (cid is its id, NOT id!)
             TicketComment comment = db.TicketComments.Find(cid);
+            comment.SetUpdated();
             comment.Deleted = true;
             //db.TicketComments.Remove(comment);
             db.SaveChanges();
+            TicketNotification.Notify(db, comment.Ticket,
+                comment.Updated.Value, Notifications.CommentDeleted);
 
             var route = new System.Web.Routing.RouteValueDictionary();
             route.Add("id", id);

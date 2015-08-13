@@ -52,4 +52,3 @@ C:\Users\ejame_000\Documents\Bootcamp\Projects\Aardvark\Aardvark\bin\Microsoft.O
 C:\Users\ejame_000\Documents\Bootcamp\Projects\Aardvark\Aardvark\bin\Microsoft.Owin.Security.MicrosoftAccount.xml
 C:\Users\ejame_000\Documents\Bootcamp\Projects\Aardvark\Aardvark\obj\Debug\Aardvark.dll
 C:\Users\ejame_000\Documents\Bootcamp\Projects\Aardvark\Aardvark\obj\Debug\Aardvark.pdb
-C:\Users\ejame_000\Documents\Bootcamp\Projects\Aardvark\Aardvark\obj\Debug\Aardvark.csprojResolveAssemblyReference.cache

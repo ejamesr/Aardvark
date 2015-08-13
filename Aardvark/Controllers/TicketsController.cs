@@ -138,6 +138,8 @@ namespace Aardvark.Controllers
                 ticket.SetCreated();
                 db.Tickets.Add(ticket);
                 db.SaveChanges();
+                TicketNotification.Notify(db, ticket,
+                    ticket.Created, Notifications.AssignedToTicket);
                 return RedirectToAction("Index");
             }
 
@@ -210,12 +212,33 @@ namespace Aardvark.Controllers
                 Ticket origTicket = db.Tickets.Find(ticket.Id);
 
                 // Check each field to see if changed.  If so, copy new value to origTicket and create TicketHistory
+                // But first, remember the current Developer...
+                string origDevId = origTicket.AssignedToDevId;
+
                 DateTimeOffset dtChanged = ticket.WasChanged(db, origTicket);
                 if (dtChanged != DateTimeOffset.MinValue)
                 {
                     origTicket.SetUpdated(dtChanged);
                     db.Entry(origTicket).State = EntityState.Modified;
                     db.SaveChanges();
+
+                    // Need to see if the Assigned Dev was changed... if so, send out 
+                    //  one notification to previous Dev, two notifications to new Dev
+                    if (origTicket.AssignedToDevId != origDevId)
+                    {
+                        // Remember the current Dev, swap vars in order to remove...
+                        string newDevId = origTicket.AssignedToDevId;
+                        origTicket.AssignedToDevId = origDevId;
+                        TicketNotification.Notify(db, origTicket,
+                            origTicket.Updated.Value, Notifications.RemovedFromTicket);
+
+                        // And now reset to correct new Dev and issue notifications
+                        origTicket.AssignedToDevId = newDevId;
+                        TicketNotification.Notify(db, origTicket,
+                            origTicket.Updated.Value, Notifications.AssignedToTicket);
+                        TicketNotification.Notify(db, origTicket,
+                            origTicket.Updated.Value, Notifications.TicketEdited);
+                    }
                 }
                 return RedirectToAction("Index");
             }
@@ -250,6 +273,9 @@ namespace Aardvark.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             Ticket ticket = db.Tickets.Find(id);
+            ticket.SetUpdated();
+            TicketNotification.Notify(db, ticket,
+                ticket.Updated.Value, Notifications.TicketDeleted);
             db.Tickets.Remove(ticket);
             db.SaveChanges();
             return RedirectToAction("Index");

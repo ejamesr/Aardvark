@@ -126,7 +126,8 @@ namespace Aardvark.Migrations
                     R.Admin,
                     R.ProjectManager,
                     R.Developer,
-                    R.Submitter
+                    R.Submitter,
+                    R.NewUser       // This is the default role if none other specified
                 });
 
             // Seed these users...
@@ -135,7 +136,8 @@ namespace Aardvark.Migrations
                 new NewPerson("Eric-Dev", "Ruff", "Eric-Dev", "ejamesr@yahoo.com", R.Dev, "Eric7777!"),
                 new NewPerson("Patty", "Whack", "Patty-PM", "PattyWhack@ThisOldMan.com", R.PM, "Ab1234."),
                 new NewPerson("John", "Smith", "John", "john@me.com", R.Submitter, "Ab1234."),
-                new NewPerson("Eric", "Ruff", "Eric", mainAdmin, R.Admin, "Eric7777!")
+                new NewPerson("Eric", "Ruff", "Eric", mainAdmin, R.Admin, "Eric7777!"),
+                new NewPerson("Guest", "", "Guest", "Guest@me.com", R.Guest, "Ab1234.")
                           };
             NewUserWithRole(context, users);
             context.SaveChanges();      // Update...

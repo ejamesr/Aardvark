@@ -154,31 +154,16 @@
         var route = new { id = modelId, anchor = anchorName, page = ViewBag.PageNumber };
         //var route2 = new { id = c.PostId, anchor = anchorName, page = ViewBag.PageNumber, cid = c.Id };
 
-        // Now if no comments yet, show this link...
-        if (numC < 1)
-        {
-            // No comments yet
-            <div class="col-sm-4 col-sm-offset-1">
-                <br />
-                <p>
-                    @Html.ActionLink("Add a Comment", "Create", "Comments",
-                        new { id = Model.Id, anchor = "noneYet", page = "1" }, new { @class = "btn btn-info" })
-                </p>
+       <div class="col-sm-5 col-sm-offset-1">
+            <div class="btn-group btn-color btn-group-justified" role="group" aria-label="...">
+                @Html.ActionLink("Add comment", "Create", "Comments",
+                    new { id = Model.Id, anchor = "noneYet", page = "1" }, new { @class = "btn btn-info" })
+                @Html.ActionLink("Attachments", "Index", "Attachments",
+                    new { id = Model.Id }, new { @class = "btn btn-info" })
+                @Html.ActionLink("Histories", "Index", "Comments",
+                    new { id = Model.Id, anchor = "noneYet", page = "1" }, new { @class = "btn btn-info" })
             </div>
-        }
-        else
-        {
-            <div class="col-sm-5 col-sm-offset-1">
-                <div class="btn-group btn-color btn-group-justified" role="group" aria-label="...">
-                    @Html.ActionLink("Add comment", "Create", "Comments",
-                        new { id = Model.Id, anchor = "noneYet", page = "1" }, new { @class = "btn btn-info" })
-                    @Html.ActionLink("Attachments", "Index", "Attachments",
-                        new { id = Model.Id }, new { @class = "btn btn-info" })
-                    @Html.ActionLink("Histories", "Index", "Comments",
-                        new { id = Model.Id, anchor = "noneYet", page = "1" }, new { @class = "btn btn-info" })
-                </div>
-            </div>
-        }
+        </div>
     }
 </div>
 @if (numC >= 1)

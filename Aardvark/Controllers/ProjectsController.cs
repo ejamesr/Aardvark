@@ -134,18 +134,23 @@ namespace Aardvark.Controllers
                         }
 
                         // If the next item is one char wide, grab it, else its a userId
+                        bool changed;
                         if (Select[index].Length == 1) {
                             // This developer was checked, so see if we need to add him
                             index++;        // Skip over
                             if (origVal == "F")
+                            {
                                 // User was just added
-                                ProjectsHelper.AddUserToProject(userId, Id);
+                                changed = ProjectsHelper.AddUserToProject(userId, Id);
+                            }
                         }
                         else
                         {
                             // The next item is a userId... so check origVal
                             if (origVal == "T")
-                                ProjectsHelper.RemoveUserFromProject(userId, Id);
+                            {
+                                changed = ProjectsHelper.RemoveUserFromProject(userId, Id);
+                            }
                         }
                     }
                     // All went according to plan, so return to Main Menu!

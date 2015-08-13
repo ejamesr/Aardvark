@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Aardvark.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Security.Claims;
@@ -6,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Web;
 
 namespace Aardvark.Models
 {
@@ -50,6 +52,15 @@ namespace Aardvark.Models
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
+        // The db model will be DefaultGuestConnection if user is in role Guest, else will be DefaultConnection
+        //public ApplicationDbContext()
+        //    : base(
+        //    // If User is null, use default connection
+        //    (HttpContext.Current.User == null ? "DefaultConnection" 
+        //        // Otherwise if not null, see if in Guest role...
+        //        : (HttpContext.Current.User.IsInRole(R.Guest) ? "DefaultGuestConnection" : "DefaultConnection")), throwIfV1Schema: false)
+        //{
+        //}
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
         {
@@ -70,6 +81,7 @@ namespace Aardvark.Models
         public DbSet<TicketHistory> TicketHistories { get; set; }
         public DbSet<TicketComment> TicketComments { get; set; }
         public DbSet<TicketAttachment> TicketAttachments { get; set; }
+        public DbSet<Log> Logs { get; set; }
     }
 
     // Create context with Eager loading as default

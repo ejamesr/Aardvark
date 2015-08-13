@@ -23,10 +23,11 @@ namespace Aardvark.Helpers
         private const string _project_manager = "Project Manager";
         private const string _developer = "Developer";
         private const string _submitter = "Submitter";
+        private const string _new_user = "NewUser";
 
         // Get a list of all roles...
         private static readonly ICollection<string> _list = new[] {
-        _admin, _guest, _project_manager, _developer, _submitter };
+        _admin, _guest, _project_manager, _developer, _submitter, _new_user };
 
         // Return all...
         public static ICollection<string> List() { return _list;}
@@ -64,6 +65,10 @@ namespace Aardvark.Helpers
         {
             get { return _submitter; }
         }
+        public static string NewUser
+        {
+            get { return _new_user; }
+        }
     }
 
     public class UserRolesHelper
@@ -95,7 +100,16 @@ namespace Aardvark.Helpers
             new UserManager<ApplicationUser>(
                 new UserStore<ApplicationUser>(
                     new ApplicationDbContext()));
-            var roles = manager2.GetRoles(userId);
+            IList<string> roles = new List<string>();
+            try
+            {
+                roles = manager2.GetRoles(userId);
+            }
+            catch
+            {
+                // No role specified, so make the person R.NewUser
+                roles.Add(R.NewUser);
+            }
             return roles;
         }
 

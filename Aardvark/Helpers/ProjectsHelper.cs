@@ -31,7 +31,7 @@ namespace Aardvark.Helpers
             return db.Projects.SingleOrDefault(p => p.Id == projectId).Users.Any(u => u.Id == userId);
         }
 
-        public static void AddUserToProject(string userId, int projectId)
+        public static bool AddUserToProject(string userId, int projectId)
         {
             if (!IsUserOnProject(userId, projectId))
             {
@@ -39,10 +39,12 @@ namespace Aardvark.Helpers
                 project.Users.Add(db.Users.Find(userId));
                 //db.Entry(project).State = EntityState.Modified;
                 db.SaveChanges();
+                return true;        // Show user was added
             }
+            return false;           // Show user was not added
         }
 
-        public static void RemoveUserFromProject(string userId, int projectId)
+        public static bool RemoveUserFromProject(string userId, int projectId)
         {
             if (IsUserOnProject(userId, projectId))
             {
@@ -51,7 +53,9 @@ namespace Aardvark.Helpers
                 retVal = project.Users.Remove(db.Users.Find(userId));
                 //db.Entry(project).State = EntityState.Modified;
                 db.SaveChanges();
+                return true;        // Show user was removed
             }
+            return false;           // Show user was not removed
         }
 
         public static ICollection<Project> ListProjectsForUser(string userId)

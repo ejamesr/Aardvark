@@ -4,7 +4,7 @@
     ViewBag.Title = "Create";
     int page = ViewBag.page;
     string anchor = ViewBag.anchor;
-    Ticket ticket = new ApplicationDbContext().Tickets.Find(Model.TicketId);
+    Ticket ticket = ViewBag.Ticket;
 }
 
 <div class="wrapper">
@@ -84,7 +84,7 @@
         @if (Model.ParentCommentId != null)
         {
             // Let's display the parent comment here...
-            var parent = new ApplicationDbContext().TicketComments.Find(Model.ParentCommentId);
+            var parent = ViewBag.Parent;
             <div class="row">
                 <div class="col-sm-4 col-sm-offset-1">
                     <h4>Commenting on this comment:</h4>

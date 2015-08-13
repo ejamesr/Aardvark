@@ -1,0 +1,186 @@
+﻿
+@{
+    ViewBag.Title = "ImportData";
+}
+
+<div class="container">
+    <h2>Import Data into Aardvark</h2>
+    <div class="row">
+        <div class="col-sm-6">
+            <p>
+                You can perform a bulk input Users, Projects, and Tickets data data into Aardvark.
+            </p>
+            <p>
+                To begin the process, follow these instructions:
+                <ol>
+                    <li>
+                        Copy the Import Template to the
+                        clipboard (click the "Show Template Data" button to display
+                        the text to select). 
+                    </li>
+                    <li>
+                        Paste the data into a text editor,
+                        such as Notepad or Notepad++. Save the file.
+                    </li>
+                    <li>
+                        Open the file you created above with Excel. Excel's Text Import Wizard
+                        will display; make sure the Delimited button is selected, then click Finish.
+                    </li>
+                    <li>
+                        The first 38 lines are instructions; please read them!
+                    </li>
+                    <li>
+                        Resize columns as desired. The template
+                        includes some "dummy data" that shows the proper format for the data. Enter
+                        the data for Users, Projects, ProjectDevelopers, and Tickets.
+                    </li>
+                </ol>
+            </p>
+            <p>
+                
+            </p>
+            <p>
+                
+            </p>
+            <p>
+                When the template is ready, follow the instructions in the
+                template to covert the data to a Text (Tab delimited) file.
+                To do  Open the CSV file
+                with a text editor (such as Notepad or NotePad++) and copy the
+                data, then past it into the input box below. Click Import Data
+                to start the import process.
+            </p>
+            <p>
+                When completed, the Logs file will contain information on each imported
+                item.
+            </p>
+            <br />
+            <button type="button" id="TemplateBtn" class="btn btn-primary" onclick="ShowData()">Show Template Data</button>
+        </div>
+    </div>
+    <br />
+    <br />
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        <div class="row" id="InputData">
+            <div class="form-group">
+                <div class="col-sm-2">
+                    <br />
+                    <input type="submit" value="Import Data ==>" class="btn btn-primary" />
+                </div>
+                <div class="col-sm-10">
+                    @Html.TextArea("DataToImport", null, 5, 160, new { style = "max-width:none;" })
+                </div>
+            </div>
+        </div>
+    }
+    <div class="row hidden" id="TemplateData" name="TemplateData">
+        <div class="col-sm-12">
+            <h4>Select and copy the data below</h4>
+            <br />
+            <pre>
+; Template for Importing Data into Aardvark											
+;											
+; This document allows you to quickly input Users, Projects, and Tickets information into Aardvark											
+; in a bulk operation. Of course you can still enter and/or edit this information one record at a time											
+; as needed.											
+;											
+; Note that the information you enter is case-sensitive. The system will ensure that duplicate											
+; information is not entered; it will reject entries that already exist. Default values will be entered											
+; as explained below.											
+;											
+; You will note that any line starting with a semi-colon will be skipped, treated as a comment. This											
+; allows you to easily "comment out" a line within a section, if needed. The sections below are listed											
+; in this sequence: #Users, #Projects, #ProjectDevelopers, and #Tickets. All the information can be											
+; edited by Aardvark if needed, after the bulk operation completes. A message at the end of the											
+; operation will indicate any records that had to be skipped.											
+;											
+; Please do not change the sequence of the sections below. You need not use all of them; you can											
+; comment them out, or remove them, if desired. You can use as many rows as needed for each											
+; section. Please do not modify or remove any headings. It may still work, but it is preferred to leave											
+; the column blank if the information in that field is unknown or not needed. Each section starts with											
+; the # sign before the section name, and is followed by a row listing the column headings.											
+;											
+; The sample data below shows how to enter valid data. You can modify or delete the information											
+; in the sections and replace it with your own custom data.											
+;											
+; After making your changes, save this as a normal spreadsheet file. Then, select Save As to also save											
+; it as a Text (Tab-delimited) file. Open the tab-delimited file with a text editor (Notepad is fine).											
+; Select all the data, copy to the clipboard,  then paste it into the text box in the											
+; Home/Utilities/Import screen. Click Import when ready. The Logs file will then contain information											
+; on the success of the import.											
+;											
+; The Users Section											
+; Each User must have a unique UserName -- will be rejected if already in database.											
+; DisplayName optional -- will default to UserName if blank.											
+; All input fields are stored exactly as entered (no double quotes allows, though).											
+; There are five possible roles: Admin, ProjectManager, Developer, Submitter, and Guest.
+; Put Y in role column if User is to have that role; multiple roles are permitted.											
+; Normally there is only one Admin, but multiple Admins are allowed.											
+#Users											
+FirstName	LastName	UserName	DisplayName	Email	Phone	RoleAdmin	RoleProjectManager	RoleDeveloper	RoleSubmitter		
+Eric	Ruff	ejamesr	ejamesr	ejames.ruff@gmail.com	123.456.7890	Y		Y			
+Bob	Thomas	Bob	Bob	Bob@me.com	333-444-5555			Y			
+John	Doe	John	JD	John@me.com	(987) 654-3210		Y				
+Patty	Whack	Patty the Wackiest	Patty	Patty.Whack@ThisOldMan.com			Y				
+Sue	Jones	Sue	Sue	Sue@me.com					Y		
+;											
+; The Projects Section											
+; Each ProjectName must be unique -- spaces and other punctuation (except for double quotes) in the name are allowed											
+; Description can be as long as desired											
+; Each Project must have a ProjectManagerUserName -- this must be a UserName having a role of ProjectManager											
+; The same ProjectManagerUserName can be used on multiple projects											
+#Projects											
+ProjectName	Description	ProjectManagerUserName									
+Main Product	Our main focus, #1	Patty the Wackiest									
+Second Product	Makes us more money	John									
+;											
+; The ProjectDevelopers Section											
+; ProjectName must be a valid name of a Project in the database (or listed above -- which means it will											
+; have just been inserted into the database). DeveloperUserName is required and must be a UserName											
+; having a role of Developer. The same Developer can be listed for multiple Projects.											
+;											
+#ProjectDevelopers											
+ProjectName	DeveloperUserName										
+Main Product	ejamesr										
+Main Product	Bob										
+Second Product	Bob										
+;											
+; The Tickets Section											
+; The Title and Description columns are required, but need not be unique											
+; However, there should not be more than one ticket having the same Title, Description, and ProjectName.											
+; If ProjectName is included, it must be the name of a Project in the database (or listed above).											
+; DateCreated is optional - if entereed, it should be in the format 12/31/2015 2:34pm.											
+; TicketCreatorUserName is the UserName of the person who created the ticket (default: the name of the curret user inputting this data).											
+; AssignedDeveloperUserName is the UserName of the Developer assigned to this ticket; can be ommitted.											
+; DueDate is the due date for this ticket -- default is tomorrow.											
+; HoursToComplete is the estimated number of work hours to complete this ticket.											
+; TicketType: one of Bug, Enhancement, or Unknown.											
+; TicketPrirority: one of Optional, Desirable, Essential, or Showstopper.											
+; TicketStatus: one of New, Unable to Reproduce, Deferred, ReadyToAssign, AssignedToDeveloper, InDevelopment, ReadyToTest, AssignedToTester, InTesting, ReadyToReview, or Resolved.											
+; SkillRequired: one of Junior, Mid-Level, or Senior.											
+#Tickets											
+Title	Description	DateCreated	ProjectName	TicketCreatorUserName	AssignedDeveloperUserName	DueDate	HoursToComplete	TicketType	TicketPriority	TicketStatus	SkillRequired
+Just an idea	Several customers keep mentioning this	8/12/2015 8:00am	Main Product	Sue	Bob	9/30/2015	5	Enhancement	Desirable	Deferred	Mid-Level
+Screen flickers	When entering invoices, the screen keeps flickering	7/31/2015	Main Product	Patty the Wackiest		8/31/2015	2	Bug	Essential	New	Junior
+BSOD	Every third time I click "Save", the computer crashes	8/11/2015 3:13pm	Second Product	Sue		8/13/2015	10	Bug	Showstopper	AssignedToDeveloper	Senior
+</pre>
+            <h4>Select and copy the data above</h4>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    function ShowData() {
+        $("#TemplateData").toggleClass("hidden");
+        if ($("#TemplateData").hasClass("hidden")) {
+            $("#TemplateBtn").text("Show Template Data")
+        }
+        else {
+            $("#TemplateBtn").text("Hide Template Data")
+        }
+    }
+</script>
+

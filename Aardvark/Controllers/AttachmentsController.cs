@@ -82,6 +82,8 @@ namespace Aardvark.Controllers
                 ticketAttachment.Created = DateTimeOffset.UtcNow;
                 db.TicketAttachments.Add(ticketAttachment);
                 db.SaveChanges();
+                TicketNotification.Notify(db, ticketAttachment.Ticket, 
+                    ticketAttachment.Created, Notifications.AttachmentCreated);
                 return RedirectToAction("Index", new { id = @ticketAttachment.TicketId });
             }
 
@@ -118,6 +120,8 @@ namespace Aardvark.Controllers
             {
                 db.Entry(ticketAttachment).State = EntityState.Modified;
                 db.SaveChanges();
+                TicketNotification.Notify(db, ticketAttachment.Ticket,
+                    DateTimeOffset.UtcNow, Notifications.AttachmentEdited);  // No Updated date to pull, so get current
                 return RedirectToAction("Index");
             }
             ViewBag.TicketId = new SelectList(db.Tickets, "Id", "Title", ticketAttachment.TicketId);
@@ -146,6 +150,8 @@ namespace Aardvark.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             TicketAttachment ticketAttachment = db.TicketAttachments.Find(id);
+            TicketNotification.Notify(db, ticketAttachment.Ticket,
+                ticketAttachment.Created, Notifications.AttachmentDeleted);
             db.TicketAttachments.Remove(ticketAttachment);
             db.SaveChanges();
             return RedirectToAction("Index");
