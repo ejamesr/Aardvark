@@ -15,7 +15,7 @@ namespace Aardvark.Models
     /* Roles to seed:
      * 
      * "Admin",
-     * "Project Manager",
+     * "ProjectManager",
      * "Developer",
      * "Submitter",
      * "Guest/Demo"

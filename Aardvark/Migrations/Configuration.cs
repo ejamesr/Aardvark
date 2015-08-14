@@ -93,15 +93,15 @@ namespace Aardvark.Migrations
             context.TicketStatuses.AddOrUpdate(
                 status => new { status.Name, status.Step },
                 new TicketStatus { Name = "New", Step = Step.Val },
-                new TicketStatus { Name = "Unable to Reproduce", Step = Step.Val },
-                new TicketStatus { Name = "Deferred/On Hold", Step = Step.Val },
-                new TicketStatus { Name = "Ready to Assign", Step = Step.Val },
-                new TicketStatus { Name = "Assigned to Developer", Step = Step.Val },
-                new TicketStatus { Name = "In Development", Step = Step.Val },
-                new TicketStatus { Name = "Ready to Test", Step = Step.Val },
-                new TicketStatus { Name = "Assigned to Tester", Step = Step.Val },
-                new TicketStatus { Name = "In Testing", Step = Step.Val },
-                new TicketStatus { Name = "Ready to Review", Step = Step.Val },
+                new TicketStatus { Name = "UnableToReproduce", Step = Step.Val },
+                new TicketStatus { Name = "Deferred/OnHold", Step = Step.Val },
+                new TicketStatus { Name = "ReadyToAssign", Step = Step.Val },
+                new TicketStatus { Name = "AssignedToDeveloper", Step = Step.Val },
+                new TicketStatus { Name = "InDevelopment", Step = Step.Val },
+                new TicketStatus { Name = "ReadyToTest", Step = Step.Val },
+                new TicketStatus { Name = "AssignedToTester", Step = Step.Val },
+                new TicketStatus { Name = "InTesting", Step = Step.Val },
+                new TicketStatus { Name = "ReadyToReview", Step = Step.Val },
                 new TicketStatus { Name = "Resolved", Step = Step.Val }
                 );
 
@@ -111,6 +111,8 @@ namespace Aardvark.Migrations
                 new TicketPriority { Name = "Optional", Val = Step.Val },
                 new TicketPriority { Name = "Desirable", Val = Step.Val },
                 new TicketPriority { Name = "Essential", Val = Step.Val },
+                new TicketPriority { Name = "Critical", Val = Step.Val },
+                new TicketPriority { Name = "Severe/DataLoss", Val = Step.Val },
                 new TicketPriority { Name = "Showstopper", Val = Step.Val }
                 );
             context.TicketTypes.AddOrUpdate(

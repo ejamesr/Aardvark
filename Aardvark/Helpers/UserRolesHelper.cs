@@ -18,7 +18,7 @@ namespace Aardvark.Helpers
         // And this avoids the performance issues using .ToString() with reflection in an enum.
 
         // These are all the available roles
-        private static string[] roles = {"Admin", "Guest", "Project Manager", "Developer", "Submitter", "NewUser"};
+        private static string[] roles = {"Admin", "Guest", "ProjectManager", "Developer", "Submitter", "NewUser"};
 
         // Return all...
         public static ICollection<string> List() { return roles;}

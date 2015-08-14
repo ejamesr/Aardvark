@@ -11,8 +11,8 @@ namespace Aardvark.Models
     {
         public string Description { get; set; }
 
-        // To track the Project Manager, search the User table for the Projects
-        // and filter the person whose roles include "Project Manager"
+        // To track the ProjectManager, search the User table for the Projects
+        // and filter the person whose roles include "ProjectManager"
 
         public virtual ICollection<ApplicationUser> Users { get; set; }
 

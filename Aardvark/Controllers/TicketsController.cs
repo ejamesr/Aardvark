@@ -77,7 +77,7 @@ namespace Aardvark.Controllers
         }
 
         // GET: Tickets/Create
-        [Authorize(Roles="Admin,Guest,Project Manager,Developer,Submitter")]
+        [Authorize(Roles="Admin,Guest,ProjectManager,Developer,Submitter")]
         public ActionResult Create()
         {
             Ticket model = new Ticket();

@@ -17,7 +17,7 @@ namespace Aardvark.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: Projects
-        [Authorize(Roles="Admin,Project Manager,Guest,Developer")]
+        [Authorize(Roles="Admin,ProjectManager,Guest,Developer")]
         public ActionResult Index(string scope)
         {
             string userId = User.Identity.GetUserId();
@@ -68,7 +68,7 @@ namespace Aardvark.Controllers
         }
 
         // GET: Projects/AssignDev
-        [Authorize(Roles="Admin, Guest, Project Manager")]
+        [Authorize(Roles="Admin, Guest, ProjectManager")]
         public ActionResult AssignDev(int? id)      // Assign developers to this project
         {
             // Assign developers to this project
@@ -86,7 +86,7 @@ namespace Aardvark.Controllers
 
         // POST: Home/ManageUsers
         [HttpPost]
-        [Authorize(Roles = "Admin, Guest, Project Manager")]
+        [Authorize(Roles = "Admin, Guest, ProjectManager")]
         [ValidateAntiForgeryToken]
         //public ActionResult ManageUsers(IEnumerable<UsersCheckboxes> UserInfo)
         public ActionResult AssignDev(string[] Select, int Id)
@@ -196,7 +196,7 @@ namespace Aardvark.Controllers
         [Authorize(Roles="Admin")]
         public ActionResult Create()
         {
-            // Practice getting list of all Project Managers, and list of all except PMs...
+            // Practice getting list of all ProjectManagers, and list of all except PMs...
             UserRolesHelper helper = new UserRolesHelper();
             var pmList = helper.UsersInRole(R.ProjectManager);
             ViewBag.ProjectMgrId = pmList != null

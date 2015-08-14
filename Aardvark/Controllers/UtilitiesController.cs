@@ -24,6 +24,7 @@ namespace Aardvark.Controllers
         [Authorize(Roles="Admin,Guest")]
         public ActionResult ImportData()
         {
+            ViewBag.Msg = "";
             return View();
         }
 
@@ -136,7 +137,7 @@ namespace Aardvark.Controllers
                 section.Start = ++counter;
 
                 // Now count # rows...
-                while (counter < src.Length && src[counter][0] != '#'){
+                while (counter < src.Length && !src[counter].StartsWith("#")){
                     counter++;
                 }
                 section.Count = counter - section.Start;
@@ -171,7 +172,7 @@ namespace Aardvark.Controllers
             }
 
             public static void LogErr(ApplicationDbContext db, string msg){
-                Log log = new Log("Error during DataImport", msg);
+                Log log = new Log("** Error during DataImport **", msg);
                 db.Logs.Add(log);
                 db.SaveChanges();
             }
@@ -188,31 +189,28 @@ namespace Aardvark.Controllers
                 db.SaveChanges();
             }
 
-            public void ProcessSection()
+            public int ProcessSection()
             {
                 // Process each Section, update log with error message if any
                 switch (Target)
                 {
                     case SectionUsers:
-                        AddNewUsers();
-                        break;
+                        return AddNewUsers();
                     case SectionProjects:
-                        AddNewProjects();
-                        break;
+                        return AddNewProjects();
                     case SectionProjDevs:
-                        AddNewProjDevs();
-                        break;
+                        return AddNewProjDevs();
                     case SectionTickets:
-                        AddNewTickets();
-                        break;
+                        return AddNewTickets();
                     default:
-                        break;
+                        return 0;
                 }
             }
 
-            private void AddNewTickets()
+            private int AddNewTickets()
             {
                 // Process each row, create new user
+                int nTickets = 0;
                 int row;
                 string[] colData;
                 string Creator, Dev, Name, Desc;
@@ -233,7 +231,7 @@ namespace Aardvark.Controllers
                 {
                     Section.LogErr(db, "Ticket on row " + (row + 1) + " is missing a column " +
                         "(Title and Description are required) -- cannot process any Tickets");
-                    return;
+                    return 0;
                 }
 
                 while (++row < (Count + Start))
@@ -281,9 +279,9 @@ namespace Aardvark.Controllers
                         user = db.Users.FirstOrDefault(u => u.UserName == Dev);
                         if (user == null)
                         {
-                            Section.LogAlert(db, "DeveloperUser on row " + (row + 1) + " has UserName [" + Dev
-                                + "] not in database -- leaving field blank, will continue");
-                            continue;
+                            if (Dev != "")
+                                Section.LogAlert(db, "DeveloperUser on row " + (row + 1) + " has UserName [" + Dev
+                                    + "] not in database -- leaving field blank, will continue");
                         }
                         else
                         {
@@ -292,7 +290,6 @@ namespace Aardvark.Controllers
                             {
                                 Section.LogErr(db, "Ticket on row " + (row + 1) + " has AssignedDeveloper [" + user.UserName
                                     + "] not in 'Developer' role -- leaving field blank will continue");
-                                continue;
                             }
                             else
                             {
@@ -343,17 +340,17 @@ namespace Aardvark.Controllers
                         DateTimeOffset.TryParse(colData[HeadingOffsets[(int)H.T_DueDate]], out date);
                         if (date == DateTimeOffset.MinValue)
                         {
-                            ticket.DueDate = now.AddDays(1);
-                            Section.LogAlert(db, "Ticket on row " + (row + 1) + " had invalid DueDate -- using tomorrow's date");
+                            ticket.DueDate = now.AddDays(10);
+                            Section.LogAlert(db, "Ticket on row " + (row + 1) + " had invalid DueDate -- set default date to 10 days from now");
                         }
                         else ticket.DueDate = date;
 
                         // Validate Type, Priority, Status, Skill -- set to 1 as default
                         // Type
-                        string type = colData[HeadingOffsets[(int)H.T_TicketType]];
-                        var tempType = types.FirstOrDefault(t => t.Name == type);
-                        if (tempType != null)
-                            ticket.TicketTypeId = tempType.Id;
+                        string type = colData[HeadingOffsets[(int)H.T_TicketType]].ToUpper();
+                        var tempType = types.Where(t => t.Name.ToUpper().Contains(type));
+                        if (tempType.Count() == 1)
+                            ticket.TicketTypeId = tempType.ElementAt(0).Id;
                         else
                         {
                             // Set to default, issue alert if invalid type specified
@@ -363,10 +360,10 @@ namespace Aardvark.Controllers
                         }
 
                         // Priority
-                        string priority = colData[HeadingOffsets[(int)H.T_TicketPriority]];
-                        var tempPriority = types.FirstOrDefault(t => t.Name == priority);
-                        if (tempPriority != null)
-                            ticket.TicketTypeId = tempPriority.Id;
+                        string priority = colData[HeadingOffsets[(int)H.T_TicketPriority]].ToUpper();
+                        var tempPriority = priorities.Where(t => t.Name.ToUpper().Contains(priority));
+                        if (tempPriority.Count() == 1)
+                            ticket.TicketPriorityId = tempPriority.ElementAt(0).Id;
                         else
                         {
                             // Set to default, issue alert if invalid type specified
@@ -376,10 +373,10 @@ namespace Aardvark.Controllers
                         }
 
                         // Status
-                        string status = colData[HeadingOffsets[(int)H.T_TicketStatus]];
-                        var tempStatus = types.FirstOrDefault(t => t.Name == status);
-                        if (tempStatus != null)
-                            ticket.TicketStatusId = tempStatus.Id;
+                        string status = colData[HeadingOffsets[(int)H.T_TicketStatus]].ToUpper();
+                        var tempStatus = statuses.Where(t => t.Name.ToUpper().Contains(status));
+                        if (tempStatus.Count() == 1)
+                            ticket.TicketStatusId = tempStatus.ElementAt(0).Id;
                         else
                         {
                             // Set to default, issue alert if invalid type specified
@@ -389,10 +386,10 @@ namespace Aardvark.Controllers
                         }
 
                         // Skill
-                        string skill = colData[HeadingOffsets[(int)H.T_SkillRequired]];
-                        var tempSkill = types.FirstOrDefault(t => t.Name == skill);
-                        if (tempSkill != null)
-                            ticket.SkillRequiredId = tempSkill.Id;
+                        string skill = colData[HeadingOffsets[(int)H.T_SkillRequired]].ToUpper();
+                        var tempSkill = skills.Where(s => s.Name.ToUpper().Contains(skill));
+                        if (tempSkill.Count() == 1)
+                            ticket.SkillRequiredId = tempSkill.ElementAt(0).Id;
                         else
                         {
                             // Set to default, issue alert if invalid type specified
@@ -406,13 +403,17 @@ namespace Aardvark.Controllers
                         db.SaveChanges();
                         if (devOk)
                             ticket.NotifyNewTicket(db);
+                        LogSuccess(db, "Added Ticket from row " + (row + 1));
+                        nTickets++;
                     }
                 }
+                return nTickets;
             }
 
 
-            private void AddNewProjDevs()
+            private int AddNewProjDevs()
             {
+                int nDevs = 0;
                 // Process each row, add Developer to Project
                 int row;
                 string[] colData;
@@ -427,7 +428,7 @@ namespace Aardvark.Controllers
                 {
                     Section.LogErr(db, "ProjectDeveloper on row " + (row + 1) + " is missing a column " +
                         "(ProjectName, Description, and DeveloperUserName are required) -- cannot process any ProjectDevelopers");
-                    return;
+                    return 0;
                 }
 
                 while (++row < (Count + Start))
@@ -486,14 +487,21 @@ namespace Aardvark.Controllers
                         }
 
                         // We can add the Developer now
-                        ProjectsHelper.AddUserToProject(user.Id, project.Id);
+                        if (ProjectsHelper.AddUserToProject(user.Id, project.Id))
+                        {
+                            LogSuccess(db, "Added Developer from row " + (row + 1));
+                            nDevs++;
+                        }
+                        else LogAlert(db, "Developer on row " + (row + 1) + " already on Project");
                     }
                 }
+                return nDevs;
             }
 
 
-            private void AddNewProjects()
+            private int AddNewProjects()
             {
+                int nProjects = 0;
                 // Process each row, create new Project
                 int row;
                 string[] colData;
@@ -508,7 +516,7 @@ namespace Aardvark.Controllers
                 {
                     Section.LogErr(db, "Project on row " + (row + 1) + " is missing a column " +
                         "(ProjectName, Description, and ProjectManagerUserName are required) -- cannot process any projects");
-                    return;
+                    return 0;
                 }
 
 
@@ -568,12 +576,16 @@ namespace Aardvark.Controllers
                         db.Projects.Add(project);
                         project.Users.Add(db.Users.Find(user.Id));
                         db.SaveChanges();
+                        LogSuccess(db, "Added Project from row " + (row + 1));
+                        nProjects++;
                     }
                 }
+                return nProjects;
             }
 
-            private void AddNewUsers()
+            private int AddNewUsers()
             {
+                int nUsers = 0;
                 // Process each row, create new user
                 int row;
                 string[] colData;
@@ -686,13 +698,16 @@ namespace Aardvark.Controllers
                             if (x2 == null)
                             {
                                 // OK to continue, this will be a new user
+                                bool addedUser = false;
                                 try
                                 {
                                     manager.Create(user, defaultPassword);
+                                    addedUser = true;
                                 }
                                 catch (Exception e)
                                 {
                                     skip = true;
+                                    addedUser = false;
                                 }
 
                                 // Need to ensure the user was created
@@ -704,6 +719,7 @@ namespace Aardvark.Controllers
                                     {
                                         var u = db.Users.Add(user);
                                         db.SaveChanges();
+                                        addedUser = true;
                                     }
                                 }
                                 catch (Exception e)
@@ -711,12 +727,15 @@ namespace Aardvark.Controllers
                                     string msg = "Row " + (row + 1) + " could not be processed";
                                     LogErr(db, msg);
                                     skip = true;
+                                    addedUser = false;
                                 }
-
+                                if (addedUser)
+                                    nUsers++;
 
                                 // Now add any user roles specified...
                                 if (!skip)
                                 {
+                                    LogSuccess(db, "Added User [" + user.UserName + "] from row " + (row + 1));
                                     int nRoles = 0;
                                     // Admin
                                     if (this.HeadingOffsets[(int)H.U_RoleAdmin] > 0)
@@ -787,6 +806,7 @@ namespace Aardvark.Controllers
                         }
                     }
                 }
+                return nUsers;
             }
         }
 
@@ -835,18 +855,21 @@ namespace Aardvark.Controllers
             }
 
             // If no error so far, then process each group...
+            int nUsers = 0, nProjects = 0, nDevs = 0, nTickets = 0;
             if (!err)
             {
                 // Process all sections...
-                users.ProcessSection();
-                projects.ProcessSection();
-                projectDevs.ProcessSection();
-                tickets.ProcessSection();
+                nUsers = users.ProcessSection();
+                nProjects = projects.ProcessSection();
+                nDevs = projectDevs.ProcessSection();
+                nTickets = tickets.ProcessSection();
             }
 
             // OK, decide what to do now -- which View should we go to?
-
-            
+            ViewBag.Msg = "Imported " + nUsers + (nUsers == 1 ? " user" : " users")
+                + ", " + nProjects + (nProjects == 1 ? " project" : " projects")
+                + ", " + nTickets + (nTickets == 1 ? " ticket" : " tickets")
+                + ", and assigned " + nDevs + (nDevs == 1 ? " developer." : " developers.");
             return View();
         }
 
