@@ -133,7 +133,7 @@ namespace Aardvark.Controllers
                             break;
                         }
 
-                        // If the next item is one char wide, grab it, else its a userId
+                        // If the next item is one char wide, grab it, else it's a userId
                         bool changed;
                         if (Select[index].Length == 1) {
                             // This developer was checked, so see if we need to add him

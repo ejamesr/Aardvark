@@ -18,56 +18,77 @@ namespace Aardvark.Helpers
         // And this avoids the performance issues using .ToString() with reflection in an enum.
 
         // These are all the available roles
-        private const string _admin = "Admin";
-        private const string _guest = "Guest";
-        private const string _project_manager = "Project Manager";
-        private const string _developer = "Developer";
-        private const string _submitter = "Submitter";
-        private const string _new_user = "NewUser";
-
-        // Get a list of all roles...
-        private static readonly ICollection<string> _list = new[] {
-        _admin, _guest, _project_manager, _developer, _submitter, _new_user };
+        private static string[] roles = {"Admin", "Guest", "Project Manager", "Developer", "Submitter", "NewUser"};
 
         // Return all...
-        public static ICollection<string> List() { return _list;}
+        public static ICollection<string> List() { return roles;}
+        public static string[] ToList() { return roles; }
 
         // And here's how to retrieve them one at a time... some shortcuts (PM, Dev) also allowed
         public static string Admin
         {
-            get { return _admin; }
+            get { return roles[0]; }
         }
         public static string Guest
         {
-            get { return _guest; }
+            get { return roles[1]; }
         }
         public static string Demo
         {
-            get { return _guest; }
+            get { return roles[1]; }   // Same as Guest
         }
         public static string ProjectManager
         {
-            get { return _project_manager; }
+            get { return roles[2]; }
         }
         public static string PM
         {
-            get { return _project_manager; }
+            get { return roles[2]; }
         }
         public static string Developer
         {
-            get { return _developer; }
+            get { return roles[3]; }
         }
         public static string Dev
         {
-            get { return _developer; }
+            get { return roles[3]; }
         }
         public static string Submitter
         {
-            get { return _submitter; }
+            get { return roles[4]; }
         }
         public static string NewUser
         {
-            get { return _new_user; }
+            get { return roles[5]; }
+        }
+    }
+
+    // Avoid errors in typing the SkillRequired names -- use this class
+    public static class Skills
+    {
+        // These are all the available skills
+        private static string[] skills = { "Junior", "Mid-Level", "Senior" };
+
+        // Return all...
+        public static ICollection<string> List() { return skills; }
+        public static string[] ToList() { return skills; }
+
+        // And here's how to retrieve them one at a time...
+        public static string Junior
+        {
+            get { return skills[0]; }
+        }
+        public static string Mid
+        {
+            get { return skills[1]; }
+        }
+        public static string MidLevel
+        {
+            get { return skills[1]; }   // Same as Mid
+        }
+        public static string Senior
+        {
+            get { return skills[2]; }
         }
     }
 

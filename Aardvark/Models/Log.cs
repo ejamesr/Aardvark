@@ -13,6 +13,8 @@ namespace Aardvark.Models
         public string Name { get; set; }
         public string Msg { get; set; }
 
+        public Log() { }
+
         public Log(string name, string msg)
         {
             Name = name;

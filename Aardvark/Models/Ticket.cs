@@ -207,5 +207,11 @@ namespace Aardvark.Models
         {
             MostRecentUpdate = now;
         }
+        public void NotifyNewTicket(ApplicationDbContext db)
+        {
+            TicketNotification.Notify(db, this, this.Created, 
+                Aardvark.Models.Notifications.AssignedToTicket);
+
+        }
     }
 }
