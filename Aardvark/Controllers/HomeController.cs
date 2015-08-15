@@ -34,6 +34,8 @@ namespace Aardvark.Controllers
         {
             ViewBag.Message = "Your application description page.";
 
+            // Do this in every GET action...
+            ViewBag.UserModel = ProjectsHelper.LoadUserModel();
             return View();
         }
 
@@ -41,6 +43,25 @@ namespace Aardvark.Controllers
         {
             ViewBag.Message = "Your contact page.";
 
+            // Do this in every GET action...
+            ViewBag.UserModel = ProjectsHelper.LoadUserModel();
+            return View();
+        }
+
+        public ActionResult Dashboard()
+        {
+            //// Code to get rid of all cookies...
+            //UserRolesHelper helper = new UserRolesHelper();
+            //helper.ZapCookies();
+
+            // Create ViewBag model...
+            var id = User.Identity.GetUserId();
+            var altId = HttpContext.User.Identity.GetUserId();
+            UserRolesViewModel Model = new UserRolesViewModel(id);
+            //ViewBag.SuppressDefaultLayout = true;
+
+            // Do this in every GET action...
+            ViewBag.UserModel = ProjectsHelper.LoadUserModel();
             return View();
         }
 
@@ -81,6 +102,8 @@ namespace Aardvark.Controllers
             // Now for each user, get list of roles and create origRoles data
             ViewBag.UsersAndRoles = users;
             ViewBag.Roles = roles;
+            // Do this in every GET action...
+            ViewBag.UserModel = ProjectsHelper.LoadUserModel();
             return View(new ManageUsersModel(users, roles));
         }
 
@@ -192,6 +215,8 @@ namespace Aardvark.Controllers
         public ActionResult NeedAdmin()
         {
             ViewBag.Message = "Always need at least one user with Admin role";
+            // Do this in every GET action...
+            ViewBag.UserModel = ProjectsHelper.LoadUserModel();
             return View();
         }
 
@@ -199,6 +224,8 @@ namespace Aardvark.Controllers
         public ActionResult UsersPostError()
         {
             ViewBag.Message = "An error occurred during POST -- no changes mad.";
+            // Do this in every GET action...
+            ViewBag.UserModel = ProjectsHelper.LoadUserModel();
             return View();
         }
     }

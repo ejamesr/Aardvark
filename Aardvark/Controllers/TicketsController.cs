@@ -41,6 +41,8 @@ namespace Aardvark.Controllers
             // First, get this user...
             UserRolesHelper helper = new UserRolesHelper();
             var userId = helper.GetCurrentUserId();
+            // Do this in every GET action...
+            ViewBag.UserModel = ProjectsHelper.LoadUserModel();
 
             if (scope == "My")
             {
@@ -64,6 +66,8 @@ namespace Aardvark.Controllers
         // GET: Tickets/Details/5
         public ActionResult Details(string anchor, int? id, int? page)
         {
+            // Do this in every GET action...
+            ViewBag.UserModel = ProjectsHelper.LoadUserModel();
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -111,6 +115,8 @@ namespace Aardvark.Controllers
                 ViewBag.CanAssignDeveloper = false;
             }
 
+            // Do this in every GET action...
+            ViewBag.UserModel = ProjectsHelper.LoadUserModel();
             ViewBag.OwnerUserId = new SelectList(db.Users, "Id", "FirstName");
             ViewBag.ProjectId = new SelectList(db.Projects, "Id", "Name");
             ViewBag.SkillRequiredId = new SelectList(db.SkillLevels, "Id", "Name");
@@ -143,6 +149,8 @@ namespace Aardvark.Controllers
                 return RedirectToAction("Index");
             }
 
+            // Do this in every GET action...
+            ViewBag.UserModel = ProjectsHelper.LoadUserModel();
             ViewBag.AssignedToDevId = new SelectList(db.Users, "Id", "FirstName", ticket.AssignedToDevId);
             ViewBag.OwnerUserId = new SelectList(db.Users, "Id", "FirstName", ticket.OwnerUserId);
             ViewBag.ProjectId = new SelectList(db.Projects, "Id", "Name", ticket.ProjectId);
@@ -156,6 +164,9 @@ namespace Aardvark.Controllers
         // GET: Tickets/Edit/5
         public ActionResult Edit(int? id)
         {
+            // Do this in every GET action...
+            ViewBag.UserModel = ProjectsHelper.LoadUserModel();
+
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -242,6 +253,8 @@ namespace Aardvark.Controllers
                 }
                 return RedirectToAction("Index");
             }
+            // Do this in every GET action...
+            ViewBag.UserModel = ProjectsHelper.LoadUserModel();
             ViewBag.AssignedToDevId = new SelectList(db.Users, "Id", "FirstName", ticket.AssignedToDevId);
             ViewBag.OwnerUserId = new SelectList(db.Users, "Id", "FirstName", ticket.OwnerUserId);
             ViewBag.ProjectId = new SelectList(db.Projects, "Id", "Name", ticket.ProjectId);
@@ -255,6 +268,8 @@ namespace Aardvark.Controllers
         // GET: Tickets/Delete/5
         public ActionResult Delete(int? id)
         {
+            // Do this in every GET action...
+            ViewBag.UserModel = ProjectsHelper.LoadUserModel();
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -272,6 +287,8 @@ namespace Aardvark.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
+            // Do this in every GET action...
+            ViewBag.UserModel = ProjectsHelper.LoadUserModel();
             Ticket ticket = db.Tickets.Find(id);
             ticket.SetUpdated();
             TicketNotification.Notify(db, ticket,

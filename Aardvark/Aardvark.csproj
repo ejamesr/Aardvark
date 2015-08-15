@@ -194,6 +194,8 @@
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModels\ProfileView.cs" />
     <None Include="ViewModels\TemplateToCopy.cshtlml" />
+    <Content Include="Views\Home\Dashboard.cshtml" />
+    <Content Include="Views\Manage\Preferences.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="BulkUpdateIdeas.txt" />

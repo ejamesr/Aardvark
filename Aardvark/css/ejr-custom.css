@@ -6,3 +6,18 @@
     font-style: italic;
     color: red;
 }
+#site-logo {
+    color:#e5412d;
+}
+#top-bar .nav > li > a.active {
+    color:#ff5050;
+    font-weight: bolder;
+}
+#top-bar .nav > li > ul > li > a.active {
+    color:#ff5050;
+    font-weight: bolder;
+}
+#main-nav > li > a.active {
+    color:#ff5050;
+    font-weight: bolder;
+}

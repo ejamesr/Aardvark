@@ -18,6 +18,8 @@ namespace Aardvark.Controllers
         // GET: Comments
         public ActionResult Index()
         {
+            // Do this in every GET action...
+            ViewBag.UserModel = ProjectsHelper.LoadUserModel();
             var comments = db.TicketComments.Include(c => c.User);
             return View(comments.ToList());
         }
@@ -25,6 +27,8 @@ namespace Aardvark.Controllers
         // GET: Comments/Details/5
         public ActionResult Details(int? id)
         {
+            // Do this in every GET action...
+            ViewBag.UserModel = ProjectsHelper.LoadUserModel();
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -41,6 +45,8 @@ namespace Aardvark.Controllers
         [Authorize]
         public ActionResult Create(int? id, string anchor, int page, int? cid = null)    // 
         {
+            // Do this in every GET action...
+            ViewBag.UserModel = ProjectsHelper.LoadUserModel();
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -109,6 +115,8 @@ namespace Aardvark.Controllers
 
                 return RedirectToAction("Details", "Tickets", route);
             }
+            // Do this in every GET action...
+            ViewBag.UserModel = ProjectsHelper.LoadUserModel();
             return View(comment);
         }
 
@@ -116,6 +124,8 @@ namespace Aardvark.Controllers
         [Authorize(Roles="Admin, Moderator")]
         public ActionResult Edit(int? id, string anchor, int page, int? cid = null)
         {
+            // Do this in every GET action...
+            ViewBag.UserModel = ProjectsHelper.LoadUserModel();
             if (id == null || cid == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -142,6 +152,8 @@ namespace Aardvark.Controllers
         public ActionResult Edit([Bind(Include = "Body,DisplayName,UpdateReason")] TicketComment comment,
             int? id, string anchor, int page, int? cid = null)
         {
+            // Do this in every GET action...
+            ViewBag.UserModel = ProjectsHelper.LoadUserModel();
             if (cid == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -170,6 +182,8 @@ namespace Aardvark.Controllers
         [Authorize(Roles = "Admin, Moderator")]
         public ActionResult Delete(int? id, string anchor, int page, int? cid = null)
         {
+            // Do this in every GET action...
+            ViewBag.UserModel = ProjectsHelper.LoadUserModel();
             if (id == null || cid == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);

@@ -144,13 +144,13 @@
 
             <ul class="nav navbar-nav pull-left">
                 <li class="">
-                    <a href="@Url.Action("Index", "Home")">
+                    <a href="@Url.Action("Index", "Home")" id="menu-Home">
                         <i class="fa fa-home"></i>
                         Home
                     </a>
                 </li>
 
-                <li class="dropdown">
+                @*<li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="javascript:;">
                         Dropdown <span class="caret"></span>
                     </a>
@@ -161,7 +161,7 @@
                         <li class="divider"></li>
                         <li><a href="javascript:;"><i class="fa fa-tasks"></i>&nbsp;&nbsp;Example #3</a></li>
                     </ul>
-                </li>
+                </li>*@
 
             </ul>
 
@@ -172,7 +172,7 @@
                     @Html.AntiForgeryToken()
                     <ul class="nav navbar-nav pull-right">
                         <li class="dropdown">
-                            <a class="dropdown-toggle" data-toggle="dropdown" href="javascript:;">
+                            <a class="dropdown-toggle" id="menu-User" data-toggle="dropdown" href="javascript:;">
                                 <i class="fa fa-user"></i>
                                 @ViewBag.UserModel.DisplayName
                                 <span class="caret"></span>
@@ -180,13 +180,13 @@
 
                             <ul class="dropdown-menu" role="menu">
                                 <li>
-                                    <a href="@Url.Action("UserProfile", "Manage")" title="Change my profile settings">
+                                    <a href="@Url.Action("UserProfile", "Manage")" id="menu-User-Profile" title="Change my profile settings">
                                         <i class="fa fa-user"></i>
                                         &nbsp;&nbsp;My Profile
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="@Url.Action("ChangePassword", "Manage")" title="Change my password">
+                                    <a href="@Url.Action("ChangePassword", "Manage")" id="menu-User-Password" title="Change my password">
                                         <i class="fa fa-key"></i>
                                         &nbsp;&nbsp;My Password
                                     </a>
@@ -198,9 +198,9 @@
                                     </a>
                                 </li>*@
                                 <li>
-                                    <a href="@Url.Action("Settings", "Manage")" title="Change various settings and preferences">
+                                    <a href="@Url.Action("Preferences", "Manage")" id="menu-User-Preferences" title="Change various settings and preferences">
                                         <i class="fa fa-cogs"></i>
-                                        &nbsp;&nbsp;Settings
+                                        &nbsp;&nbsp;Preferences
                                     </a>
                                 </li>
                                 <li class="divider"></li>
@@ -237,254 +237,212 @@
             </div> <!-- #search -->
 
             <nav id="sidebar">
+                @if (ViewBag.UserModel.IsAdmin || ViewBag.UserModel.IsGuest)
+                {
+                    <ul id="main-nav" class="open-active">
 
-                <ul id="main-nav" class="open-active">
+                        <li class="" id="Dashboard">
+                            <a href="@Url.Action("Dashboard", "Home")" id="sidebar-Dashboard">
+                                <i class="fa fa-dashboard"></i>
+                                Dashboard
+                            </a>
+                        </li>
 
-                    <li class="active">
-                        <a href="./index.html">
-                            <i class="fa fa-dashboard"></i>
-                            Dashboard
-                        </a>
-                    </li>
+                        <li class="dropdown" id="Users">
+                            <a href="javascript:;" id="sidebar-Users">
+                                <i class="fa fa-user"></i>
+                                Users
+                                <span class="caret"></span>
+                            </a>
+                            <ul class="sub-nav">
+                                <li id="Users-Manage" id="sidebar-Users-Manage">
+                                    <a href="@Url.Action("ManageUsers", "Home")">
+                                        <i class="fa fa-user"></i>
+                                        Manage Users
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
 
-                    <li class="dropdown">
-                        <a href="javascript:;">
-                            <i class="fa fa-file-text"></i>
-                            Example Pages
-                            <span class="caret"></span>
-                        </a>
+                        <li class="dropdown" id="Projects">
+                            <a href="javascript:;" id="sidebar-Projects">
+                                <i class="fa fa-tasks"></i>
+                                Projects
+                                <span class="caret"></span>
+                            </a>
+                            <ul class="sub-nav">
+                                <li id="Projects-My">
+                                    <a href="@Url.Action("Index", "Projects", new { scope = "My"})" id="sidebar-Projects-My">
+                                        <i class="fa fa-list-ul"></i>
+                                        My Projects
+                                    </a>
+                                </li>
+                                <li id="Projects-All">
+                                    <a href="@Url.Action("Index", "Projects", new { scope = "All"})" id="sidebar-Projects-All">
+                                        <i class="fa fa-list-ol"></i>
+                                        All Projects
+                                    </a>
+                                </li>
+                                <li class="divider"></li>
+                                <li id="Projects-Create">
+                                    <a href="@Url.Action("Create", "Projects")" id="sidebar-Projects-Create">
+                                        <i class="fa fa-pencil-square-o"></i>
+                                        Create New Project
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
 
-                        <ul class="sub-nav">
-                            <li>
-                                <a href="./page-profile.html">
-                                    <i class="fa fa-user"></i>
-                                    Profile
-                                </a>
-                            </li>
-                            <li>
-                                <a href="./page-invoice.html">
-                                    <i class="fa fa-money"></i>
-                                    Invoice
-                                </a>
-                            </li>
-                            <li>
-                                <a href="./page-pricing.html">
-                                    <i class="fa fa-dollar"></i>
-                                    Pricing Plans
-                                </a>
-                            </li>
-                            <li>
-                                <a href="./page-support.html">
-                                    <i class="fa fa-question"></i>
-                                    Support Page
-                                </a>
-                            </li>
-                            <li>
-                                <a href="./page-gallery.html">
-                                    <i class="fa fa-picture-o"></i>
-                                    Gallery
-                                </a>
-                            </li>
-                            <li>
-                                <a href="./page-settings.html">
-                                    <i class="fa fa-cogs"></i>
-                                    Settings
-                                </a>
-                            </li>
-                            <li>
-                                <a href="./page-calendar.html">
-                                    <i class="fa fa-calendar"></i>
-                                    Calendar
-                                </a>
-                            </li>
-                        </ul>
+                        <li class="dropdown">
+                            <a href="javascript:;" id="sidebar-Tickets">
+                                <i class="fa fa-tasks"></i>
+                                Tickets
+                                <span class="caret"></span>
+                            </a>
+                            <ul class="sub-nav">
+                                <li>
+                                    <a href="@Url.Action("Index", "Tickets", new { scope = "My"})" id="sidebar-Tickets-My">
+                                        <i class="fa fa-list-ul"></i>
+                                        My Tickets
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="@Url.Action("Index", "Tickets", new { scope = "All"})" id="sidebar-Tickets-All">
+                                        <i class="fa fa-list-ol"></i>
+                                        All Tickets
+                                    </a>
+                                </li>
+                                <li class="divider"></li>
+                                <li>
+                                    <a href="@Url.Action("Create", "Tickets")" id="sidebar-Tickets-Create">
+                                        <i class="fa fa-pencil-square-o"></i>
+                                        Create New Ticket
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
 
-                    </li>
+                        <li class="dropdown">
+                            <a href="javascript:;" id="sidebar-Notifications">
+                                <i class="fa fa-tasks"></i>
+                                Notifications
+                                <span class="caret"></span>
+                            </a>
+                            <ul class="sub-nav">
+                                <li>
+                                    <a href="@Url.Action("Index", "Notifications", new { scope = "My"})" id="sidebar-Notifications-My">
+                                        <i class="fa fa-list-ul"></i>
+                                        My Notifications
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="@Url.Action("Index", "Notifications", new { scope = "All"})" id="sidebar-Notifications-All">
+                                        <i class="fa fa-list-ol"></i>
+                                        All Notifications
+                                    </a>
+                                </li>
+                                <li class="divider"></li>
+                                <li>
+                                    <a href="@Url.Action("Index", "Notifications", new { scope = "Assigned"})" id="sidebar-Notifications-Assigned">
+                                        <i class="fa fa-list-ul"></i>
+                                        AssignedToTicket
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="@Url.Action("Index", "Notifications", new { scope = "Removed"})" id="sidebar-Notifications-Removed">
+                                        <i class="fa fa-list-ul"></i>
+                                        RemovedFromTicket
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="@Url.Action("Index", "Notifications", new { scope = "TicketEdited"})" id="sidebar-Notifications-TicketEdited">
+                                        <i class="fa fa-list-ul"></i>
+                                        TicketEdited
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="@Url.Action("Index", "Notifications", new { scope = "CommentCreated"})" id="sidebar-Notifications-CommentCreated">
+                                        <i class="fa fa-list-ul"></i>
+                                        CommentCreated
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="@Url.Action("Index", "Notifications", new { scope = "CommentEdited"})" id="sidebar-Notifications-CommentEdited">
+                                        <i class="fa fa-list-ul"></i>
+                                        CommentEdited
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="@Url.Action("Index", "Notifications", new { scope = "AttachmentCreated"})" id="sidebar-Notifications-AttachmentCreated">
+                                        <i class="fa fa-list-ul"></i>
+                                        AttachmentCreated
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="@Url.Action("Index", "Notifications", new { scope = "AttachmentEdited"})" id="sidebar-Notifications-AttachmentEdited">
+                                        <i class="fa fa-list-ul"></i>
+                                        AttachmentEdited
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
 
-                    <li class="dropdown">
-                        <a href="javascript:;">
-                            <i class="fa fa-tasks"></i>
-                            Form Elements
-                            <span class="caret"></span>
-                        </a>
+                        <li class="dropdown">
+                            <a href="javascript:;" id="sidebar-Settings">
+                                <i class="fa fa-cogs"></i>
+                                Settings
+                                <span class="caret"></span>
+                            </a>
+                            <ul class="sub-nav">
+                                <li>
+                                    <a href="@Url.Action("Settings", "Utilities", new { scope = "Global"})" id="sidebar-Settings-Global">
+                                        <i class="fa fa-globe"></i>
+                                        Global Settings
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="@Url.Action("Settings", "Utilities", new { scope = "Local"})" id="sidebar-Settings-Local">
+                                        <i class="fa fa-desktop"></i>
+                                        Local Settings
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
 
-                        <ul class="sub-nav">
-                            <li>
-                                <a href="./form-regular.html">
-                                    <i class="fa fa-location-arrow"></i>
-                                    Regular Elements
-                                </a>
-                            </li>
-                            <li>
-                                <a href="./form-extended.html">
-                                    <i class="fa fa-magic"></i>
-                                    Extended Elements
-                                </a>
-                            </li>
-                            <li>
-                                <a href="./form-validation.html">
-                                    <i class="fa fa-check"></i>
-                                    Validation
-                                </a>
-                            </li>
-                        </ul>
+                        <li class="dropdown">
+                            <a href="javascript:;" id="sidebar-Utilities">
+                                <i class="fa fa-bolt"></i>
+                                Utilities
+                                <span class="caret"></span>
+                            </a>
+                            <ul class="sub-nav">
+                                <li>
+                                    <a href="@Url.Action("ImportData", "Utilities")" id="sidebar-Utilities-Import">
+                                        <i class="fa fa-arrow-up"></i>
+                                        Import Data
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
 
-                    </li>
+                    </ul>
+                }
+                else if (ViewBag.UserModel.IsPM)
+                {
 
-                    <li class="dropdown">
-                        <a href="javascript:;">
-                            <i class="fa fa-desktop"></i>
-                            UI Features
-                            <span class="caret"></span>
-                        </a>
+                }
+                else if (ViewBag.Userode.IsDeveloper)
+                {
 
-                        <ul class="sub-nav">
-                            <li>
-                                <a href="./ui-buttons.html">
-                                    <i class="fa fa-hand-o-up"></i>
-                                    Buttons
-                                </a>
-                            </li>
-                            <li>
-                                <a href="./ui-tabs.html">
-                                    <i class="fa fa-reorder"></i>
-                                    Tabs & Accordions
-                                </a>
-                            </li>
+                }
+                else if (ViewBag.Userode.IsSubmitter)
+                {
 
-                            <li>
-                                <a href="./ui-popups.html">
-                                    <i class="fa fa-asterisk"></i>
-                                    Popups / Notifications
-                                </a>
-                            </li>
+                }
+                else
+                {
 
-                            <li>
-                                <a href="./ui-sliders.html">
-                                    <i class="fa fa-tasks"></i>
-                                    Sliders
-                                </a>
-                            </li>
-
-                            <li class="">
-                                <a href="./ui-typography.html">
-                                    <i class="fa fa-font"></i>
-                                    Typography
-                                </a>
-                            </li>
-
-                            <li class="">
-                                <a href="./ui-icons.html">
-                                    <i class="fa fa-star-o"></i>
-                                    Icons
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-
-                    <li class="dropdown">
-                        <a href="javascript:;">
-                            <i class="fa fa-table"></i>
-                            Tables
-                            <span class="caret"></span>
-                        </a>
-
-                        <ul class="sub-nav">
-                            <li>
-                                <a href="./table-basic.html">
-                                    <i class="fa fa-table"></i>
-                                    Basic Tables
-                                </a>
-                            </li>
-                            <li>
-                                <a href="./table-advanced.html">
-                                    <i class="fa fa-table"></i>
-                                    Advanced Tables
-                                </a>
-                            </li>
-                            <li>
-                                <a href="./table-responsive.html">
-                                    <i class="fa fa-table"></i>
-                                    Responsive Tables
-                                </a>
-                            </li>
-                        </ul>
-
-                    </li>
-
-                    <li>
-                        <a href="./ui-portlets.html">
-                            <i class="fa fa-list-alt"></i>
-                            Portlets
-                        </a>
-                    </li>
-
-                    <li class="dropdown">
-                        <a href="javascript:;">
-                            <i class="fa fa-bar-chart-o"></i>
-                            Charts & Graphs
-                            <span class="caret"></span>
-                        </a>
-
-                        <ul class="sub-nav">
-                            <li>
-                                <a href="./chart-flot.html">
-                                    <i class="fa fa-bar-chart-o"></i>
-                                    jQuery Flot
-                                </a>
-                            </li>
-                            <li>
-                                <a href="./chart-morris.html">
-                                    <i class="fa fa-bar-chart-o"></i>
-                                    Morris.js
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-
-                    <li class="dropdown">
-                        <a href="javascript:;">
-                            <i class="fa fa-file-text-o"></i>
-                            Extra Pages
-                            <span class="caret"></span>
-                        </a>
-
-                        <ul class="sub-nav">
-                            <li>
-                                <a href="./page-login.html">
-                                    <i class="fa fa-unlock"></i>
-                                    Login Basic
-                                </a>
-                            </li>
-                            <li>
-                                <a href="./page-login-social.html">
-                                    <i class="fa fa-unlock"></i>
-                                    Login Social
-                                </a>
-                            </li>
-                            <li>
-                                <a href="./page-404.html">
-                                    <i class="fa fa-ban"></i>
-                                    404 Error
-                                </a>
-                            </li>
-                            <li>
-                                <a href="./page-500.html">
-                                    <i class="fa fa-ban"></i>
-                                    500 Error
-                                </a>
-                            </li>
-                            <li>
-                                <a href="./page-blank.html">
-                                    <i class="fa fa-file-text-o"></i>
-                                    Blank Page
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-
-                </ul>
-
+                }
             </nav> <!-- #sidebar -->
 
         </div> <!-- /#sidebar-wrapper -->
@@ -530,3 +488,4 @@
 else {
     @RenderBody()
 }
+@RenderSection("Scripts", false)

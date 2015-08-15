@@ -24,9 +24,11 @@ namespace Aardvark.Helpers
             public string UserName;
             public string DisplayName;
             public string Role;
-            public bool IsDeveloper;
             public bool IsAdmin;
+            public bool IsGuest;
             public bool IsPM;
+            public bool IsDeveloper;
+            public bool IsSubmitter;
         }
 
         public static UserModel LoadUserModel()
@@ -40,7 +42,7 @@ namespace Aardvark.Helpers
                 model.User = user;
                 model.UserName = model.DisplayName = "Not logged in";
                 model.Role = "None";
-                model.IsAdmin = model.IsDeveloper = model.IsPM = false;
+                model.IsAdmin = model.IsDeveloper = model.IsPM = model.IsSubmitter = model.IsGuest = false;
             }
             else
             {
@@ -49,9 +51,11 @@ namespace Aardvark.Helpers
                 model.UserName = user.UserName;
                 model.Role = helper.GetHighestRole(user.Id);
                 model.DisplayName = user.DisplayName.Length > 0 ? user.DisplayName : user.UserName;
-                model.IsDeveloper = helper.IsUserInRole(user.Id, R.Developer);
                 model.IsAdmin = helper.IsUserInRole(user.Id, R.Admin);
+                model.IsGuest = helper.IsUserInRole(user.Id, R.Guest);
                 model.IsPM = helper.IsUserInRole(user.Id, R.PM);
+                model.IsDeveloper = helper.IsUserInRole(user.Id, R.Developer);
+                model.IsSubmitter = helper.IsUserInRole(user.Id, R.Submitter);
             }
             return (model);
         }

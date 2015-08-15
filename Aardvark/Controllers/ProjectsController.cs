@@ -23,6 +23,8 @@ namespace Aardvark.Controllers
             string userId = User.Identity.GetUserId();
             var Roles = new UserRolesHelper().ListUserRoles(userId);
             ViewBag.Roles = Roles;
+            // Do this in every GET action...
+            ViewBag.UserModel = ProjectsHelper.LoadUserModel();
 
             if (scope == "My")
             {
@@ -58,12 +60,16 @@ namespace Aardvark.Controllers
         // GET: Projects/AssignPM
         public ActionResult AssignPM()
         {
+            // Do this in every GET action...
+            ViewBag.UserModel = ProjectsHelper.LoadUserModel();
             return View();
         }
 
         // GET: Projects/ProjectsPostError
         public ActionResult ProjectsPostError()
         {
+            // Do this in every GET action...
+            ViewBag.UserModel = ProjectsHelper.LoadUserModel();
             return View();
         }
 
@@ -71,6 +77,9 @@ namespace Aardvark.Controllers
         [Authorize(Roles="Admin, Guest, ProjectManager")]
         public ActionResult AssignDev(int? id)      // Assign developers to this project
         {
+            // Do this in every GET action...
+            ViewBag.UserModel = ProjectsHelper.LoadUserModel();
+
             // Assign developers to this project
             if (id != null)
             {
@@ -165,6 +174,8 @@ namespace Aardvark.Controllers
         // GET: Projects/Details/
         public ActionResult Details(int? id)
         {
+            // Do this in every GET action...
+            ViewBag.UserModel = ProjectsHelper.LoadUserModel();
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -196,6 +207,8 @@ namespace Aardvark.Controllers
         [Authorize(Roles="Admin")]
         public ActionResult Create()
         {
+            // Do this in every GET action...
+            ViewBag.UserModel = ProjectsHelper.LoadUserModel();
             // Practice getting list of all ProjectManagers, and list of all except PMs...
             UserRolesHelper helper = new UserRolesHelper();
             var pmList = helper.UsersInRole(R.ProjectManager);
@@ -231,6 +244,8 @@ namespace Aardvark.Controllers
         [Authorize(Roles = "Admin")]
         public ActionResult Edit(int? id)
         {
+            // Do this in every GET action...
+            ViewBag.UserModel = ProjectsHelper.LoadUserModel();
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -277,6 +292,8 @@ namespace Aardvark.Controllers
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
+            // Do this in every GET action...
+            ViewBag.UserModel = ProjectsHelper.LoadUserModel();
             ViewBag.ProjectMgrId = new SelectList(db.Users, "Id", "FirstName");//, project.ProjectMgr.Id);
             return View(project);
         }
@@ -285,6 +302,8 @@ namespace Aardvark.Controllers
         [Authorize(Roles = "Admin")]
         public ActionResult Delete(int? id)
         {
+            // Do this in every GET action...
+            ViewBag.UserModel = ProjectsHelper.LoadUserModel();
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);

@@ -24,6 +24,8 @@ namespace Aardvark.Controllers
         [Authorize(Roles="Admin,Guest")]
         public ActionResult ImportData()
         {
+            // Do this in every GET action...
+            ViewBag.UserModel = ProjectsHelper.LoadUserModel();
             ViewBag.Msg = "";
             return View();
         }
@@ -865,6 +867,8 @@ namespace Aardvark.Controllers
                 nTickets = tickets.ProcessSection();
             }
 
+            // Do this in every GET action...
+            ViewBag.UserModel = ProjectsHelper.LoadUserModel();
             // OK, decide what to do now -- which View should we go to?
             ViewBag.Msg = "Imported " + nUsers + (nUsers == 1 ? " user" : " users")
                 + ", " + nProjects + (nProjects == 1 ? " project" : " projects")
@@ -876,12 +880,16 @@ namespace Aardvark.Controllers
         // GET: Utilities
         public ActionResult Index()
         {
+            // Do this in every GET action...
+            ViewBag.UserModel = ProjectsHelper.LoadUserModel();
             return View(db.Logs.ToList());
         }
 
         // GET: Utilities/Details/5
         public ActionResult Details(int? id)
         {
+            // Do this in every GET action...
+            ViewBag.UserModel = ProjectsHelper.LoadUserModel();
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -914,6 +922,8 @@ namespace Aardvark.Controllers
                 return RedirectToAction("Index");
             }
 
+            // Do this in every GET action...
+            ViewBag.UserModel = ProjectsHelper.LoadUserModel();
             return View(log);
         }
 

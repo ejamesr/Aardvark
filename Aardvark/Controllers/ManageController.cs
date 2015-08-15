@@ -87,6 +87,8 @@ namespace Aardvark.Controllers
                 Logins = await UserManager.GetLoginsAsync(userId),
                 BrowserRemembered = await AuthenticationManager.TwoFactorBrowserRememberedAsync(userId)
             };
+            // Do this in every GET action...
+            ViewBag.UserModel = ProjectsHelper.LoadUserModel();
             return View(model);
         }
 
@@ -118,6 +120,8 @@ namespace Aardvark.Controllers
         // GET: /Manage/AddPhoneNumber
         public ActionResult AddPhoneNumber()
         {
+            // Do this in every GET action...
+            ViewBag.UserModel = ProjectsHelper.LoadUserModel();
             return View();
         }
 
@@ -125,6 +129,8 @@ namespace Aardvark.Controllers
         // GET: /Manage/ChangeDisplayName
         public ActionResult ChangeDisplayName()
         {
+            // Do this in every GET action...
+            ViewBag.UserModel = ProjectsHelper.LoadUserModel();
             return View();
         }
 
@@ -138,7 +144,11 @@ namespace Aardvark.Controllers
             var n = i.GetUserName();
             var userRec = db.Users.Find(User.Identity.GetUserId());
             if (userRec != null)
+            {
+                // Do this in every GET action...
+                ViewBag.UserModel = ProjectsHelper.LoadUserModel();
                 return View(new ChangeSetNameViewModel(userRec, "User Name"));
+            }
 
             // user is null, so return error
             return RedirectToAction("ManageLogins", new { Message = ManageMessageId.Error });
@@ -186,6 +196,8 @@ namespace Aardvark.Controllers
         // GET: /Manage/ChangeTxtMsgName
         public ActionResult ChangeTxtMsgName()
         {
+            // Do this in every GET action...
+            ViewBag.UserModel = ProjectsHelper.LoadUserModel();
             return View();
         }
 
@@ -211,9 +223,10 @@ namespace Aardvark.Controllers
 
                 // Do this in every action prior to view...
                 ViewBag.UserModel = ProjectsHelper.LoadUserModel();
-
                 return View(profile);
             }
+            // Do this in every GET action...
+            ViewBag.UserModel = ProjectsHelper.LoadUserModel();
             return View(user);
         }
 
@@ -256,6 +269,8 @@ namespace Aardvark.Controllers
         // GET: /Manage/Settings
         public ActionResult Settings()
         {
+            // Do this in every GET action...
+            ViewBag.UserModel = ProjectsHelper.LoadUserModel();
             return View();
         }
 
@@ -267,6 +282,8 @@ namespace Aardvark.Controllers
         {
             if (!ModelState.IsValid)
             {
+                // Do this in every GET action...
+                ViewBag.UserModel = ProjectsHelper.LoadUserModel();
                 return View(model);
             }
             // Generate the token and send it
@@ -319,6 +336,9 @@ namespace Aardvark.Controllers
         {
             var code = await UserManager.GenerateChangePhoneNumberTokenAsync(User.Identity.GetUserId(), phoneNumber);
             // Send an SMS through the SMS provider to verify the phone number
+
+            // Do this in every GET action...
+            ViewBag.UserModel = ProjectsHelper.LoadUserModel();
             return phoneNumber == null ? View("Error") : View(new VerifyPhoneNumberViewModel { PhoneNumber = phoneNumber });
         }
 
@@ -330,6 +350,8 @@ namespace Aardvark.Controllers
         {
             if (!ModelState.IsValid)
             {
+                // Do this in every GET action...
+                ViewBag.UserModel = ProjectsHelper.LoadUserModel();
                 return View(model);
             }
             var result = await UserManager.ChangePhoneNumberAsync(User.Identity.GetUserId(), model.PhoneNumber, model.Code);
@@ -344,6 +366,8 @@ namespace Aardvark.Controllers
             }
             // If we got this far, something failed, redisplay form
             ModelState.AddModelError("", "Failed to verify phone");
+            // Do this in every GET action...
+            ViewBag.UserModel = ProjectsHelper.LoadUserModel();
             return View(model);
         }
 
@@ -362,6 +386,15 @@ namespace Aardvark.Controllers
                 await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
             }
             return RedirectToAction("Index", new { Message = ManageMessageId.RemovePhoneSuccess });
+        }
+
+        //
+        // GET: /Manage/Preferences
+        public ActionResult Preferences()
+        {
+            // Do this in every action prior to view...
+            ViewBag.UserModel = ProjectsHelper.LoadUserModel();
+            return View();
         }
 
         //
@@ -405,6 +438,8 @@ namespace Aardvark.Controllers
         // GET: /Manage/SetPassword
         public ActionResult SetPassword()
         {
+            // Do this in every GET action...
+            ViewBag.UserModel = ProjectsHelper.LoadUserModel();
             return View();
         }
 
@@ -430,6 +465,8 @@ namespace Aardvark.Controllers
             }
 
             // If we got this far, something failed, redisplay form
+            // Do this in every GET action...
+            ViewBag.UserModel = ProjectsHelper.LoadUserModel();
             return View(model);
         }
 
@@ -449,6 +486,8 @@ namespace Aardvark.Controllers
             var userLogins = await UserManager.GetLoginsAsync(User.Identity.GetUserId());
             var otherLogins = AuthenticationManager.GetExternalAuthenticationTypes().Where(auth => userLogins.All(ul => auth.AuthenticationType != ul.LoginProvider)).ToList();
             ViewBag.ShowRemoveButton = user.PasswordHash != null || userLogins.Count > 1;
+            // Do this in every GET action...
+            ViewBag.UserModel = ProjectsHelper.LoadUserModel();
             return View(new ManageLoginsViewModel
             {
                 CurrentLogins = userLogins,

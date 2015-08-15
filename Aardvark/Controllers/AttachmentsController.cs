@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Aardvark.Models;
+using Aardvark.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
@@ -6,7 +8,6 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
-using Aardvark.Models;
 using System.IO;
 
 namespace Aardvark.Controllers
@@ -18,8 +19,12 @@ namespace Aardvark.Controllers
         // GET: Attachments -- 'id' is the Ticket.Id
         public ActionResult Index(int? id)
         {
+            // Do this in every GET action...
+            ViewBag.UserModel = ProjectsHelper.LoadUserModel();
             if (id == null)
+            {
                 return View();
+            }
 
             // id is valid...
             var ticket = db.Tickets.Find(id);
@@ -41,6 +46,8 @@ namespace Aardvark.Controllers
             {
                 return HttpNotFound();
             }
+            // Do this in every GET action...
+            ViewBag.UserModel = ProjectsHelper.LoadUserModel();
             return View(ticketAttachment);
         }
 
@@ -50,6 +57,8 @@ namespace Aardvark.Controllers
             if (id == null)
                 return RedirectToAction("Index");
 
+            // Do this in every GET action...
+            ViewBag.UserModel = ProjectsHelper.LoadUserModel();
             TicketAttachment ta = new TicketAttachment();
             ta.UserId = new Helpers.UserRolesHelper().GetCurrentUserId();
             ta.TicketId = (int)id;
@@ -87,6 +96,8 @@ namespace Aardvark.Controllers
                 return RedirectToAction("Index", new { id = @ticketAttachment.TicketId });
             }
 
+            // Do this in every GET action...
+            ViewBag.UserModel = ProjectsHelper.LoadUserModel();
             ViewBag.TicketId = new SelectList(db.Tickets, "Id", "Title", ticketAttachment.TicketId);
             ViewBag.UserId = new SelectList(db.Users, "Id", "FirstName", ticketAttachment.UserId);
             return View(ticketAttachment);
@@ -95,6 +106,8 @@ namespace Aardvark.Controllers
         // GET: Attachments/Edit/5
         public ActionResult Edit(int? id)
         {
+            // Do this in every GET action...
+            ViewBag.UserModel = ProjectsHelper.LoadUserModel();
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -116,6 +129,8 @@ namespace Aardvark.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "Id,TicketId,FilePath,Description,Created,UserId,FileUrl")] TicketAttachment ticketAttachment)
         {
+            // Do this in every GET action...
+            ViewBag.UserModel = ProjectsHelper.LoadUserModel();
             if (ModelState.IsValid)
             {
                 db.Entry(ticketAttachment).State = EntityState.Modified;
@@ -132,6 +147,8 @@ namespace Aardvark.Controllers
         // GET: Attachments/Delete/5
         public ActionResult Delete(int? id)
         {
+            // Do this in every GET action...
+            ViewBag.UserModel = ProjectsHelper.LoadUserModel();
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -154,6 +171,8 @@ namespace Aardvark.Controllers
                 ticketAttachment.Created, Notifications.AttachmentDeleted);
             db.TicketAttachments.Remove(ticketAttachment);
             db.SaveChanges();
+            // Do this in every GET action...
+            ViewBag.UserModel = ProjectsHelper.LoadUserModel();
             return RedirectToAction("Index");
         }
 

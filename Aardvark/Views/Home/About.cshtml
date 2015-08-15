@@ -1,8 +1,10 @@
 ﻿@{
     ViewBag.Title = "About Aardvark";
 }
-<div class="container">
-    <h2>@ViewBag.Title</h2>
+<div id="content">
+    <div id="content-header">
+        <h1>Welcome to Aardvark... the really cool bug tracker!</h1>
+    </div> <!-- #content-header -->
 
     <div class="row">
         <div class="col-sm-12 center">
@@ -18,7 +20,19 @@
     </div>
     <br />
     <br />
-    <h4>
-        See what <a href="https://en.wikipedia.org/wiki/Aardvark" target="_blank">wiki has to say</a>!
-    </h4>
+    <div class="row">
+        <div class="col-sm-5 col-sm-offset-2">
+            <h4>
+                See what <a href="https://en.wikipedia.org/wiki/Aardvark" target="_blank">wiki has to say</a>!
+            </h4>
+        </div>
+    </div>
 </div>
+@section Scripts {
+        <script>
+            $(document).ready(function () {
+                $('#menu-Home').addClass('active');
+            });
+        </script>
+    }
+

@@ -2,11 +2,11 @@
 
 <div id="content">
     <div id="content-header">
-        <h1>Change Password</h1>
+        <h1>Preferences</h1>
     </div> <!-- #content-header -->
     <div id="content-container">
 
-        @using (Html.BeginForm("ChangePassword", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+        @*@using (Html.BeginForm("ChangePassword", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
         {
             @Html.AntiForgeryToken()
             <h4>Change Password Form</h4>
@@ -35,19 +35,19 @@
                     <input type="submit" value="Change password" class="btn btn-primary" />
                 </div>
             </div>
-        }
+        }*@
     </div>
 </div>
 
 @*@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
-}*@
+        @Scripts.Render("~/bundles/jqueryval")
+    }*@
 
 @section Scripts {
     <script>
     $(document).ready(function () {
         $('#menu-User').addClass('active');
-        $('#menu-User-Password').addClass('active');
+        $('#menu-User-Preferences').addClass('active');
     });
     </script>
 }
