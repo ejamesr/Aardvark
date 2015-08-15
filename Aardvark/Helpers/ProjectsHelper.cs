@@ -18,6 +18,44 @@ namespace Aardvark.Helpers
             return db.Projects.ToList();
         }
 
+        public class UserModel {
+            public bool IsLoggedIn;
+            public ApplicationUser User;
+            public string UserName;
+            public string DisplayName;
+            public string Role;
+            public bool IsDeveloper;
+            public bool IsAdmin;
+            public bool IsPM;
+        }
+
+        public static UserModel LoadUserModel()
+        {
+            UserRolesHelper helper = new UserRolesHelper();
+            UserModel model = new UserModel();
+            var user = helper.GetCurrentUser();
+            if (user == null)
+            {
+                model.IsLoggedIn = false;
+                model.User = user;
+                model.UserName = model.DisplayName = "Not logged in";
+                model.Role = "None";
+                model.IsAdmin = model.IsDeveloper = model.IsPM = false;
+            }
+            else
+            {
+                model.IsLoggedIn = true;
+                model.User = user;
+                model.UserName = user.UserName;
+                model.Role = helper.GetHighestRole(user.Id);
+                model.DisplayName = user.DisplayName.Length > 0 ? user.DisplayName : user.UserName;
+                model.IsDeveloper = helper.IsUserInRole(user.Id, R.Developer);
+                model.IsAdmin = helper.IsUserInRole(user.Id, R.Admin);
+                model.IsPM = helper.IsUserInRole(user.Id, R.PM);
+            }
+            return (model);
+        }
+
         public static ApplicationUser GetProjectManager(int projectId)
         {
             // Return the User object for the ProjectManager of this project

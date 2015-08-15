@@ -19,10 +19,14 @@ namespace Aardvark.Controllers
             //UserRolesHelper helper = new UserRolesHelper();
             //helper.ZapCookies();
 
-            // Create model...
+            // Create ViewBag model...
             var id = User.Identity.GetUserId();
             var altId = HttpContext.User.Identity.GetUserId();
             UserRolesViewModel Model = new UserRolesViewModel(id);
+            //ViewBag.SuppressDefaultLayout = true;
+
+            // Do this in every GET action...
+            ViewBag.UserModel = ProjectsHelper.LoadUserModel();
             return View(Model);
         }
 

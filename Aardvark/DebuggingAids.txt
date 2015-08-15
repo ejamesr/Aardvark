@@ -34,3 +34,11 @@ Next, make sure the input element has the name and id set to the value the POST 
 (i.e., set them to 'fileUpload').
 
 
+RouteConfig.cs
+==============
+Insert the statement:
+
+routes.LowercaseUrls = true;
+
+into RouteConfig.cs - this causes all URLs displayed at the bottom of the screen to show in lowercase,
+conforming to what is normally expected on the web.

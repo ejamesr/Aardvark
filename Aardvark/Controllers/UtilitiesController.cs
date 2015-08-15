@@ -333,7 +333,7 @@ namespace Aardvark.Controllers
                         DateTimeOffset.TryParse(colData[HeadingOffsets[(int)H.T_DateCreated]], out date);
                         if (date == DateTimeOffset.MinValue)
                         {
-                            ticket.Created = now;
+                            ticket.Created = ticket.MostRecentUpdate = now;
                             Section.LogAlert(db, "Ticket on row " + (row + 1) + " had invalid DateCreated -- using today's date");
                         }
                         else ticket.Created = date;

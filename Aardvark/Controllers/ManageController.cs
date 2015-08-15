@@ -1,4 +1,8 @@
-﻿using System;
+﻿using Aardvark.Helpers;
+using Aardvark.Models;
+using Aardvark.ViewModels;
+using System;
+using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -6,7 +10,6 @@ using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
-using Aardvark.Models;
 using System.Web.Security;
 using System.Security.Principal;
 
@@ -187,6 +190,76 @@ namespace Aardvark.Controllers
         }
 
         //
+        // GET: /Manage/Profile
+        public ActionResult UserProfile()
+        {
+            ApplicationDbContext db = new ApplicationDbContext();
+            var user = db.Users.Find(User.Identity.GetUserId());
+            if (user != null)
+            {
+                ProfileView profile = new ProfileView();
+                profile.Id = user.Id;
+                profile.FirstName = user.FirstName;
+                profile.LastName = user.LastName;
+                profile.DisplayName = user.DisplayName;
+                profile.UserName = user.UserName;
+                profile.Email = user.Email;
+                profile.Phone = user.PhoneNumber;
+                profile.NotifyByEmail = user.EmailNotification;
+                profile.NotifyByText = user.TextNotification;
+                profile.TextMsgNumber = user.TextMsgNumber;
+
+                // Do this in every action prior to view...
+                ViewBag.UserModel = ProjectsHelper.LoadUserModel();
+
+                return View(profile);
+            }
+            return View(user);
+        }
+
+                //
+        // POST: /Manage/Profile
+        [HttpPost]
+        public ActionResult UserProfile(ProfileView profile)
+        {
+
+            if (!ModelState.IsValid)
+            {
+                // Do this in every action prior to view...
+                ViewBag.UserModel = ProjectsHelper.LoadUserModel();
+
+                // Need to reset the fields that could be null
+                profile.NotifyByText = profile.NotifyByText ?? false;
+                profile.NotifyByEmail = profile.NotifyByEmail ?? false;
+                return View(profile);
+            }
+
+            // Values are good, need to take care with nullable items
+            ApplicationDbContext db = new ApplicationDbContext();
+            var user = db.Users.Find(profile.Id);
+
+            user.FirstName = profile.FirstName;
+            user.LastName = profile.LastName;
+            user.DisplayName = profile.DisplayName;
+            user.UserName = profile.UserName;
+            user.Email = profile.Email;
+            user.PhoneNumber = profile.Phone;
+            user.TextMsgNumber = profile.SameAsPhone == null ? profile.TextMsgNumber : profile.Phone;
+            user.EmailNotification = profile.NotifyByEmail ?? false;
+            user.TextNotification = profile.NotifyByText ?? false;
+            db.Entry(user).State = EntityState.Modified;
+            db.SaveChanges();
+            return RedirectToAction("Index", "Home");
+        } 
+
+        //
+        // GET: /Manage/Settings
+        public ActionResult Settings()
+        {
+            return View();
+        }
+
+        //
         // POST: /Manage/AddPhoneNumber
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -295,6 +368,8 @@ namespace Aardvark.Controllers
         // GET: /Manage/ChangePassword
         public ActionResult ChangePassword()
         {
+            // Do this in every action prior to view...
+            ViewBag.UserModel = ProjectsHelper.LoadUserModel();
             return View();
         }
 
@@ -306,6 +381,8 @@ namespace Aardvark.Controllers
         {
             if (!ModelState.IsValid)
             {
+                // Do this in every action prior to view...
+                ViewBag.UserModel = ProjectsHelper.LoadUserModel();
                 return View(model);
             }
             var result = await UserManager.ChangePasswordAsync(User.Identity.GetUserId(), model.OldPassword, model.NewPassword);
@@ -319,6 +396,8 @@ namespace Aardvark.Controllers
                 return RedirectToAction("Index", new { Message = ManageMessageId.ChangePasswordSuccess });
             }
             AddErrors(result);
+            // Do this in every action prior to view...
+            ViewBag.UserModel = ProjectsHelper.LoadUserModel();
             return View(model);
         }
 

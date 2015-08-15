@@ -192,6 +192,8 @@
     <Compile Include="Models\Log.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="ViewModels\ProfileView.cs" />
+    <None Include="ViewModels\TemplateToCopy.cshtlml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="BulkUpdateIdeas.txt" />
@@ -203,8 +205,10 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="img\Aardvarkant.jpg" />
     <Content Include="img\Aardvark_bw.GIF" />
     <Content Include="img\the_ant_and_the_aardvark_color_by_granitoons.jpg" />
+    <Content Include="img\TransparentAardvark.gif" />
     <Content Include="js\DataTables-1.10.7\examples\advanced_init\column_render.html" />
     <Content Include="js\DataTables-1.10.7\examples\advanced_init\complex_header.html" />
     <Content Include="js\DataTables-1.10.7\examples\advanced_init\defaults.html" />
@@ -954,6 +958,7 @@
     <Content Include="Template\canvas-admin-v1\Theme\js\libs\jquery.min.map" />
     <Content Include="Template\canvas-admin-v1\Theme\js\plugins\datatables\img\Sorting icons.psd" />
     <Content Include="Template\canvas-admin-v1\Theme\js\plugins\datepicker\less\datepicker.less" />
+    <Content Include="Views\Manage\UserProfile.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
