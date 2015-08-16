@@ -9,106 +9,122 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container">
-    <h2>Assign Developers to Project</h2>
-    <div class="row">
-        <div class="col-sm-1 text-right">
-            Project:
+<div id="content">
+    <div id="content-header">
+        <h1>Projects</h1>
+    </div> <!-- #content-header -->
+    <div class="container">
+        <h3>Assign Developers to Project</h3>
+        <div class="row">
+            <div class="col-sm-1 text-right">
+                Project:
+            </div>
+            <div class="col-sm-6">
+                @Model.Project.Name
+            </div>
         </div>
-        <div class="col-sm-6">
-            @Model.Project.Name
+        <div class="row">
+            <div class="col-sm-1 text-right">
+                PM:
+            </div>
+            <div class="col-sm-6">
+                @Model.NamePM
+            </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-1 text-right">
-            PM:
-        </div>
-        <div class="col-sm-6">
-            @Model.NamePM
-        </div>
-    </div>
 
-    @using (Html.BeginForm())
-    {
-        @Html.AntiForgeryToken()
-        <div class="row">
-            <table class="table table-responsive">
-                <thead>
-                    <tr>
-                        <th class="col-sm-2"></th>
-                        <th class="col-sm-2 text-center" colspan="2">~~~ This Project ~~~</th>
-                        <th class="col-sm-2 text-center" colspan="2">~~~ All Projects ~~~</th>
-                    </tr>
-                    <tr>
-                        <th class="col-sm-2">
-                            Developer
-                            <input type="hidden" name="Id" value="@Model.Project.Id" />
-                        </th>
-                        <th class="col-sm-1 text-center">Assigned</th>
-                        <th class="col-sm-1 text-center"># Tickets</th>
-                        <th class="col-sm-1 text-center">Tot Projects</th>
-                        <th class="col-sm-1 text-center">Tot Tickets</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var dev in Model.Assigned)
-                    {
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            <div class="row">
+                <table class="table table-responsive">
+                    <thead>
                         <tr>
-                            <td class="col-sm-3">
-                                @{
-                                    @dev.Name
-                                    <input type="hidden" name="Select" value="@dev.Id" />
-                                    <input type="hidden" name="Select" value="T" />
-                                }
-                            </td>
-                            <td class="col-sm-1 text-center">
-                                <input type="checkbox" name="Select" value="1" checked />
-                            </td>
-                            <td class="col-sm-1 text-center">
-                                @dev.NumTicketsThisProject.ToString()
-                            </td>
-                            <td class="col-sm-1 text-center">
-                                @dev.NumProjects.ToString()
-                            </td>
-                            <td class="col-sm-1 text-center">
-                                @dev.NumTickets.ToString()
-                            </td>
+                            <th class="col-sm-2"></th>
+                            <th class="col-sm-2 text-center" colspan="2">~~~ This Project ~~~</th>
+                            <th class="col-sm-2 text-center" colspan="2">~~~ All Projects ~~~</th>
                         </tr>
-                    }
-                    @foreach (var dev in Model.NotAssigned)
-                    {
                         <tr>
-                            <td class="col-sm-3">
-                                @{
-                                    @dev.Name
-                                    <input type="hidden" name="Select" value="@dev.Id" />
-                                    <input type="hidden" name="Select" value="F" />
-                                }
-                            </td>
-                            <td class="col-sm-1 text-center">
-                                <input type="checkbox" name="Select" value="T" />
-                            </td>
-                            <td class="col-sm-1 text-center">
-                                @dev.NumTicketsThisProject.ToString()
-                            </td>
-                            <td class="col-sm-1 text-center">
-                                @dev.NumProjects.ToString()
-                            </td>
-                            <td class="col-sm-1 text-center">
-                                @dev.NumTickets.ToString()
-                            </td>
+                            <th class="col-sm-2">
+                                Developer
+                                <input type="hidden" name="Id" value="@Model.Project.Id" />
+                            </th>
+                            <th class="col-sm-1 text-center">Assigned</th>
+                            <th class="col-sm-1 text-center"># Tickets</th>
+                            <th class="col-sm-1 text-center">Tot Projects</th>
+                            <th class="col-sm-1 text-center">Tot Tickets</th>
                         </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-        <div class="row">
-            <div class="col-sm-2 col-sm-offset-3">
-                @Html.ActionLink("Return to Index", "Index")
+                    </thead>
+                    <tbody>
+                        @foreach (var dev in Model.Assigned)
+                        {
+                            <tr>
+                                <td class="col-sm-3">
+                                    @{
+                                        @dev.Name
+                                        <input type="hidden" name="Select" value="@dev.Id" />
+                                        <input type="hidden" name="Select" value="T" />
+                                    }
+                                </td>
+                                <td class="col-sm-1 text-center">
+                                    <input type="checkbox" name="Select" value="1" checked />
+                                </td>
+                                <td class="col-sm-1 text-center">
+                                    @dev.NumTicketsThisProject.ToString()
+                                </td>
+                                <td class="col-sm-1 text-center">
+                                    @dev.NumProjects.ToString()
+                                </td>
+                                <td class="col-sm-1 text-center">
+                                    @dev.NumTickets.ToString()
+                                </td>
+                            </tr>
+                        }
+                        @foreach (var dev in Model.NotAssigned)
+                        {
+                            <tr>
+                                <td class="col-sm-3">
+                                    @{
+                                        @dev.Name
+                                        <input type="hidden" name="Select" value="@dev.Id" />
+                                        <input type="hidden" name="Select" value="F" />
+                                    }
+                                </td>
+                                <td class="col-sm-1 text-center">
+                                    <input type="checkbox" name="Select" value="T" />
+                                </td>
+                                <td class="col-sm-1 text-center">
+                                    @dev.NumTicketsThisProject.ToString()
+                                </td>
+                                <td class="col-sm-1 text-center">
+                                    @dev.NumProjects.ToString()
+                                </td>
+                                <td class="col-sm-1 text-center">
+                                    @dev.NumTickets.ToString()
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
             </div>
-            <div class="col-sm-1">
-                <input type="submit" value="Update" class="btn btn-success" />
+            <div class="row">
+                <div class="col-sm-2 col-sm-offset-3">
+                    @Html.ActionLink("Return to Index", "Index")
+                </div>
+                <div class="col-sm-1">
+                    <input type="submit" value="Update" class="btn btn-success" />
+                </div>
             </div>
-        </div>
-    }
+        }
+    </div>
 </div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#sidebar-Projects').addClass('active');
+            $('#sidebar-Projects-AssignDev').addClass('active');
+        });
+    </script>
+}
+
+

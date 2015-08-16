@@ -75,6 +75,10 @@ namespace Aardvark.Controllers
 
             // Create list of all roles
             List<string> roles = db.Roles.Select(r => r.Name).ToList();
+
+            // We don't need Guest or NewUser, so remove them
+            roles.Remove(R.Guest);
+            roles.Remove(R.NewUser);
             int nRoles = roles.Count;
 
             // Create list of users

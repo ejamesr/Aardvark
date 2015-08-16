@@ -18,6 +18,46 @@ namespace Aardvark.Helpers
             return db.Projects.ToList();
         }
 
+        public static string[] TicketDueStatus(DateTimeOffset date)
+        {
+            var diff = date - DateTimeOffset.UtcNow;
+            int days = diff.Days;
+            int hrs = diff.Hours;
+            if (days < -1)
+            {
+                // Overdue!
+                return new string[] {
+                    String.Format("Ticket {0}d {1}h overdue!", -days, -hrs),
+                    "wayOverdue" };
+            }
+            else if (days < 0)
+            {
+                return new string[] {
+                    String.Format("Ticket {0}d {1}h overdue", -days, -hrs),
+                    "overdue"};
+            }
+            else if (days < 1)
+            {
+                return new string[] { "Ticket due today", "dueToday" };
+            }
+            else
+            {
+                string d = String.Format("Ticket due {0}d {1}h", days, hrs);
+                if (days < 7)
+                {
+                    return new string[] { d, "dueWeek" };
+                }
+                else if (days < 30)
+                {
+                    return new string[] { d, "dueMonth" };
+                }
+                else
+                {
+                    return new string[] { d, "dueLater" };
+                }
+            }
+        }
+
         public class UserModel {
             public bool IsLoggedIn;
             public ApplicationUser User;

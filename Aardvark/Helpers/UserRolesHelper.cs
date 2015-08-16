@@ -169,21 +169,23 @@ namespace Aardvark.Helpers
         {
             if (user == null)
                 return "(no user)";
-            string name = "";
-            if (user.FirstName != "")
-            {
-                name += user.FirstName + "-";
-            }
-            if (user.LastName != "")
-            {
-                name += user.LastName + "-";
-            }
-            if (user.DisplayName != "")
-            {
-                name += user.DisplayName + "-";
-            }
-            name += user.UserName;
-            return name;
+            return user.DisplayName != "" ? user.DisplayName : user.UserName;
+
+            //string name = "";
+            //if (user.FirstName != "")
+            //{
+            //    name += user.FirstName + "-";
+            //}
+            //if (user.LastName != "")
+            //{
+            //    name += user.LastName + "-";
+            //}
+            //if (user.DisplayName != "")
+            //{
+            //    name += user.DisplayName + "-";
+            //}
+            //name += user.UserName;
+            //return name;
         }
 
         public string GetProjectManagerDisplayName(int projectId)

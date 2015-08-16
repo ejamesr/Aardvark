@@ -5,187 +5,210 @@
     private int anchorNum = 1;    // This can now be accessed in the @helper method
     private string anchorName = "";
 }
+@using Aardvark.Helpers;
 
-@{
-    ViewBag.Title = "Details";
-}
+<div id="content">
+    <div id="content-header">
+        <h1>Tickets</h1>
+    </div> <!-- #content-header -->
+    <div id="content-container">
 
-<h2>Details</h2>
+        <h3>Ticket # @Model.Id: @Model.Title</h3>
+        <hr />
+        <div class="row my-row">
+            <div class="col-sm-1 my-label">
+                Description
+            </div>
+            <div class="col-sm-8 my-data">
+                @Model.Description
+            </div>
+        </div>
 
-<div>
-    <h4>Ticket # @Model.Id</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.AssignedToDev.FirstName)
-        </dt>
+        <div class="row my-row">
+            <div class="col-sm-1 col-xs-2 my-label">
+                Type
+            </div>
+            <div class="col-sm-2 col-xs-4 my-data">
+                @Model.TicketType.Name
+            </div>
+            <div class="col-sm-1 col-xs-2 my-label">
+                Priority
+            </div>
+            <div class="col-sm-2 col-xs-4 my-data">
+                @Model.TicketPriority.Name
+            </div>
+            <div class="col-sm-1 col-xs-2 my-label">
+                Status
+            </div>
+            <div class="col-sm-2 col-xs-4 my-data">
+                @Model.TicketStatus.Name
+            </div>
+            <div class="col-sm-1 col-xs-2 my-label">
+                Skill
+            </div>
+            <div class="col-sm-2 col-xs-4 my-data">
+                @Model.SkillRequired.Name
+            </div>
+        </div>
+        <hr />
+        <div class="row my-row">
+            <div class="col-sm-2 col-xs-3 my-label">
+                Assigned to
+            </div>
+            <div class="col-sm-2 col-xs-3 my-data">
+                @if (Model.AssignedToDevId == null)
+                { 
+                    <text>not assigned</text>
+                }
+                else
+                {
+                    @Html.DisplayFor(model => model.AssignedToDev.UserName)
+                }
+            </div>
+            
+            <div class="col-sm-2 col-xs-3 my-label">
+                Owner/Creator
+            </div>
+            <div class="col-sm-2 col-xs-3 my-data">
+                @Html.DisplayFor(model => model.OwnerUser.UserName)
+            </div>
+        </div>
 
-        <dd>
-            @Html.DisplayFor(model => model.AssignedToDev.FirstName)
-        </dd>
+        <div class="row my-row">
+            <div class="col-sm-2 my-label">
+                Created
+            </div>
+            <div class="col-sm-2 my-data">
+                @Model.Created.ToString("d")
+            </div>
+            <div class="col-sm-2 my-label">
+                Updated
+            </div>
+            <div class="col-sm-1 my-data">
+                @if (Model.Updated != null)
+                {
+                    Model.Updated.Value.ToString("d");
+                }
+                else
+                { <text>not updated</text>}
+            </div>
+            <div class="col-sm-2 my-label">
+                Est Hours
+            </div>
+            <div class="col-sm-2 my-data">
+                @Model.HoursToComplete
+            </div>
+        </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.OwnerUser.FirstName)
-        </dt>
+        <div class="row my-row">
+            <div class="col-sm-2 my-label">
+                Last Activity
+            </div>
+            <div class="col-sm-2 my-data">
+                @Model.MostRecentUpdate.ToString("d")
+            </div>
 
-        <dd>
-            @Html.DisplayFor(model => model.OwnerUser.FirstName)
-        </dd>
+            <div class="col-sm-2 my-label">
+                Due Date
+            </div>
+            <div class="col-sm-2 my-data">
+                @Model.DueDate.ToString("d")
+            </div>
+            @{
+                var status = ProjectsHelper.TicketDueStatus(Model.DueDate);
+            }
+            <div class="col-sm-3 my-data @status[1]">
+                @status[0]
+            </div>
+        </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Project.Name)
-        </dt>
+        <div class="row my-row">
+            <div class="col-sm-2 my-label">
+                Project Name
+            </div>
+            <div class="col-sm-8 my-data">
+                @Model.Project.Name
+            </div>
+        </div>
 
-        <dd>
-            @Html.DisplayFor(model => model.Project.Name)
-        </dd>
+        <div class="row my-row">
+            <div class="col-sm-2 my-label">
+                Description
+            </div>
+            <div class="col-sm-8 my-data">
+                @Model.Project.Description
+            </div>
+        </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.SkillRequired.Name)
-        </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.SkillRequired.Name)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.TicketPriority.Name)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.TicketPriority.Name)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.TicketStatus.Name)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.TicketStatus.Name)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.TicketType.Name)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.TicketType.Name)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Title)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Title)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Created)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Created)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Updated)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Updated)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.DueDate)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.DueDate)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.HoursToComplete)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.HoursToComplete)
-        </dd>
-
-    </dl>
-</div>
-<div class="row">
-    <div class="col-sm-2">
-        <p>
-            @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-            @Html.ActionLink("Back to List", "Index")
-        </p>
     </div>
-    @{
-        // Get list of comments, allow users to create and reply to comments
+    <div class="row">
+        <div class="col-sm-2">
+            <p>
+                @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+                @Html.ActionLink("Back to List", "Index")
+            </p>
+        </div>
+        @{
+            // Get list of comments, allow users to create and reply to comments
 
-        // Create incrementing anchor names, grab this id, to pass to Comments/Create
-        int anchorNum = 0;
-        int modelId = Model.Id;
+            // Create incrementing anchor names, grab this id, to pass to Comments/Create
+            int anchorNum = 0;
+            int modelId = Model.Id;
 
-        // And create the anchor for this point...
-        string anchorName = "a" + anchorNum++;
-        <a name="@anchorName"></a>
+            // And create the anchor for this point...
+            string anchorName = "a" + anchorNum++;
+            <a name="@anchorName"></a>
 
-        // Grab all the undeleted comments
-        var comments = Model.Comments
-            .Where(model => model.ParentCommentId == null && model.Deleted == false)
-            //.OrderByDescending(d => d.Created)
-            .OrderBy(d => d.Created)
-            .ToList();
+            // Grab all the undeleted comments
+            var comments = Model.Comments
+                .Where(model => model.ParentCommentId == null && model.Deleted == false)
+                //.OrderByDescending(d => d.Created)
+                .OrderBy(d => d.Created)
+                .ToList();
 
-        // Remeber whether there are any level-0 comments (commenting on the post, not on another comment)
-        int numC = comments.Count();
+            // Remeber whether there are any level-0 comments (commenting on the post, not on another comment)
+            int numC = comments.Count();
 
-        // This is how I finally figured out how to create a link with a custom URL
-        var route = new { id = modelId, anchor = anchorName, page = ViewBag.PageNumber };
-        //var route2 = new { id = c.PostId, anchor = anchorName, page = ViewBag.PageNumber, cid = c.Id };
+            // This is how I finally figured out how to create a link with a custom URL
+            var route = new { id = modelId, anchor = anchorName, page = ViewBag.PageNumber };
+    //var route2 = new { id = c.PostId, anchor = anchorName, page = ViewBag.PageNumber, cid = c.Id };
 
-       <div class="col-sm-5 col-sm-offset-1">
-            <div class="btn-group btn-color btn-group-justified" role="group" aria-label="...">
-                @Html.ActionLink("Add comment", "Create", "Comments",
+    <div class="col-sm-5 col-sm-offset-1">
+        <div class="btn-group btn-color btn-group-justified" role="group" aria-label="...">
+            @Html.ActionLink("Add comment", "Create", "Comments",
                     new { id = Model.Id, anchor = "noneYet", page = "1" }, new { @class = "btn btn-info" })
-                @Html.ActionLink("Attachments", "Index", "Attachments",
+            @Html.ActionLink("Attachments", "Index", "Attachments",
                     new { id = Model.Id }, new { @class = "btn btn-info" })
-                @Html.ActionLink("Histories", "Index", "Comments",
+            @Html.ActionLink("Histories", "Index", "Comments",
                     new { id = Model.Id, anchor = "noneYet", page = "1" }, new { @class = "btn btn-info" })
+        </div>
+    </div>
+        }
+    </div>
+    @if (numC >= 1)
+    {
+        // Now, call helper method to display all the comments
+        <div class="row">
+            <div class="col-sm-8 col-sm-offset-1">
+                @ShowComments(comments, 0)
             </div>
         </div>
     }
-</div>
-@if (numC >= 1)
-{ 
-    // Now, call helper method to display all the comments
+    <hr />
     <div class="row">
-        <div class="col-sm-8 col-sm-offset-1">
-            @ShowComments(comments, 0)
+        <div class="col-sm-5 col-sm-offset-1">
+            @if (User.IsInRole("Admin"))
+            {
+                @Html.ActionLink("Edit post", "Edit", new { id = Model.Id, @page = ViewBag.PageNumber })
+                <span> | </span>
+            }
+            @Html.ActionLink("Back to List", "Index", new { @page = ViewBag.PageNumber })
         </div>
     </div>
-}
-<hr />
-<div class="row">
-    <div class="col-sm-5 col-sm-offset-1">
-        @if (User.IsInRole("Admin"))
-        {
-            @Html.ActionLink("Edit post", "Edit", new { id = Model.Id, @page = ViewBag.PageNumber })
-            <span> | </span>
-        }
-        @Html.ActionLink("Back to List", "Index", new { @page = ViewBag.PageNumber })
-    </div>
 </div>
+
+
 
 @helper ShowComments(ICollection<Aardvark.Models.TicketComment> comments, int depth)
 {
@@ -263,5 +286,14 @@
         // Now recursively show all comments for this comment
         @ShowComments(c.TicketComments, depth + 1)
     }
+}
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#sidebar-Tickets').addClass('active');
+            $('#sidebar-Tickets-Details').addClass('active');
+        });
+    </script>
 }
 

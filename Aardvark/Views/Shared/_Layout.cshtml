@@ -99,12 +99,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="">
     <meta name="author" content="" />
+    <link href="~/js/jquery-ui-1.11.4.custom/jquery-ui.min.css" rel="stylesheet" />
+    <link href="~/js/jquery-ui-1.11.4.custom/jquery-ui.structure.min.css" rel="stylesheet" />
+    <link href="~/js/jquery-ui-1.11.4.custom/jquery-ui.theme.min.css" rel="stylesheet" />
+    <!-- DataTables -->
+    <link href="~/js/DataTables-1.10.7/media/css/jquery.dataTables.css" rel="stylesheet" />
 
     <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:400italic,600italic,800italic,400,600,800" type="text/css">
     <link href="~/Template/canvas-admin-v1/Theme/css/font-awesome.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="~/Template/canvas-admin-v1/Theme/css/font-awesome.min.css" type="text/css" />
     <link rel="stylesheet" href="~/Template/canvas-admin-v1/Theme/css/bootstrap.min.css" type="text/css" />
-    <link rel="stylesheet" href="~/Template/canvas-admin-v1/Theme/js/libs/css/ui-lightness/jquery-ui-1.9.2.custom.css" type="text/css" />
+    @*<link rel="stylesheet" href="~/Template/canvas-admin-v1/Theme/js/libs/css/ui-lightness/jquery-ui-1.9.2.custom.css" type="text/css" />*@
 
     <link rel="stylesheet" href="~/Template/canvas-admin-v1/Theme/js/plugins/icheck/skins/minimal/blue.css" type="text/css" />
     <link rel="stylesheet" href="~/Template/canvas-admin-v1/Theme/js/plugins/select2/select2.css" type="text/css" />
@@ -255,8 +260,8 @@
                                 <span class="caret"></span>
                             </a>
                             <ul class="sub-nav">
-                                <li id="Users-Manage" id="sidebar-Users-Manage">
-                                    <a href="@Url.Action("ManageUsers", "Home")">
+                                <li id="Users-Manage">
+                                    <a href="@Url.Action("ManageUsers", "Home")" id="sidebar-Users-Manage">
                                         <i class="fa fa-user"></i>
                                         Manage Users
                                     </a>
@@ -290,6 +295,20 @@
                                         Create New Project
                                     </a>
                                 </li>
+                                @*<li class="divider"></li>
+                                <li id="Projects-AssignDev">
+                                    <a href="@Url.Action("AssignDev", "Projects")" id="sidebar-Projects-AssignDev">
+                                        <i class="fa fa-pencil-square-o"></i>
+                                        Assign Developers to Projects
+                                    </a>
+                                </li>
+                                <li class="divider"></li>
+                                <li id="Projects-AssignPM">
+                                    <a href="@Url.Action("Create", "Projects")" id="sidebar-Projects-AssignPM">
+                                        <i class="fa fa-pencil-square-o"></i>
+                                        Assign Project Managers to Projects
+                                    </a>
+                                </li>*@
                             </ul>
                         </li>
 
@@ -319,6 +338,26 @@
                                         Create New Ticket
                                     </a>
                                 </li>
+                                <li class="divider"></li>
+                                <li>
+                                    <a href="@Url.Action("Create", "Tickets")" id="sidebar-Tickets-Create">
+                                        <i class="fa fa-pencil-square-o"></i>
+                                        Tickets not Assigned
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="@Url.Action("Create", "Tickets")" id="sidebar-Tickets-Create">
+                                        <i class="fa fa-pencil-square-o"></i>
+                                        Ready to Test
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="@Url.Action("Create", "Tickets")" id="sidebar-Tickets-Create">
+                                        <i class="fa fa-pencil-square-o"></i>
+                                        Final Review
+                                    </a>
+                                </li>
+
                             </ul>
                         </li>
 
@@ -459,33 +498,39 @@
         </ul>
     </footer>
 
-    <script src="~/Template/canvas-admin-v1/Theme/js/libs/jquery-1.9.1.min.js"></script>
-    <script src="~/Template/canvas-admin-v1/Theme/js/libs/jquery-ui-1.9.2.custom.min.js"></script>
-    <script src="~/Template/canvas-admin-v1/Theme/js/libs/bootstrap.min.js"></script>
+        <script src="~/js/jquery-2.1.4.min.js"></script>
+        <script src="~/js/jquery-ui-1.11.4.custom/jquery-ui.min.js"></script>
 
-    <script src="~/Template/canvas-admin-v1/Theme/js/plugins/icheck/jquery.icheck.min.js"></script>
-    <script src="~/Template/canvas-admin-v1/Theme/js/plugins/select2/select2.js"></script>
-    <script src="~/Template/canvas-admin-v1/Theme/js/plugins/tableCheckable/jquery.tableCheckable.js"></script>
+        <!-- DataTables -->
+        <script src="~/js/DataTables-1.10.7/media/js/jquery.js"></script>
 
-    <script src="~/Template/canvas-admin-v1/Theme/js/App.js"></script>
+        @*<script src="~/Template/canvas-admin-v1/Theme/js/libs/jquery-1.9.1.min.js"></script>
+        <script src="~/Template/canvas-admin-v1/Theme/js/libs/jquery-ui-1.9.2.custom.min.js"></script>*@
+        <script src="~/Template/canvas-admin-v1/Theme/js/libs/bootstrap.min.js"></script>
 
-    <script src="~/Template/canvas-admin-v1/Theme/js/libs/raphael-2.1.2.min.js"></script>
-    <script src="~/Template/canvas-admin-v1/Theme/js/plugins/morris/morris.min.js"></script>
+        <script src="~/Template/canvas-admin-v1/Theme/js/plugins/icheck/jquery.icheck.min.js"></script>
+        <script src="~/Template/canvas-admin-v1/Theme/js/plugins/select2/select2.js"></script>
+        <script src="~/Template/canvas-admin-v1/Theme/js/plugins/tableCheckable/jquery.tableCheckable.js"></script>
 
-    <script src="~/Template/canvas-admin-v1/Theme/js/demos/charts/morris/area.js"></script>
-    <script src="~/Template/canvas-admin-v1/Theme/js/demos/charts/morris/donut.js"></script>
+        <script src="~/Template/canvas-admin-v1/Theme/js/App.js"></script>
 
-    <script src="~/Template/canvas-admin-v1/Theme/js/plugins/sparkline/jquery.sparkline.min.js"></script>
+        <script src="~/Template/canvas-admin-v1/Theme/js/libs/raphael-2.1.2.min.js"></script>
+        <script src="~/Template/canvas-admin-v1/Theme/js/plugins/morris/morris.min.js"></script>
 
-    <script src="~/Template/canvas-admin-v1/Theme/js/plugins/fullcalendar/fullcalendar.min.js"></script>
-    <script src="~/Template/canvas-admin-v1/Theme/js/demos/calendar.js"></script>
+        <script src="~/Template/canvas-admin-v1/Theme/js/demos/charts/morris/area.js"></script>
+        <script src="~/Template/canvas-admin-v1/Theme/js/demos/charts/morris/donut.js"></script>
 
-    <script src="~/Template/canvas-admin-v1/Theme/js/demos/dashboard.js"></script>
+        <script src="~/Template/canvas-admin-v1/Theme/js/plugins/sparkline/jquery.sparkline.min.js"></script>
 
-</body>
-</html>
-}
-else {
-    @RenderBody()
-}
-@RenderSection("Scripts", false)
+        <script src="~/Template/canvas-admin-v1/Theme/js/plugins/fullcalendar/fullcalendar.min.js"></script>
+        <script src="~/Template/canvas-admin-v1/Theme/js/demos/calendar.js"></script>
+
+        <script src="~/Template/canvas-admin-v1/Theme/js/demos/dashboard.js"></script>
+
+    </body>
+    </html>
+    }
+    else {
+        @RenderBody()
+    }
+    @RenderSection("Scripts", false)

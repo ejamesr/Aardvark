@@ -25,6 +25,7 @@ namespace Aardvark.Controllers
             ViewBag.Roles = Roles;
             // Do this in every GET action...
             ViewBag.UserModel = ProjectsHelper.LoadUserModel();
+            ViewBag.Scope = scope;
 
             if (scope == "My")
             {
