@@ -61,8 +61,13 @@ namespace Aardvark.Models
         //        : (HttpContext.Current.User.IsInRole(R.Guest) ? "DefaultGuestConnection" : "DefaultConnection")), throwIfV1Schema: false)
         //{
         //}
+        // Copy/Paste one of these into base below...
+        //
+        // DefaultConnection    - local copy
+        // aardvark-ejr         - on website
+        //
         public ApplicationDbContext()
-            : base("DefaultConnection", throwIfV1Schema: false)
+            : base("aardvark-ejr", throwIfV1Schema: false)
         {
         }
 

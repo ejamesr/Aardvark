@@ -1,0 +1,91 @@
+﻿@model EJR_Profile.Models.Comment
+
+@{
+    ViewBag.Title = "Edit";
+    int page = ViewBag.page;
+    string anchor = ViewBag.anchor;
+}
+
+<div class="wrapper">
+    <!-- Topic Header -->
+    <div class="topic">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-8">
+                    <h3 class="primary-font">
+                        My Blog
+                    </h3>
+                </div>
+                <div class="col-sm-4">
+                    <ol class="breadcrumb pull-right hidden-xs">
+                        <li>@Html.ActionLink("Blog", "Index", "Posts")</li>
+                        <li>
+                            @Html.ActionLink("Details", "Details", "Posts", null, null,
+                                anchor, new { id = ViewBag.id, page = ViewBag.page }, null)
+                        </li>
+                        <li class="active">Comment</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-horizontal">
+                <h4>Comment</h4>
+                <hr />
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                @Html.HiddenFor(model => model.Id)
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.DisplayName, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.DisplayName, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.DisplayName, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Body, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.TextAreaFor(model => model.Body, 4, 200, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Body, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.UpdateReason, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.UpdateReason, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.UpdateReason, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                @* Add the fragment info here... *@
+                <div class="hidden">
+                    <input type="text" name="id" value=@ViewBag.id />
+                    <input type="text" name="page" value=@ViewBag.page />
+                    <input type="text" name="anchor" value=@ViewBag.anchor />
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="submit" value="Save" class="btn btn-default btn-blue" />
+                    </div>
+                </div>
+            </div>
+        }
+
+        <div>
+            @Html.ActionLink("Back to List", "Details", "Posts", null, null,
+                                anchor, new { id = ViewBag.id, page = ViewBag.page }, null)
+        </div>
+    </div>
+</div>
+
+        @section Scripts {
+            @Scripts.Render("~/bundles/jqueryval")
+        }

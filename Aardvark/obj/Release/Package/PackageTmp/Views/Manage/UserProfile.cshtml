@@ -1,0 +1,101 @@
+﻿@model Aardvark.ViewModels.ProfileView
+
+<div id="content">
+    <div id="content-header">
+        <h1>Profile</h1>
+    </div> <!-- #content-header -->
+    <div id="content-container">
+        <h2>Edit your profile</h2>
+
+        @using (Html.BeginForm("UserProfile", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+        {
+            @Html.AntiForgeryToken()
+            <hr />
+            @Html.ValidationSummary("", new { @class = "text-danger" })
+            @Html.HiddenFor(m => m.Id)
+            <div class="form-group">
+                @Html.Label("First Name", new { @class = "col-md-2 control-label" })
+                <div class="col-md-4">
+                    @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.Label("Last Name", new { @class = "col-md-2 control-label" })
+                <div class="col-md-4">
+                    @Html.TextBoxFor(m => m.LastName, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.Label("Display Name", new { @class = "col-md-2 control-label" })
+                <div class="col-md-4">
+                    @Html.TextBoxFor(m => m.DisplayName, new { @class = "form-control",
+           title = "This is the name displayed at the top of each screen" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.Label("User Name", new { @class = "col-md-2 control-label" })
+                <div class="col-md-4">
+                    @Html.TextBoxFor(m => m.UserName, new { @class = "form-control",
+                   title = "This is your login name; it must be unique" })
+                </div>
+            </div>
+    <div class="form-group">
+        @Html.Label("Email Address", new { @class = "col-md-2 control-label" })
+        <div class="col-md-4">
+            @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.Label("Phone Number", new { @class = "col-md-2 control-label" })
+        <div class="col-md-4">
+            @Html.TextBoxFor(m => m.Phone, new { @class = "form-control", onchange = "PhoneChanged(this)" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.Label("Text Msg Number", new { @class = "col-md-2 control-label" })
+        <div class="col-md-4">
+            @Html.TextBoxFor(m => m.TextMsgNumber, new { @class = "form-control" })
+        </div>
+        <div class="col-md-2">
+            <input type="checkbox" id="SameAsPhone" name="SameAsPhone" value="true" onchange="TxtSameAsPhone(this)" />
+            &nbsp;Same as phone?
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.Label("Notifications", new { @class = "col-md-2 control-label" })
+        <div class="col-md-4">
+            <input type="checkbox" @((bool)Model.NotifyByText ? "checked" : "") name="NotifyByText" value="true" />
+            &nbsp;by text?
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" @((bool)Model.NotifyByEmail ? "checked" : "") name="NotifyByEmail" value="true" />
+            &nbsp;by email?
+        </div>
+    </div>
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" class="btn btn-primary" value="Submit" />
+                </div>
+            </div>
+        }
+    </div>
+</div>
+<script>
+    function PhoneChanged(phone) {
+        if ($("#SameAsPhone").is(":checked"))
+            $("#TextMsgNumber").val($("#Phone").val());
+    }
+    function TxtSameAsPhone(box) {
+        if (box.checked) {
+            $("#TextMsgNumber").val($("#Phone").val());
+            $("#TextMsgNumber").prop('disabled', true);
+        }
+        else $("#TextMsgNumber").prop('disabled', false);
+    }
+</script>
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#menu-User').addClass('active');
+            $('#menu-User-Profile').addClass('active');
+        });
+    </script>
+}

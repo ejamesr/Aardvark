@@ -1,0 +1,49 @@
+﻿For Aardvark to be truly functional, the Admin should be able to quickly populate the Users in the system
+via CSV data that can be easily created in Excel.
+
+Adding a user:
+=============
+Use whichever column headings are desired. Available columns:
+
+Columns:	UserName, DisplayName, FirstName, LastName, 
+			Email, EmailConfirmed, PhoneNumber, PhoneNumberConfirmed, 
+			TextMsgNumber, SkillLevel, EmailNotificationOk, TextNotificationOk
+
+Rules:
+-----
+- UserName must be unique, must be present.
+- Email should be valid email format.
+- PhoneNumber should be valid, any non-digit chars will be stripped out during processing
+- Column names ending with "Ok" expect T or Y for true/yes, and F or N for false/no. Case insensitive.
+- SkillLevel valid values: Junior, Mid-Level, or Senior. Case insensitive.
+- Any column without an entry will be set to a blank value. If no SkillLevel specified, will default to Junior.
+- EmailConfirmed and PhoneNumberConfirmed expect T or F. If omitted or F,
+	an email and or text will be sent to the number to have it confirmed.
+  
+  
+Adding Roles:
+============
+Each UserName listed must already be registered in the system. Available columns:
+
+Columns:	UserName, Role1, Role2, Role3, Role4
+
+Rules:
+-----
+- UserName must be a valid UserName already in the system.
+- Valid values for any Role_ column: Admin, ProjectManager, Developer, Submitter. Case insensitive.
+- Roles can be listed in any order, in any column. Any empty column will simply be skipped over.
+- Roles should not be duplicated.
+
+
+Adding Projects:
+===============
+When projects are added, each must be assigned to a valid UserName already in the system with one role being "ProjectManager."
+
+Columns:	UserName, ProjectTitle, ProjectDescription
+
+Rules:
+-----
+- UserName must be valid.
+- UserName must have a role of "ProjectManager"
+- Both ProjectTitle and ProjectDescription must have entries. Case sensitive.
+

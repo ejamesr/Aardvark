@@ -1,0 +1,29 @@
+﻿@{
+    ViewBag.Title = "NeedAdmin";
+}
+
+
+@using Aardvark.Models;
+@model Aardvark.Models.ManageUsersModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div id="content">
+    <div id="content-header">
+        <h1>NeedAdmin</h1>
+    </div> <!-- #content-header -->
+    <div id="content-container">
+        <br />
+        <h3>There must always be at least one user with "Admin" role. No changes were made.</h3>
+        <br />
+        @using (Html.BeginForm())
+        {
+
+            <div class="row">
+                <div class="col-sm-offset-5 col-sm-1">
+                    @Html.ActionLink("Return to Index", "Index", null, new { @class = "btn btn-warning" })
+                </div>
+            </div>
+        }
+    </div>
+</div>

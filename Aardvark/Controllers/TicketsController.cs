@@ -43,7 +43,7 @@ namespace Aardvark.Controllers
             var userId = helper.GetCurrentUserId();
             // Do this in every GET action...
             ViewBag.UserModel = ProjectsHelper.LoadUserModel();
-            ViewBag.Scope = scope;
+            ViewBag.Scope = scope ?? "";
 
             if (scope == "My")
             {
@@ -56,10 +56,26 @@ namespace Aardvark.Controllers
                     .Union(db.Users.Find(userId).TicketsOwned);
                 return View(tickets.ToList());
             }
-            else
+            else if (scope == "All")
             {
                 // Come here in all other cases
                 var tickets = db.Tickets.Include(t => t.AssignedToDev).Include(t => t.OwnerUser).Include(t => t.Project).Include(t => t.SkillRequired).Include(t => t.TicketPriority).Include(t => t.TicketStatus).Include(t => t.TicketType);
+                return View(tickets.ToList());
+            }
+            else if (scope == "NotAssigned")
+            {
+                // Come here in all other cases
+                var tickets = db.Tickets
+                    .Where(tic => tic.TicketStatus.Step <= 30)
+                    .Include(t => t.AssignedToDev).Include(t => t.OwnerUser).Include(t => t.Project).Include(t => t.SkillRequired).Include(t => t.TicketPriority).Include(t => t.TicketStatus).Include(t => t.TicketType);
+                return View(tickets.ToList());
+            }
+            else // For all other scopes, come here
+            {
+                // Come here in all other cases
+                var tickets = db.Tickets
+                    .Where(tic => tic.TicketStatus.Name == scope)
+                    .Include(t => t.AssignedToDev).Include(t => t.OwnerUser).Include(t => t.Project).Include(t => t.SkillRequired).Include(t => t.TicketPriority).Include(t => t.TicketStatus).Include(t => t.TicketType);
                 return View(tickets.ToList());
             }
         }
@@ -86,7 +102,7 @@ namespace Aardvark.Controllers
         public ActionResult Create()
         {
             Ticket model = new Ticket();
-            model.DueDate = DateTimeOffset.UtcNow.AddDays(1);
+            model.DueDate = DateTimeOffset.UtcNow.AddDays(10);
             model.HoursToComplete = 1;
             UserRolesHelper helper = new UserRolesHelper();
             var id = User.Identity.GetUserId();
@@ -143,6 +159,16 @@ namespace Aardvark.Controllers
                 if (ticket.TicketStatusId == 0)
                     ticket.TicketStatusId = 1;  // Point to New status
                 ticket.SetCreated();
+
+                // Make sure there's a DueDate...
+                if (ticket.DueDate == DateTimeOffset.MinValue)
+                    ticket.DueDate = ticket.Created.AddDays(10.0);
+                // Make sure deadline is at 5pm!
+                TimeSpan time = ticket.DueDate.TimeOfDay;
+                ticket.DueDate = ticket.DueDate.Subtract(time);
+                time = new TimeSpan(17, 0, 0);
+                ticket.DueDate = ticket.DueDate.Add(time);
+
                 db.Tickets.Add(ticket);
                 db.SaveChanges();
                 TicketNotification.Notify(db, ticket,
@@ -249,7 +275,7 @@ namespace Aardvark.Controllers
                         TicketNotification.Notify(db, origTicket,
                             origTicket.Updated.Value, Notifications.AssignedToTicket);
                         TicketNotification.Notify(db, origTicket,
-                            origTicket.Updated.Value, Notifications.TicketEdited);
+                            origTicket.Updated.Value, Notifications.TicketModified);
                     }
                 }
                 return RedirectToAction("Index");

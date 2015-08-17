@@ -189,7 +189,8 @@ namespace Aardvark.Models
 
         public void SetCreated()
         {
-            Created = MostRecentUpdate = DateTimeOffset.UtcNow;
+            DateTimeOffset now = DateTimeOffset.UtcNow;
+            Created = MostRecentUpdate = now;
         }
         public void SetUpdated()
         {

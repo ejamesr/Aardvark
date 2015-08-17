@@ -136,7 +136,7 @@ namespace Aardvark.Controllers
                 db.Entry(ticketAttachment).State = EntityState.Modified;
                 db.SaveChanges();
                 TicketNotification.Notify(db, ticketAttachment.Ticket,
-                    DateTimeOffset.UtcNow, Notifications.AttachmentEdited);  // No Updated date to pull, so get current
+                    DateTimeOffset.UtcNow, Notifications.AttachmentModified);  // No Updated date to pull, so get current
                 return RedirectToAction("Index");
             }
             ViewBag.TicketId = new SelectList(db.Tickets, "Id", "Title", ticketAttachment.TicketId);

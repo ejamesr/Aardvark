@@ -1,0 +1,63 @@
+﻿@model Aardvark.Models.UserRolesViewModel
+@{
+    ViewBag.Title = "Home Page";
+}
+@using Aardvark.Models;
+@using Aardvark.Helpers;
+
+<!-- Each cshtml page must start with these first two divs (id="content" and id="content-header") -->
+<div id="content">
+    <div id="content-header">
+        <h1>Welcome to Aardvark... the really cool bug tracker!</h1>
+    </div> <!-- #content-header -->
+    <div class="">
+        <div class="row">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-3">
+                <h1>Aardvark</h1>
+                <br />
+                <p class="lead">
+                    Aardvark seeks out those bugs, won't let 'em hide!
+                </p>
+                <p class="center">
+                    <a href="@Url.Action("About", "Home")" class="btn btn-primary btn-lg">
+                        Learn more &raquo;
+                    </a>
+                </p>
+            </div>
+            <div class="col-sm-1"></div>
+            <div class="col-sm-3">
+                <img src="http://img11.deviantart.net/8956/i/2008/025/c/7/the_ant_and_the_aardvark_color_by_granitoons.jpg" height="300" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6 col-sm-offset-1">
+
+                @*
+                    The roles are listed in hierarchical order.
+                    But first we must ensure there is an authorized user...
+                *@
+                @if (Model.UserId == null)
+                {
+                    // Nobody signed in yet...
+                    <h3 class="warning">
+                        You must first
+                        @Html.ActionLink("log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" }) or
+                        @Html.ActionLink("register", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })
+                        before you can do anything with Aardvark
+                    </h3>
+                }
+                <br />
+            </div>
+        </div>
+    </div>
+</div> <!-- #content -->
+
+@section Scripts {
+    <script>
+    $(document).ready(function () {
+        $('#menu-Home').addClass('active');
+    });
+    </script>
+}
+

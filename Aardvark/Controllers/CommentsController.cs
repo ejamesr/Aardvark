@@ -92,6 +92,7 @@ namespace Aardvark.Controllers
             if (ModelState.IsValid)
             {
                 comment.SetCreated();
+                comment.TicketId = (int)id;
                 if (comment.DisplayName == "")
                     comment.DisplayName = "(no name)";
                 db.TicketComments.Add(comment);
@@ -171,7 +172,7 @@ namespace Aardvark.Controllers
                 db.Entry(orig).State = EntityState.Modified;
                 db.SaveChanges();
                 TicketNotification.Notify(db, orig.Ticket,
-                    orig.Updated.Value, Notifications.CommentEdited);
+                    orig.Updated.Value, Notifications.CommentModified);
                 return RedirectToAction("Details", "Posts", route);
             }
 

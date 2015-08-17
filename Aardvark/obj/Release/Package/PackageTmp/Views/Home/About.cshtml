@@ -1,0 +1,38 @@
+﻿@{
+    ViewBag.Title = "About Aardvark";
+}
+<div id="content">
+    <div id="content-header">
+        <h1>Welcome to Aardvark... the really cool bug tracker!</h1>
+    </div> <!-- #content-header -->
+
+    <div class="row">
+        <div class="col-sm-12 center">
+            <img src="http://www.enchantedlearning.com/agifs/Aardvark_bw.GIF" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-offset-3 col-sm-6">
+            <h2>
+                Aardvark uses its sharp claws and powerful muscles to dig out bugs from wherever they are trying to hide... and gets rid of them!
+            </h2>
+        </div>
+    </div>
+    <br />
+    <br />
+    <div class="row">
+        <div class="col-sm-5 col-sm-offset-2">
+            <h4>
+                See what <a href="https://en.wikipedia.org/wiki/Aardvark" target="_blank">wiki has to say</a>!
+            </h4>
+        </div>
+    </div>
+</div>
+@section Scripts {
+        <script>
+            $(document).ready(function () {
+                $('#menu-Home').addClass('active');
+            });
+        </script>
+    }
+

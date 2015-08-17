@@ -82,44 +82,80 @@ namespace Aardvark.Migrations
             //
 
             Stepper Step = new Stepper(20, 10);
+
+            //context.SkillLevels.AddOrUpdate(
+            //    skill => new { skill.Name, skill.Weight },
+            //    new SkillLevel { Name = "Jun", Weight = Step.Val },                 //"Junior", Weight = Step.Val },
+            //    new SkillLevel { Name = "Mid", Weight = Step.Val },                 //"Mid-Level", Weight = Step.Val },
+            //    new SkillLevel { Name = "Sen", Weight = Step.Val }                  //"Senior", Weight = Step.Val }
+            //    );
             context.SkillLevels.AddOrUpdate(
                 skill => new { skill.Name, skill.Weight },
-                new SkillLevel { Name = "Jun", Weight = Step.Val },                 //"Junior", Weight = Step.Val },
-                new SkillLevel { Name = "Mid", Weight = Step.Val },                 //"Mid-Level", Weight = Step.Val },
-                new SkillLevel { Name = "Sen", Weight = Step.Val }                  //"Senior", Weight = Step.Val }
+                new SkillLevel { Name = "Junior", Weight = Step.Val },
+                new SkillLevel { Name = "Mid-Level", Weight = Step.Val },
+                new SkillLevel { Name = "Senior", Weight = Step.Val }
                 );
 
             Step = new Stepper(0, 10);
+            //context.TicketStatuses.AddOrUpdate(
+            //    status => new { status.Name, status.Step },
+            //    new TicketStatus { Name = "New", Step = Step.Val },                 //"New", Step = Step.Val },
+            //    new TicketStatus { Name = "UnRep", Step = Step.Val },               //"UnableToReproduce", Step = Step.Val },
+            //    new TicketStatus { Name = "Deferred", Step = Step.Val },            //"Deferred/OnHold", Step = Step.Val },
+            //    new TicketStatus { Name = "R-Dev", Step = Step.Val },               //"ReadyToAssign", Step = Step.Val },
+            //    new TicketStatus { Name = "AtoDev", Step = Step.Val },              //"AssignedToDeveloper", Step = Step.Val },
+            //    new TicketStatus { Name = "InDev", Step = Step.Val },               //"InDevelopment", Step = Step.Val },
+            //    new TicketStatus { Name = "R-Test", Step = Step.Val },              //"ReadyToTest", Step = Step.Val },
+            //    new TicketStatus { Name = "AtoTest", Step = Step.Val },             //"AssignedToTester", Step = Step.Val },
+            //    new TicketStatus { Name = "InTest", Step = Step.Val },              //"InTesting", Step = Step.Val },
+            //    new TicketStatus { Name = "Review", Step = Step.Val },              //"ReadyToReview", Step = Step.Val },
+            //    new TicketStatus { Name = "Resolved", Step = Step.Val }             //"Resolved", Step = Step.Val }
+            //    );
             context.TicketStatuses.AddOrUpdate(
                 status => new { status.Name, status.Step },
-                new TicketStatus { Name = "New", Step = Step.Val },                 //"New", Step = Step.Val },
-                new TicketStatus { Name = "UnRep", Step = Step.Val },               //"UnableToReproduce", Step = Step.Val },
-                new TicketStatus { Name = "Deferred", Step = Step.Val },            //"Deferred/OnHold", Step = Step.Val },
-                new TicketStatus { Name = "R-Dev", Step = Step.Val },               //"ReadyToAssign", Step = Step.Val },
-                new TicketStatus { Name = "AtoDev", Step = Step.Val },              //"AssignedToDeveloper", Step = Step.Val },
-                new TicketStatus { Name = "InDev", Step = Step.Val },               //"InDevelopment", Step = Step.Val },
-                new TicketStatus { Name = "R-Test", Step = Step.Val },              //"ReadyToTest", Step = Step.Val },
-                new TicketStatus { Name = "AtoTest", Step = Step.Val },             //"AssignedToTester", Step = Step.Val },
-                new TicketStatus { Name = "InTest", Step = Step.Val },              //"InTesting", Step = Step.Val },
-                new TicketStatus { Name = "Review", Step = Step.Val },              //"ReadyToReview", Step = Step.Val },
-                new TicketStatus { Name = "Resolved", Step = Step.Val }             //"Resolved", Step = Step.Val }
+                new TicketStatus { Name = "New", Step = Step.Val },
+                new TicketStatus { Name = "UnableToReproduce", Step = Step.Val },
+                new TicketStatus { Name = "Deferred/OnHold", Step = Step.Val },
+                new TicketStatus { Name = "ReadyToAssign", Step = Step.Val },
+                new TicketStatus { Name = "AssignedToDeveloper", Step = Step.Val },
+                new TicketStatus { Name = "InDevelopment", Step = Step.Val },
+                new TicketStatus { Name = "ReadyToTest", Step = Step.Val },
+                new TicketStatus { Name = "AssignedToTester", Step = Step.Val },
+                new TicketStatus { Name = "InTesting", Step = Step.Val },
+                new TicketStatus { Name = "ReadyToReview", Step = Step.Val },
+                new TicketStatus { Name = "Resolved", Step = Step.Val }
                 );
 
             Step = new Stepper(0, 3);
+            //context.TicketPriorities.AddOrUpdate(
+            //    priority => priority.Name,
+            //    new TicketPriority { Name = "Opti", Val = Step.Val },               //"Optional", Val = Step.Val },
+            //    new TicketPriority { Name = "Desi", Val = Step.Val },               //"Desirable", Val = Step.Val },
+            //    new TicketPriority { Name = "Esse", Val = Step.Val },               //"Essential", Val = Step.Val },
+            //    new TicketPriority { Name = "Crit", Val = Step.Val },               //"Critical", Val = Step.Val },
+            //    new TicketPriority { Name = "Seve", Val = Step.Val },               //"Severe/DataLoss", Val = Step.Val },
+            //    new TicketPriority { Name = "Stop", Val = Step.Val }                //"Showstopper", Val = Step.Val }
+            //    );
             context.TicketPriorities.AddOrUpdate(
                 priority => priority.Name,
-                new TicketPriority { Name = "Opti", Val = Step.Val },               //"Optional", Val = Step.Val },
-                new TicketPriority { Name = "Desi", Val = Step.Val },               //"Desirable", Val = Step.Val },
-                new TicketPriority { Name = "Esse", Val = Step.Val },               //"Essential", Val = Step.Val },
-                new TicketPriority { Name = "Crit", Val = Step.Val },               //"Critical", Val = Step.Val },
-                new TicketPriority { Name = "Seve", Val = Step.Val },               //"Severe/DataLoss", Val = Step.Val },
-                new TicketPriority { Name = "Stop", Val = Step.Val }                //"Showstopper", Val = Step.Val }
+                new TicketPriority { Name = "Optional", Val = Step.Val },
+                new TicketPriority { Name = "Desirable", Val = Step.Val },
+                new TicketPriority { Name = "Essential", Val = Step.Val },
+                new TicketPriority { Name = "Critical", Val = Step.Val },
+                new TicketPriority { Name = "Severe/DataLoss", Val = Step.Val },
+                new TicketPriority { Name = "Showstopper", Val = Step.Val }
                 );
+            //context.TicketTypes.AddOrUpdate(
+            //    t => t.Name,
+            //    new TicketType { Name = "Bug" },                                    //"Bug" },         
+            //    new TicketType { Name = "Enh" },                                    //"Enhancement" },
+            //    new TicketType { Name = "???" }                                     //"Unknown" }
+            //    );
             context.TicketTypes.AddOrUpdate(
                 t => t.Name,
-                new TicketType { Name = "Bug" },                                    //"Bug" },         
-                new TicketType { Name = "Enh" },                                    //"Enhancement" },
-                new TicketType { Name = "???" }                                     //"Unknown" }
+                new TicketType { Name = "Bug" },         
+                new TicketType { Name = "Enhancement" },
+                new TicketType { Name = "Unknown" }
                 );
 
             SeedRoles(context,

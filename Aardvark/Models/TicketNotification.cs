@@ -42,13 +42,13 @@ namespace Aardvark.Models
     {
         AssignedToTicket = 1,
         RemovedFromTicket,
-        TicketEdited,
+        TicketModified,
         TicketDeleted,
         CommentCreated,
-        CommentEdited,
+        CommentModified,
         CommentDeleted,
         AttachmentCreated,
-        AttachmentEdited,
+        AttachmentModified,
         AttachmentDeleted
     }
 
@@ -58,12 +58,8 @@ namespace Aardvark.Models
         public enum NotificationMethod
         {
             ByDefault = 1,          // Default is to simply list the pending notifications
-            ByEmail,
-            ByText,
-            ByPersonalInvitation,
-            ByPlane,
-            ByTrain,
-            BySnailMail,
+            ByEmail = 2,
+            ByText = 3,
         }
 
         public class NotificationType : Enumeration
