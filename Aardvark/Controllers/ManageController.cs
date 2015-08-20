@@ -235,11 +235,25 @@ namespace Aardvark.Controllers
         [HttpPost]
         public ActionResult UserProfile(ProfileView profile)
         {
+            // Make sure UserName is unique!  If we can find it in the db, it is not
+            ApplicationDbContext db = new ApplicationDbContext();
 
-            if (!ModelState.IsValid)
+            // Trim whitespace first
+            profile.UserName = profile.UserName.Trim();
+            var user = db.Users.Find(profile.Id);
+            // Did user change UserName? Read user's rec
+            var inDb = profile.UserName == user.UserName
+                db.Users.FirstOrDefault(u => u.UserName == profile.UserName);
+            if ()
+            {
+                inDb = null;    // Show it's unique
+            }
+            if (!ModelState.IsValid || inDb != null)
             {
                 // Do this in every action prior to view...
                 ViewBag.UserModel = ProjectsHelper.LoadUserModel();
+                ViewBag.Msg = inDb == null ? "UserName must be unique, please try a different name"
+                    : "Validation error -- please review the fields";
 
                 // Need to reset the fields that could be null
                 profile.NotifyByText = profile.NotifyByText ?? false;
@@ -248,16 +262,13 @@ namespace Aardvark.Controllers
             }
 
             // Values are good, need to take care with nullable items
-            ApplicationDbContext db = new ApplicationDbContext();
-            var user = db.Users.Find(profile.Id);
-
-            user.FirstName = profile.FirstName;
-            user.LastName = profile.LastName;
-            user.DisplayName = profile.DisplayName;
+            user.FirstName = profile.FirstName.Trim();
+            user.LastName = profile.LastName.Trim();
+            user.DisplayName = profile.DisplayName.Trim();
             user.UserName = profile.UserName;
-            user.Email = profile.Email;
-            user.PhoneNumber = profile.Phone;
-            user.TextMsgNumber = profile.SameAsPhone == null ? profile.TextMsgNumber : profile.Phone;
+            user.Email = profile.Email.Trim();
+            user.PhoneNumber = profile.Phone.Trim();
+            user.TextMsgNumber = profile.SameAsPhone == null ? profile.TextMsgNumber.Trim() : user.PhoneNumber;
             user.EmailNotification = profile.NotifyByEmail ?? false;
             user.TextNotification = profile.NotifyByText ?? false;
             db.Entry(user).State = EntityState.Modified;

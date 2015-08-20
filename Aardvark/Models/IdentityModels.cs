@@ -67,7 +67,7 @@ namespace Aardvark.Models
         // aardvark-ejr         - on website
         //
         public ApplicationDbContext()
-            : base("aardvark-ejr", throwIfV1Schema: false)
+            : base("DefaultConnection", throwIfV1Schema: false)
         {
         }
 
