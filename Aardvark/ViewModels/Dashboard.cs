@@ -90,7 +90,8 @@ namespace Aardvark.ViewModels
                         .Select(n => new DashboardItem()
                         {
                             Id = n.Id,
-                            Name = n.TicketType.Name + "-" + n.TicketPriority.Name + "-" + n.SkillRequired.Name,
+                            Name = n.Title,
+                            Description = n.TicketType.Name + "-" + n.TicketPriority.Name + "-" + n.SkillRequired.Name,
                             CountHours = n.HoursToComplete
                         })
                         .ToArray<DashboardItem>();

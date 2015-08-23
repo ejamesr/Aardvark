@@ -120,18 +120,126 @@
             </div> <!-- /.col-md-3 -->
 
             <div class="col-md-4 col-sm-6">
-
                 <a href="javascript:;" class="dashboard-stat tertiary">
                     <div class="visual">
                         <i class="fa fa-clock-o"></i>
                     </div> <!-- /.visual -->
                     <div class="details">
                         <span class="content">New Tickets</span>
-                        <span class="value">@Model.NumNewTickets</span>
+                        <div class="text-center">
+                            <span class="value">@Model.NumNewTickets</span>
+                        </div>
                     </div> <!-- /.details -->
                 </a> <!-- /.dashboard-stat -->
+                <div class="portlet">
+                    <div class="portlet-header">
+                        <h3>
+                            Summary
+                        </h3>
+                    </div> <!-- /.portlet-header -->
+                    <div class="portlet-content">
+                        @using (Html.BeginForm())
+                        {
+                        @Html.AntiForgeryToken()
+                        <div class="table-responsive">
+                            <table id="user-signups" class="table table-striped table-checkable">
+                                <thead>
+                                    <tr>
+                                        <th class="checkbox-column">
+                                            <input type="checkbox" id="check-all" class="icheck-input" />
+                                        </th>
+                                        <th>
+                                            New Ticket Name
+                                        </th>
+                                        <th>
+                                            Description
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var ticket in Model.MyNewTickets)
+                                    {
+                                    <tr class="">
+                                        <td class="checkbox-column">
+                                            <input type="checkbox" name="checks" value="@ticket.Id" class="icheck-input">
+                                        </td>
+                                        <td>@ticket.Name</td>
+                                        <td>@ticket.Description</td>
+                                    </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="text-center">
+                            <input type="submit" value="Pull Selected Tickets" class="btn btn-primary" />
+                        </div>
+                        }
+                    </div> <!-- /.portlet-content -->
+                </div> <!-- /.portlet -->
             </div> <!-- /.col-md-3 -->
+
+
         </div> <!-- /.row -->
+        <div class="row">
+            <div class="col-md-4 col-sm-6">
+                <a href="javascript:;" class="dashboard-stat tertiary">
+                    <div class="visual">
+                        <i class="fa fa-clock-o"></i>
+                    </div> <!-- /.visual -->
+                    <div class="details">
+                        <span class="content">Notifications</span>
+                        <div class="text-center">
+                            <span class="value">@Model.NumNewTickets</span>
+                        </div>
+                    </div> <!-- /.details -->
+                </a> <!-- /.dashboard-stat -->
+                <div class="portlet">
+                    <div class="portlet-header">
+                        <h3>
+                            Summary
+                        </h3>
+                    </div> <!-- /.portlet-header -->
+                    <div class="portlet-content">
+                        @using (Html.BeginForm())
+                        {
+                            @Html.AntiForgeryToken()
+                            <div class="table-responsive">
+                                <table id="user-signups" class="table table-striped table-checkable">
+                                    <thead>
+                                        <tr>
+                                            <th class="checkbox-column">
+                                                <input type="checkbox" id="check-all" class="icheck-input" />
+                                            </th>
+                                            <th>
+                                                New Ticket Name
+                                            </th>
+                                            <th>
+                                                Description
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var ticket in Model.MyNewTickets)
+                                        {
+                                            <tr class="">
+                                                <td class="checkbox-column">
+                                                    <input type="checkbox" name="actiony" value="joey" class="icheck-input">
+                                                </td>
+                                                <td>@ticket.Name</td>
+                                                <td>@ticket.Description</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="text-center">
+                                <input type="submit" value="Pull Selected Tickets" class="btn btn-primary" />
+                            </div>
+                        }
+                    </div> <!-- /.portlet-content -->
+                </div> <!-- /.portlet -->
+            </div> <!-- /.col-md-3 -->
+        </div>
     </div>
 </div> <!-- #content -->
 

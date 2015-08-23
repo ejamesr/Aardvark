@@ -68,6 +68,15 @@ namespace Aardvark.Controllers
             return View(model);
         }
 
+        // GET: Home/ManageUsers
+        [HttpPost]
+        public ActionResult Dashboard(string[] checks)
+        {
+            // 'checks' is a list of the ticket Ids that are being pulled
+
+
+            return RedirectToAction("Dashboard");
+        }
 
         // GET: Home/ManageUsers
         [Authorize(Roles="Admin, Guest")]
