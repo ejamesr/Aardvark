@@ -1,5 +1,6 @@
 ﻿using Aardvark.Helpers;
 using Aardvark.Models;
+using Aardvark.ViewModels;
 using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ namespace Aardvark.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
-        public ActionResult Index()
+        public ActionResult Index(string message)
         {
             //// Code to get rid of all cookies...
             //UserRolesHelper helper = new UserRolesHelper();
@@ -27,6 +28,7 @@ namespace Aardvark.Controllers
 
             // Do this in every GET action...
             ViewBag.UserModel = ProjectsHelper.LoadUserModel();
+            ViewBag.Message = message;
             return View(Model);
         }
 
@@ -57,12 +59,13 @@ namespace Aardvark.Controllers
             // Create ViewBag model...
             var id = User.Identity.GetUserId();
             var altId = HttpContext.User.Identity.GetUserId();
-            UserRolesViewModel Model = new UserRolesViewModel(id);
             //ViewBag.SuppressDefaultLayout = true;
 
             // Do this in every GET action...
-            ViewBag.UserModel = ProjectsHelper.LoadUserModel();
-            return View();
+            ProjectsHelper.UserModel userModel = ProjectsHelper.LoadUserModel();
+            DashboardModel model = new DashboardModel(userModel, db);
+            ViewBag.UserModel = userModel;
+            return View(model);
         }
 
 
@@ -116,8 +119,11 @@ namespace Aardvark.Controllers
         [Authorize(Roles = "Admin, Guest")]
         [ValidateAntiForgeryToken]
         //public ActionResult ManageUsers(IEnumerable<UsersCheckboxes> UserInfo)
-        public ActionResult ManageUsers(string[] Select)
+        public ActionResult ManageUsers(string submit, string[] Select)
         {
+            if (submit == "Cancel")
+                return RedirectToAction("Index");
+
             if (ModelState.IsValid)
             {
                 // Make sure there is still somebody with Admin privileges!!

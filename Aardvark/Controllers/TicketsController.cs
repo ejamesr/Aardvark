@@ -58,16 +58,68 @@ namespace Aardvark.Controllers
             }
             else if (scope == "All")
             {
-                // Come here in all other cases
+                // Come here for all tickets
                 var tickets = db.Tickets.Include(t => t.AssignedToDev).Include(t => t.OwnerUser).Include(t => t.Project).Include(t => t.SkillRequired).Include(t => t.TicketPriority).Include(t => t.TicketStatus).Include(t => t.TicketType);
                 return View(tickets.ToList());
             }
             else if (scope == "NotAssigned")
             {
-                // Come here in all other cases
+                // Come here all not yet assigned
                 var tickets = db.Tickets
                     .Where(tic => tic.TicketStatus.Step <= 30)
                     .Include(t => t.AssignedToDev).Include(t => t.OwnerUser).Include(t => t.Project).Include(t => t.SkillRequired).Include(t => t.TicketPriority).Include(t => t.TicketStatus).Include(t => t.TicketType);
+                return View(tickets.ToList());
+            }
+            else if (scope == "MyNew")
+            {
+                var tickets = db.Tickets
+                    .Where(t => t.AssignedToDevId == userId && t.TicketStatusId == (int)TS.Status.New);
+                return View(tickets.ToList());
+            }
+            else if (scope == "MyDue24")
+            {
+                DateTimeOffset now = DateTimeOffset.UtcNow;
+                DateTimeOffset end = now.AddDays(1);
+                var tickets = db.Tickets
+                    .Where(t => t.AssignedToDevId == userId
+                        && t.TicketStatusId != (int)TS.Status.Resolved
+                        && t.DueDate >= now && t.DueDate < end);
+                return View(tickets.ToList());
+            }
+            else if (scope == "MyDue7")
+            {
+                DateTimeOffset now = DateTimeOffset.UtcNow;
+                DateTimeOffset end = now.AddDays(7);
+                var tickets = db.Tickets
+                    .Where(t => t.AssignedToDevId == userId
+                        && t.TicketStatusId != (int)TS.Status.Resolved
+                        && t.DueDate >= now && t.DueDate < end);
+                return View(tickets.ToList());
+            }
+            else if (scope == "MyDue30")
+            {
+                DateTimeOffset now = DateTimeOffset.UtcNow;
+                DateTimeOffset end = now.AddDays(30);
+                var tickets = db.Tickets
+                    .Where(t => t.AssignedToDevId == userId
+                        && t.TicketStatusId != (int)TS.Status.Resolved
+                        && t.DueDate >= now && t.DueDate < end);
+                return View(tickets.ToList());
+            }
+            else if (scope == "MyOverdue")
+            {
+                var tickets = db.Tickets
+                    .Where(t => t.AssignedToDevId == userId 
+                        && t.TicketStatusId == (int)TS.Status.New
+                        && t.DueDate < DateTimeOffset.UtcNow);
+                return View(tickets.ToList());
+            }
+            else if (scope == "MyTesting")
+            {
+                var tickets = db.Tickets
+                    .Where(t => t.AssignedToDevId == userId 
+                        && t.TicketStatusId >= (int)TS.Status.ReadyToTest
+                        && t.TicketStatusId != (int)TS.Status.Resolved);
                 return View(tickets.ToList());
             }
             else // For all other scopes, come here

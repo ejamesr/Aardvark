@@ -92,6 +92,79 @@ namespace Aardvark.Helpers
         }
     }
 
+    public static class TS
+    {
+        // TicketStatus class...
+        public enum Status : int
+        {
+            New = (int)1,
+            UnableToReproduce,
+            Deferred,
+            ReadyToAssign,
+            AssignedToDeveloper,
+            InDevelopment,
+            ReadyToTest,
+            AssignedToTester,
+            InTesting,
+            ReadyToReview,
+            Resolved
+        }
+        private static string[] statuses = 
+            {
+                "",         // This is a "dummy" value so that all strings match the record Id in the db table
+                Status.New.ToString(), Status.UnableToReproduce.ToString(),
+                Status.Deferred.ToString(), Status.ReadyToAssign.ToString(),
+                Status.AssignedToDeveloper.ToString(), Status.InDevelopment.ToString(), 
+                Status.ReadyToTest.ToString(), Status.AssignedToTester.ToString(), 
+                Status.InTesting.ToString(), Status.ReadyToReview.ToString(), 
+                Status.Resolved.ToString()
+            };
+        private static int[] step = new int[statuses.Length];
+
+        static TS()
+        {
+            step[0] = 0;
+            for (int i = 1, val = 0; i <= statuses.Length; i++, val += 10)
+            {
+                step[i] = val;
+            }
+
+            // Test the data...
+            string s;
+            s = New;
+            s = UnableToReproduce;
+            s = Deferred;
+            s = ReadyToAssign;
+            s = AssignedToDeveloper;
+            s = InDevelopment;
+            s = ReadyToTest;
+            s = AssignedToTester;
+            s = InTesting;
+            s = ReadyToReview;
+            s = Resolved;
+
+            for (int i = 1; i <= statuses.Length; i++)
+            {
+                s = statuses[i];
+                int x = step[i];
+            }
+        }
+
+        public static string New { get { return statuses[(int) Status.New]; }}
+        public static string UnableToReproduce { get { return statuses[(int)Status.UnableToReproduce]; } }
+        public static string Deferred { get { return statuses[(int)Status.Deferred]; } }
+        public static string ReadyToAssign { get { return statuses[(int)Status.ReadyToAssign]; } }
+        public static string AssignedToDeveloper { get { return statuses[(int)Status.AssignedToDeveloper]; } }
+        public static string InDevelopment { get { return statuses[(int)Status.InDevelopment]; } }
+        public static string ReadyToTest { get { return statuses[(int)Status.ReadyToTest]; } }
+        public static string AssignedToTester { get { return statuses[(int)Status.AssignedToTester]; } }
+        public static string InTesting { get { return statuses[(int)Status.InTesting]; } }
+        public static string ReadyToReview { get { return statuses[(int)Status.ReadyToReview]; } }
+        public static string Resolved { get { return statuses[(int)Status.Resolved]; } }
+
+        public static int Step(Status status) { return step[(int)status]; }
+    }
+
     public class UserRolesHelper
     {
         private UserManager<ApplicationUser> manager =

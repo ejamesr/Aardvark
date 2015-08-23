@@ -26,7 +26,7 @@ namespace Aardvark.Models
      * "Ready to Review"        // 35
      * "Resolved"               // 100
      * "Unable to Reproduce"    // 40
-     * "Deferred/On Hold",      // 50 - Requires update to Ticket.DueDate to show when to get back to it
+     * "Deferred",              // 50 - Requires update to Ticket.DueDate to show when to get back to it
      * 
      * */
 

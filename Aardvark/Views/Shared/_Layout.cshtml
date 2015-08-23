@@ -297,16 +297,15 @@
 
         @RenderBody()
 
-    </div> <!-- #wrapper -->
+        </div> <!-- #wrapper -->
 
-    <footer id="footer">
-        <ul class="nav pull-right">
-            <li>
-                Copyright &copy; 2015 - Eric J. Ruff
-            </li>
-        </ul>
-    </footer>
-
+        <footer id="footer">
+            <ul class="nav pull-right">
+                <li>
+                    Copyright &copy; 2015 - Eric J. Ruff
+                </li>
+            </ul>
+        </footer>
         <script src="~/js/jquery-2.1.4.min.js"></script>
         <script src="~/js/jquery-ui-1.11.4.custom/jquery-ui.min.js"></script>
         <script src="~/js/DataTables-1.10.7/media/js/jquery.dataTables.min.js"></script>
@@ -335,14 +334,14 @@
         <script src="~/Template/canvas-admin-v1/Theme/js/demos/calendar.js"></script>
 
         <script src="~/Template/canvas-admin-v1/Theme/js/demos/dashboard.js"></script>
+        @RenderSection("Scripts", false)
 
     </body>
-    </html>
-    }
-    else {
-        @RenderBody()
-    }
-    @RenderSection("Scripts", false)
+</html>
+}
+else {
+    @RenderBody()
+}
 
 @helper IsAdmin()
 {

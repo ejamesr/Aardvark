@@ -1,4 +1,4 @@
-﻿@model Aardvark.Models.UserRolesViewModel
+﻿@model Aardvark.ViewModels.DashboardModel
 @{
     ViewBag.Title = "Home Page";
 }
@@ -10,96 +10,131 @@
     <div id="content-header">
         <h1>Dashboard</h1>
     </div> <!-- #content-header -->
+    <div id="content-container">
+        <div class="row">
+            <div class="col-md-4 col-sm-6">
+                <a href="javascript:;" class="dashboard-stat primary">
+                    <div class="visual">
+                        <i class="fa fa-star"></i>
+                    </div> <!-- /.visual -->
+                    <div class="details">
+                        <span class="content">Projects</span>
+                        <span class="value">@Model.NumProjects</span>
+                    </div> <!-- /.details -->
+                </a> <!-- /.dashboard-stat -->
+                <div class="portlet">
+                    <div class="portlet-header">
+                        <h3>
+                            Top Five
+                        </h3>
+                    </div> <!-- /.portlet-header -->
+                    <div class="portlet-content">
+                        <div class="row">
+                            <div class="col-sm-7 col-sm-offset-1 hdr">
+                                Project Name
+                            </div>
+                            <div class="col-sm-2 hdr hdr-center">
+                                Tickets
+                            </div>
+                            <div class="col-sm-2 hdr hdr-center">
+                                Hrs
+                            </div>
+                        </div>
+                    @foreach (var project in Model.MyProjects)
+                    {
+                        <div class="row">
+                            <div class="col-sm-1">
+                                <a href="@Url.Action("Details", "Projects", new { id = project.Id})">
+                                    <i class="fa fa-eye"></i>
+                                </a>
+                            </div>
+                            <div class="col-sm-7">
+                                @project.Name
+                            </div>
+                            <div class="col-sm-2 dash-value">
+                                @project.CountItems
+                            </div>
+                            <div class="col-sm-2 dash-value">
+                                @project.CountHours
+                            </div>
+                        </div>
+                    }
+                    </div> <!-- /.portlet-content -->
+                </div> <!-- /.portlet -->
+            </div> <!-- /.col-md-3 -->
+
+            <div class="col-md-4 col-sm-6">
+                <a href="javascript:;" class="dashboard-stat secondary">
+                    <div class="visual">
+                        <i class="fa fa-shopping-cart"></i>
+                    </div> <!-- /.visual -->
+                    <div class="details">
+                        <span class="content">Tickets</span>
+                        <span class="value">@Model.NumActiveTickets</span>
+                    </div> <!-- /.details -->
+                </a> <!-- /.dashboard-stat -->
+                <div class="portlet">
+                    <div class="portlet-header">
+                        <h3>
+                            Summary
+                        </h3>
+                    </div> <!-- /.portlet-header -->
+                    <div class="portlet-content">
+                        <div class="row">
+                            <div class="col-sm-7 col-sm-offset-1 hdr">
+                                Ticket Status
+                            </div>
+                            <div class="col-sm-2 hdr hdr-center">
+                                Num
+                            </div>
+                            <div class="col-sm-2 hdr hdr-center">
+                                Hrs
+                            </div>
+                        </div>
+                    @{
+                        foreach (var ticket in Model.MyActiveTickets)
+                        {
+                        <div class="row">
+                            <div class="col-sm-1">
+                                @if (ticket.CountItems > 0)
+                                {   
+                                <a href="@Url.Action("Index", "Tickets", new { id = ticket.Id, scope = ticket.Scope})">
+                                    <i class="fa fa-eye"></i>
+                                </a>
+                                }
+                            </div>
+                            <div class="col-sm-7">
+                                @ticket.Name
+                            </div>
+                            <div class="col-sm-2 dash-value">
+                                @ticket.CountItems
+                            </div>
+                            <div class="col-sm-2 dash-value">
+                                @ticket.CountHours
+                            </div>
+                        </div>
+                        }
+                    }
+                    </div> <!-- /.portlet-content -->
+                </div> <!-- /.portlet -->
+            </div> <!-- /.col-md-3 -->
+
+            <div class="col-md-4 col-sm-6">
+
+                <a href="javascript:;" class="dashboard-stat tertiary">
+                    <div class="visual">
+                        <i class="fa fa-clock-o"></i>
+                    </div> <!-- /.visual -->
+                    <div class="details">
+                        <span class="content">New Tickets</span>
+                        <span class="value">@Model.NumNewTickets</span>
+                    </div> <!-- /.details -->
+                </a> <!-- /.dashboard-stat -->
+            </div> <!-- /.col-md-3 -->
+        </div> <!-- /.row -->
+    </div>
 </div> <!-- #content -->
 
-@*@(if (Model.Roles.Contains(R.Admin) || Model.Roles.Contains(R.Guest))
-{
-<h2>
-    Main Menu (Admin)
-</h2>
-<h3>Users</h3>
-<ul>
-    <li><h4>@Html.ActionLink("Assign/Unassign Users", "ManageUsers")</h4></li>
-</ul>
-
-<h3>Projects</h3>
-<ul>
-    <li><h4>@Html.ActionLink("My Projects", "Index", "Projects", new { scope = "My" }, null)</h4></li>
-    <li><h4>@Html.ActionLink("All Projects", "Index", "Projects")</h4></li>
-    <li><h4>@Html.ActionLink("Create new project", "Create", "Projects")</h4></li>
-</ul>
-
-<h3>Tickets</h3>
-<ul>
-    <li><h4>@Html.ActionLink("My Tickets", "Index", "Tickets", new { scope = "My" }, null)</h4></li>
-    <li><h4>@Html.ActionLink("All Tickets", "Index", "Tickets")</h4></li>
-    <li><h4>@Html.ActionLink("Create new ticket", "Create", "Tickets")</h4></li>
-</ul>
-
-<h3>Utilities</h3>
-<ul>
-    <li><h4>@Html.ActionLink("Import Data", "ImportData", "Utilities")</h4></li>
-</ul>
-}
-else if (Model.Roles.Contains(R.ProjectManager))
-{
-<h2>
-    Main Menu (Project Manager)
-</h2>
-<h3>Projects</h3>
-<ul>
-    <li><h4>@Html.ActionLink("My Projects", "Index", "Projects", new { scope = "My" }, null)</h4></li>
-</ul>
-
-<h3>Tickets</h3>
-<ul>
-    <li><h4>@Html.ActionLink("My Tickets", "Index", "Tickets", new { scope = "My" }, null)</h4></li>
-    <li><h4>@Html.ActionLink("All Tickets", "Index", "Tickets")</h4></li>
-    <li><h4>@Html.ActionLink("Create new ticket", "Create", "Tickets")</h4></li>
-</ul>
-}
-else if (Model.Roles.Contains(R.Developer))
-{
-<h2>
-    Main Menu (Developer)
-</h2>
-<h3>Projects</h3>
-<ul>
-    <li><h4>@Html.ActionLink("My Projects", "Index", "Projects", new { scope = "My" }, null)</h4></li>
-</ul>
-
-<h3>Tickets</h3>
-<ul>
-    <li><h4>@Html.ActionLink("My Tickets", "Index", "Tickets", new { scope = "My" }, null)</h4></li>
-    <li><h4>@Html.ActionLink("All Tickets", "Index", "Tickets")</h4></li>
-    <li><h4>@Html.ActionLink("Create new ticket", "Create", "Tickets")</h4></li>
-</ul>
-}
-else if (Model.Roles.Contains(R.Submitter))
-{
-// Any Submitter can do these...
-<h2>
-    Main Menu
-</h2>
-<h3>Tickets</h3>
-<ul>
-    <li><h4>@Html.ActionLink("My Tickets", "Index", "Tickets", new { scope = "My" }, null)</h4></li>
-    <li><h4>@Html.ActionLink("All Tickets", "Index", "Tickets")</h4></li>
-    <li><h4>@Html.ActionLink("Create new ticket", "Create", "Tickets")</h4></li>
-</ul>
-}
-else
-{
-<h4>The Admin will determine if you can create new tickets (<i>this may take a couple of days</i>).</h4>
-// Any Authorized User can do these...
-<h2>
-    Main Menu
-</h2>
-<h3>Tickets</h3>
-<ul>
-    <li><h4>@Html.ActionLink("View tickets", "Index", "Tickets")</h4></li>
-</ul>
-}*@
 
 @section Scripts {
 <script>

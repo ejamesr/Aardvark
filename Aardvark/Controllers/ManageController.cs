@@ -233,47 +233,67 @@ namespace Aardvark.Controllers
                 //
         // POST: /Manage/Profile
         [HttpPost]
-        public ActionResult UserProfile(ProfileView profile)
+        public ActionResult UserProfile(string submit, ProfileView profile)
         {
+            if (submit == "Cancel")
+                return RedirectToAction("Index", "Home");
+
             // Make sure UserName is unique!  If we can find it in the db, it is not
             ApplicationDbContext db = new ApplicationDbContext();
 
-            // Trim whitespace first
-            profile.UserName = profile.UserName.Trim();
+            // Get current user rec
             var user = db.Users.Find(profile.Id);
-            // Did user change UserName? Read user's rec
-            var inDb = profile.UserName == user.UserName
-                db.Users.FirstOrDefault(u => u.UserName == profile.UserName);
-            if ()
-            {
-                inDb = null;    // Show it's unique
-            }
-            if (!ModelState.IsValid || inDb != null)
-            {
-                // Do this in every action prior to view...
-                ViewBag.UserModel = ProjectsHelper.LoadUserModel();
-                ViewBag.Msg = inDb == null ? "UserName must be unique, please try a different name"
-                    : "Validation error -- please review the fields";
+            bool unique = false;
 
-                // Need to reset the fields that could be null
-                profile.NotifyByText = profile.NotifyByText ?? false;
-                profile.NotifyByEmail = profile.NotifyByEmail ?? false;
-                return View(profile);
+            if (ModelState.IsValid && profile.UserName != null)
+            {
+                // Trim whitespace first
+                profile.UserName = profile.UserName.Trim();
+
+                // ModelState is valid, so see if UserName was changed
+                // Need to see if user changed UserName: compare profile.UserName with user.UserName,
+                //  insensitive compare
+                bool same = profile.UserName.Equals(user.UserName, StringComparison.Ordinal);
+                if (!same)
+                {
+                    // User changed the name, so let's make sure it's unique
+                    var inDb = db.Users.Where(u => u.UserName.Equals(profile.UserName, StringComparison.Ordinal));
+                    if (inDb.Count() == 0)
+                        unique = true;
+                }
+                else unique = true;
+
+                if (unique)
+                {
+                    // New name is unique, go ahead and update record...
+                    // Values are good, need to take care with nullable items
+                    user.FirstName = profile.FirstName == null ? null : profile.FirstName.Trim();
+                    user.LastName = profile.LastName == null ? null : profile.LastName.Trim();
+                    user.DisplayName = profile.DisplayName == null ? null : profile.DisplayName.Trim();
+                    user.UserName = profile.UserName;
+                    user.Email = profile.Email == null ? null : profile.Email.Trim();
+                    user.PhoneNumber = profile.Phone == null ? null : profile.Phone.Trim();
+                    user.TextMsgNumber = profile.TextMsgNumber == null 
+                        ? null : profile.SameAsPhone == null ? profile.TextMsgNumber.Trim() : user.PhoneNumber;
+                    user.EmailNotification = profile.NotifyByEmail ?? false;
+                    user.TextNotification = profile.NotifyByText ?? false;
+                    db.Entry(user).State = EntityState.Modified;
+                    db.SaveChanges();
+                    return RedirectToAction("Index", "Home");
+                }
             }
 
-            // Values are good, need to take care with nullable items
-            user.FirstName = profile.FirstName.Trim();
-            user.LastName = profile.LastName.Trim();
-            user.DisplayName = profile.DisplayName.Trim();
-            user.UserName = profile.UserName;
-            user.Email = profile.Email.Trim();
-            user.PhoneNumber = profile.Phone.Trim();
-            user.TextMsgNumber = profile.SameAsPhone == null ? profile.TextMsgNumber.Trim() : user.PhoneNumber;
-            user.EmailNotification = profile.NotifyByEmail ?? false;
-            user.TextNotification = profile.NotifyByText ?? false;
-            db.Entry(user).State = EntityState.Modified;
-            db.SaveChanges();
-            return RedirectToAction("Index", "Home");
+            // Something about the data is incorrect, so return for editing
+            // Do this in every action prior to view...
+            ViewBag.UserModel = ProjectsHelper.LoadUserModel();
+            ViewBag.Msg = !unique ? "UserName must be unique, please try a different name"
+                : "Validation error -- please review the fields";
+
+            // Need to reset the fields that could be null
+            profile.NotifyByText = profile.NotifyByText ?? false;
+            profile.NotifyByEmail = profile.NotifyByEmail ?? false;
+            return View(profile);
+
         } 
 
         //
@@ -421,8 +441,11 @@ namespace Aardvark.Controllers
         // POST: /Manage/ChangePassword
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> ChangePassword(ChangePasswordViewModel model)
+        public async Task<ActionResult> ChangePassword(string submit, ChangePasswordViewModel model)
         {
+            if (submit == "Cancel")
+                return RedirectToAction("Index", "Home");
+
             if (!ModelState.IsValid)
             {
                 // Do this in every action prior to view...
@@ -437,7 +460,7 @@ namespace Aardvark.Controllers
                 {
                     await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
                 }
-                return RedirectToAction("Index", new { Message = ManageMessageId.ChangePasswordSuccess });
+                return RedirectToAction("Index", "Home", new { message = "Your password has been changed; use new password to login next time." });
             }
             AddErrors(result);
             // Do this in every action prior to view...

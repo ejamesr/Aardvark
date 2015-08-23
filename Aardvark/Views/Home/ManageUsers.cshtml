@@ -81,7 +81,10 @@
                         @Html.ActionLink("Return to Index", "Index")
                     </div>
                     <div class="col-sm-1">
-                        <input type="submit" value="Update" class="btn btn-success" />
+                        <input type="submit" name="submit" value="Update" class="btn btn-primary" />
+                    </div>
+                    <div class="col-sm-1">
+                        <input type="submit" name="submit" value="Cancel" class="btn btn-tertiary" />
                     </div>
                 </div>
             }
@@ -93,6 +96,7 @@
     <script>
         $(document).ready(function () {
             $('#sidebar-Users').addClass('active');
+            $('#sidebar-Users').trigger('click');
             $('#sidebar-Users-Manage').addClass('active');
         });
     </script>

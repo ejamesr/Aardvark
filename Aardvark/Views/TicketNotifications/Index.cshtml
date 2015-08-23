@@ -90,102 +90,47 @@
     </div>
 </div>
 
-@if (ViewBag.Scope == "My")
-{
-    @section Scripts {
-        <script>
-            $(document).ready(function () {
-                $('#sidebar-Notifications').addClass('active');
-                $('#sidebar-Notifications-My').addClass('active');
-            });
-        </script>
-    }
-}
-else if (ViewBag.Scope == "All")
-{
-    @section Scripts {
-        <script>
-            $(document).ready(function () {
-                $('#sidebar-Notifications').addClass('active');
-                $('#sidebar-Notifications-All').addClass('active');
-            });
-        </script>
-    }
-}
-else if (ViewBag.Scope == "AssignedToTicket")
-{
-    @section Scripts {
-        <script>
-            $(document).ready(function () {
-                $('#sidebar-Notifications').addClass('active');
-                $('#sidebar-Notifications-AssignedToTicket').addClass('active');
-            });
-        </script>
-    }
-}
-else if (ViewBag.Scope == "RemovedFromTicket")
-{
-    @section Scripts {
-        <script>
-            $(document).ready(function () {
-                $('#sidebar-Notifications').addClass('active');
-                $('#sidebar-Notifications-RemovedFromTicket').addClass('active');
-            });
-        </script>
-    }
-}
-else if (ViewBag.Scope == "TicketModified")
-{
-    @section Scripts {
-        <script>
-            $(document).ready(function () {
-                $('#sidebar-Notifications').addClass('active');
-                $('#sidebar-Notifications-TicketModified').addClass('active');
-            });
-        </script>
-    }
-}
-else if (ViewBag.Scope == "CommentCreated")
-{
-    @section Scripts {
-        <script>
-            $(document).ready(function () {
-                $('#sidebar-Notifications').addClass('active');
-                $('#sidebar-Notifications-CommentCreated').addClass('active');
-            });
-        </script>
-    }
-}
-else if (ViewBag.Scope == "CommentModified")
-{
-    @section Scripts {
-        <script>
-            $(document).ready(function () {
-                $('#sidebar-Notifications').addClass('active');
-                $('#sidebar-Notifications-CommentModified').addClass('active');
-            });
-        </script>
-    }
-}
-else if (ViewBag.Scope == "AttachmentCreated")
-{
-    @section Scripts {
-        <script>
-            $(document).ready(function () {
-                $('#sidebar-Notifications').addClass('active');
-                $('#sidebar-Notifications-AttachmentCreated').addClass('active');
-            });
-        </script>
-    }
-}
-else if (ViewBag.Scope == "AttachmentModified")
-{
-    @section Scripts {
-        <script>
-            $(document).ready(function () {
-                $('#sidebar-Notifications').addClass('active');
-                $('#sidebar-Notifications-AttachmentModified').addClass('active');
-            });
-        </script>
-    }
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#sidebar-Notifications').addClass('active');
+            $('#sidebar-Notifications').trigger('click');
+            @if (ViewBag.Scope == "My")
+            {
+            <text>$('#sidebar-Notifications-My').addClass('active');</text>
+            }
+            else if (ViewBag.Scope == "All")
+                {
+            <text>$('#sidebar-Notifications-All').addClass('active');</text>
+                }
+                else if (@ViewBag.Scope == "AssignedToTicket")
+                {
+            <text>$('#sidebar-Notifications-AssignedToTicket').addClass('active');</text>
+                }
+                else if (ViewBag.Scope == "RemovedFromTicket")
+                {
+            <text>$('#sidebar-Notifications-RemovedFromTicket').addClass('active');</text>
+                }
+                else if (ViewBag.Scope == "TicketModified")
+                {
+            <text>$('#sidebar-Notifications-TicketModified').addClass('active');</text>
+                }
+                else if (ViewBag.Scope == "CommentCreated")
+                {
+            <text>$('#sidebar-Notifications-CommentCreated').addClass('active');</text>
+                }
+                else if (ViewBag.Scope == "CommentModified")
+                {
+            <text>$('#sidebar-Notifications-CommentModified').addClass('active');</text>
+                }
+                else if (ViewBag.Scope == "AttachmentCreated")
+                {
+            <text>$('#sidebar-Notifications-AttachmentCreated').addClass('active');</text>
+                }
+                else if (ViewBag.Scope == "AttachmentModified")
+                {
+            <text>$('#sidebar-Notifications-AttachmentModified').addClass('active');</text>
+                }
+        });
+    </script>
 }

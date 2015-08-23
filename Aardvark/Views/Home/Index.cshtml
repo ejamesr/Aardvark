@@ -11,6 +11,18 @@
         <h1>Welcome to Aardvark... the really cool bug tracker!</h1>
     </div> <!-- #content-header -->
     <div class="">
+        @if (ViewBag.Message != null)
+        {
+            <div class="row">
+                <div class="col-sm-offset-1 col-sm-10">
+                    <p class="msg">
+                        @ViewBag.Message
+                    </p>
+                </div>
+                <br />
+            </div>
+        }
+
         <div class="row">
             <div class="col-sm-1"></div>
             <div class="col-sm-3">
