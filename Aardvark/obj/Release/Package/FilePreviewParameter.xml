@@ -7,10 +7,10 @@
   <parameter name="aardvark-ejr-Web.config Connection String" description="" value="Data Source=tcp:mbmuw7kmu9.database.windows.net,1433;Initial Catalog=aardvarkdb;User Id=CoderFoundry@mbmuw7kmu9;Password=LearnToCode1" tags="">
     <parameterEntry kind="XmlFile" scope="C:\\Users\\ejame_000\\Documents\\Bootcamp\\Projects\\Aardvark\\Aardvark\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='aardvark-ejr']/@connectionString" />
   </parameter>
-  <parameter name="DefaultConnection-Web.config Connection String" description="DefaultConnection Connection String used in web.config by the application to access the database." value="Data Source=EJR-HP\SQLEXPRESS;&#xD;&#xA;         Initial Catalog=aardvark_db;&#xD;&#xA;         Integrated Security=True" tags="SqlConnectionString">
+  <parameter name="DefaultConnection-Web.config Connection String" description="" value="Data Source=tcp:mbmuw7kmu9.database.windows.net,1433;Initial Catalog=aardvarkdb;User Id=CoderFoundry@mbmuw7kmu9;Password=LearnToCode1" tags="">
     <parameterEntry kind="XmlFile" scope="C:\\Users\\ejame_000\\Documents\\Bootcamp\\Projects\\Aardvark\\Aardvark\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='DefaultConnection']/@connectionString" />
   </parameter>
-  <parameter name="DefaultGuestConnection-Web.config Connection String" description="DefaultGuestConnection Connection String used in web.config by the application to access the database." value="Data Source=EJR-HP\SQLEXPRESS;&#xD;&#xA;         Initial Catalog=aardvark_guest_db;&#xD;&#xA;         Integrated Security=True" tags="SqlConnectionString">
+  <parameter name="DefaultGuestConnection-Web.config Connection String" description="" value="Data Source=tcp:mbmuw7kmu9.database.windows.net,1433;Initial Catalog=aardvarkdb;User Id=CoderFoundry@mbmuw7kmu9;Password=LearnToCode1" tags="">
     <parameterEntry kind="XmlFile" scope="C:\\Users\\ejame_000\\Documents\\Bootcamp\\Projects\\Aardvark\\Aardvark\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='DefaultGuestConnection']/@connectionString" />
   </parameter>
 </parameters>

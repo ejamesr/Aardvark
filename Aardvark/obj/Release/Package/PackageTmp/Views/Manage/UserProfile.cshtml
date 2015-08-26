@@ -6,7 +6,12 @@
     </div> <!-- #content-header -->
     <div id="content-container">
         <h2>Edit your profile</h2>
-
+        @if (ViewBag.Msg != null)
+        {
+            // Display error message...
+            <h3>Please fix error: @ViewBag.Msg</h3>
+            <br />
+        }
         @using (Html.BeginForm("UserProfile", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
         {
             @Html.AntiForgeryToken()
@@ -71,8 +76,11 @@
         </div>
     </div>
             <div class="form-group">
-                <div class="col-md-offset-2 col-md-10">
-                    <input type="submit" class="btn btn-primary" value="Submit" />
+                <div class="col-md-offset-2 col-md-2">
+                    <input type="submit" class="btn btn-primary" name ="submit" value="Save" />
+                </div>
+                <div class="col-md-2">
+                    <input type="submit" class="btn btn-info" name="submit" value="Cancel" />
                 </div>
             </div>
         }

@@ -53,3 +53,5 @@ C:\Users\ejame_000\Documents\Bootcamp\Projects\Aardvark\Aardvark\bin\Microsoft.O
 C:\Users\ejame_000\Documents\Bootcamp\Projects\Aardvark\Aardvark\obj\Release\Aardvark.csprojResolveAssemblyReference.cache
 C:\Users\ejame_000\Documents\Bootcamp\Projects\Aardvark\Aardvark\obj\Release\Aardvark.dll
 C:\Users\ejame_000\Documents\Bootcamp\Projects\Aardvark\Aardvark\obj\Release\Aardvark.pdb
+C:\Users\ejame_000\Documents\Bootcamp\Projects\Aardvark\Aardvark\obj\Release\Aardvark.Migrations.InitialMigration.resources
+C:\Users\ejame_000\Documents\Bootcamp\Projects\Aardvark\Aardvark\obj\Release\Aardvark.csproj.GenerateResource.Cache

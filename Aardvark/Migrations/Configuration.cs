@@ -76,8 +76,8 @@ namespace Aardvark.Migrations
             // Comment out these two lines to stop debugger
             //
 
-            //if (System.Diagnostics.Debugger.IsAttached == false)
-            //    System.Diagnostics.Debugger.Launch();
+            if (System.Diagnostics.Debugger.IsAttached == false)
+                System.Diagnostics.Debugger.Launch();
 
             //
 

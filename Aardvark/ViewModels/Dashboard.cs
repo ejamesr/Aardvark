@@ -30,7 +30,6 @@ namespace Aardvark.ViewModels
     {
         public const int MaxTopProjects = 5;
         public const int MaxTopNewTickets = 5;
-        public const int MaxTicketTypes = 6;
         public const int MaxNotifications = 5;
 
         // For developer
@@ -40,7 +39,7 @@ namespace Aardvark.ViewModels
         public int NumNotifications { get; set; }
 
         public DashboardItem[] MyProjects = new DashboardItem[MaxTopProjects];
-        public DashboardItem[] MyNewTickets = new DashboardItem[MaxTicketTypes];
+        public DashboardItem[] MyNewTickets = new DashboardItem[MaxTopNewTickets];
         public DashboardItem[] MyNotifications = new DashboardItem[MaxNotifications];
         public List<DashboardItem> MyActiveTickets = new List<DashboardItem>();
 
@@ -64,7 +63,9 @@ namespace Aardvark.ViewModels
             }
             else if (userModel.IsDeveloper)
             {
+                //
                 // Get Projects info...
+                //
                 var projects = db.Users.Find(userModel.User.Id).Projects;
                 NumProjects = projects.Count;
                 if (NumProjects > 0)
@@ -77,13 +78,17 @@ namespace Aardvark.ViewModels
                         .ToArray<DashboardItem>();
                 }
 
+                //
                 // Get Tickets info...
+                //
                 var tickets = db.Tickets
-                    .Where(t => t.AssignedToDevId == userModel.User.Id && t.TicketStatusId != (int)TS.Status.Resolved );
+                    .Where(t => t.AssignedToDevId == userModel.User.Id 
+                        && t.TicketStatusId != (int)TS.Status.Resolved
+                        && t.TicketStatusId >= (int)TS.Status.AssignedToDeveloper);
                 if ((NumActiveTickets = tickets.Count()) > 0)
                 {
                     // Get new tickets, then setup info on active tickets
-                    var newTickets = tickets.Where(t => t.TicketStatusId == (int)TS.Status.New);
+                    var newTickets = tickets.Where(t => t.TicketStatusId == (int)TS.Status.AssignedToDeveloper);
                     NumNewTickets = newTickets.Count();
                     MyNewTickets = newTickets
                         .Take(MaxTopNewTickets)
@@ -96,10 +101,20 @@ namespace Aardvark.ViewModels
                         })
                         .ToArray<DashboardItem>();
 
-                    // And get tickets in various categories
-                    DashboardItem di = new DashboardItem("New tickets", "MyNew");
-                    di.CountItems = NumNewTickets;
-                    di.CountHours = newTickets.Sum(t => t.HoursToComplete);
+                    // And get details on new tickets
+                    DashboardItem di = new DashboardItem("Newly assigned/to pull", "MyNew");
+                    if (NumNewTickets > 0)
+                    {
+                        di.CountItems = NumNewTickets;
+                        di.CountHours = newTickets.Sum(t => t.HoursToComplete);
+                    }
+                    MyActiveTickets.Add(di);
+
+                    // Show total tickets in development
+                    di = new DashboardItem("In development", "MyInDevelopment");
+                    var inDev = tickets.Where(t => t.TicketStatusId == (int)TS.Status.InDevelopment);
+                    if ((di.CountItems = inDev.Count()) > 0)
+                        di.CountHours = inDev.Sum(hrs => hrs.HoursToComplete);
                     MyActiveTickets.Add(di);
 
                     // Get the tickets according to due date/time
@@ -140,6 +155,15 @@ namespace Aardvark.ViewModels
                         di.CountHours = due.Sum(t => t.HoursToComplete);
                     MyActiveTickets.Add(di);
                 }
+
+                //
+                // Get Notifications info...
+                //
+                var notifies = db.TicketNotifications.Where(n => n.UserId == userModel.User.Id && !n.HasBeenRead)
+                        .Take(MaxNotifications)
+                        .Select(n => new DashboardItem() { Id = n.Id, Name = n.Type.ToString() })
+                        .ToArray<DashboardItem>();
+                NumNotifications = notifies.Count();
             }
             else
             {

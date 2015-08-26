@@ -4,6 +4,7 @@ using Aardvark.ViewModels;
 using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -70,11 +71,22 @@ namespace Aardvark.Controllers
 
         // GET: Home/ManageUsers
         [HttpPost]
-        public ActionResult Dashboard(string[] checks)
+        public ActionResult Dashboard(int[] checks)
         {
             // 'checks' is a list of the ticket Ids that are being pulled
-
-
+            if (checks != null)
+            {
+                foreach (var id in checks)
+                {
+                    var ticket = db.Tickets.Find(id);
+                    if (ticket.TicketStatusId == (int)TS.Status.AssignedToDeveloper)
+                    {
+                        ticket.TicketStatusId = (int)TS.Status.InDevelopment;
+                        db.Entry(ticket).State = EntityState.Modified;
+                        db.SaveChanges();
+                    }
+                }
+            }
             return RedirectToAction("Dashboard");
         }
 

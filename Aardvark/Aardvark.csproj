@@ -173,6 +173,10 @@
     <Compile Include="Helpers\ProjectsHelper.cs" />
     <Compile Include="Helpers\Types.cs" />
     <Compile Include="Helpers\UserRolesHelper.cs" />
+    <Compile Include="Migrations\201508241651004_InitialMigration.cs" />
+    <Compile Include="Migrations\201508241651004_InitialMigration.Designer.cs">
+      <DependentUpon>201508241651004_InitialMigration.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\HomeModels.cs" />
@@ -196,6 +200,7 @@
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModels\Dashboard.cs" />
     <Compile Include="ViewModels\ProfileView.cs" />
+    <None Include="Properties\PublishProfiles\aardvark-ejr %282%29.pubxml" />
     <None Include="Properties\PublishProfiles\aardvark-ejr.pubxml" />
     <None Include="Properties\PublishProfiles\aardvark.pubxml" />
     <None Include="ViewModels\TemplateToCopy.cshtlml" />
@@ -985,6 +990,11 @@
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="packages.config" />
     <None Include="Project_Readme.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201508241651004_InitialMigration.resx">
+      <DependentUpon>201508241651004_InitialMigration.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

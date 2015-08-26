@@ -22,6 +22,11 @@ What I've found:
 - Or, see if the model is not correct
 
 
+To get dropdown menu to show
+============================
+$('#element_id').trigger('click')
+
+
 When the code crashes when creating 'manager' in UserRolesHelper
 ================================================================
 This almost always means you just changed something in the database; do 'update-database'.
@@ -53,3 +58,33 @@ routes.LowercaseUrls = true;
 
 into RouteConfig.cs - this causes all URLs displayed at the bottom of the screen to show in lowercase,
 conforming to what is normally expected on the web.
+
+Going back to previous page (using browser's cache, nothing in memory should change)
+====================================================================================
+from: http://stackoverflow.com/questions/18465895/on-html-actionlink-click-go-to-previous-page
+
+Unless you're tracking what the previous page is on the server, 
+why not just use the browser's internal history? In that case there wouldn't be a need 
+for server-side code. You could just use something like this:
+
+<a href="javascript:void(0);" onclick="history.go(-1);">Back to Details</a>
+Or, separating the code from the markup:
+
+<a href="javascript:void(0);" id="backLink">Back to Details</a>
+
+<script type="text/javascript">
+    $(document).on('click', '#backLink', function () {
+        history.go(-1);
+    });
+</script>
+
+This would send the user back to whatever was the last page in their browser history. 
+(Of course, if they reached that page from any other source then it wouldn't take them "back to details" but instead just "back".)
+
+shareimprove this answer
+answered Aug 27 '13 at 12:55
+
+David
+83.6k1483155
+add a comment
+

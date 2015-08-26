@@ -44,91 +44,80 @@ namespace Aardvark.Controllers
             // Do this in every GET action...
             ViewBag.UserModel = ProjectsHelper.LoadUserModel();
             ViewBag.Scope = scope ?? "";
+            if (scope == null)
+                scope = "";
 
-            if (scope == "My")
+            DateTimeOffset now = DateTimeOffset.UtcNow;
+            DateTimeOffset end;
+            switch (scope)
             {
-                // Need to track all places where User could be attached to a ticket:
-                // - as PM (then follow ticket chain)
-                // - as Developer (follow ticket chain)
-                // - as ticket creator
-                // - as ticket commenter
-                var tickets = db.Users.Find(userId).TicketsAssigned
-                    .Union(db.Users.Find(userId).TicketsOwned);
-                return View(tickets.ToList());
-            }
-            else if (scope == "All")
-            {
-                // Come here for all tickets
-                var tickets = db.Tickets.Include(t => t.AssignedToDev).Include(t => t.OwnerUser).Include(t => t.Project).Include(t => t.SkillRequired).Include(t => t.TicketPriority).Include(t => t.TicketStatus).Include(t => t.TicketType);
-                return View(tickets.ToList());
-            }
-            else if (scope == "NotAssigned")
-            {
-                // Come here all not yet assigned
-                var tickets = db.Tickets
-                    .Where(tic => tic.TicketStatus.Step <= 30)
-                    .Include(t => t.AssignedToDev).Include(t => t.OwnerUser).Include(t => t.Project).Include(t => t.SkillRequired).Include(t => t.TicketPriority).Include(t => t.TicketStatus).Include(t => t.TicketType);
-                return View(tickets.ToList());
-            }
-            else if (scope == "MyNew")
-            {
-                var tickets = db.Tickets
-                    .Where(t => t.AssignedToDevId == userId && t.TicketStatusId == (int)TS.Status.New);
-                return View(tickets.ToList());
-            }
-            else if (scope == "MyDue24")
-            {
-                DateTimeOffset now = DateTimeOffset.UtcNow;
-                DateTimeOffset end = now.AddDays(1);
-                var tickets = db.Tickets
-                    .Where(t => t.AssignedToDevId == userId
-                        && t.TicketStatusId != (int)TS.Status.Resolved
-                        && t.DueDate >= now && t.DueDate < end);
-                return View(tickets.ToList());
-            }
-            else if (scope == "MyDue7")
-            {
-                DateTimeOffset now = DateTimeOffset.UtcNow;
-                DateTimeOffset end = now.AddDays(7);
-                var tickets = db.Tickets
-                    .Where(t => t.AssignedToDevId == userId
-                        && t.TicketStatusId != (int)TS.Status.Resolved
-                        && t.DueDate >= now && t.DueDate < end);
-                return View(tickets.ToList());
-            }
-            else if (scope == "MyDue30")
-            {
-                DateTimeOffset now = DateTimeOffset.UtcNow;
-                DateTimeOffset end = now.AddDays(30);
-                var tickets = db.Tickets
-                    .Where(t => t.AssignedToDevId == userId
-                        && t.TicketStatusId != (int)TS.Status.Resolved
-                        && t.DueDate >= now && t.DueDate < end);
-                return View(tickets.ToList());
-            }
-            else if (scope == "MyOverdue")
-            {
-                var tickets = db.Tickets
-                    .Where(t => t.AssignedToDevId == userId 
-                        && t.TicketStatusId == (int)TS.Status.New
-                        && t.DueDate < DateTimeOffset.UtcNow);
-                return View(tickets.ToList());
-            }
-            else if (scope == "MyTesting")
-            {
-                var tickets = db.Tickets
-                    .Where(t => t.AssignedToDevId == userId 
-                        && t.TicketStatusId >= (int)TS.Status.ReadyToTest
-                        && t.TicketStatusId != (int)TS.Status.Resolved);
-                return View(tickets.ToList());
-            }
-            else // For all other scopes, come here
-            {
-                // Come here in all other cases
-                var tickets = db.Tickets
-                    .Where(tic => tic.TicketStatus.Name == scope)
-                    .Include(t => t.AssignedToDev).Include(t => t.OwnerUser).Include(t => t.Project).Include(t => t.SkillRequired).Include(t => t.TicketPriority).Include(t => t.TicketStatus).Include(t => t.TicketType);
-                return View(tickets.ToList());
+                case "My":
+                    // Need to track all places where User could be attached to a ticket:
+                    // - as PM (then follow ticket chain)
+                    // - as Developer (follow ticket chain)
+                    // - as ticket creator
+                    // - as ticket commenter
+                    var myTickets = db.Users.Find(userId).TicketsAssigned
+                        .Union(db.Users.Find(userId).TicketsOwned);
+                    return View(myTickets.ToList());
+                case "All":
+                    // Come here for all tickets
+                    var allTickets = db.Tickets.Include(t => t.AssignedToDev).Include(t => t.OwnerUser).Include(t => t.Project).Include(t => t.SkillRequired).Include(t => t.TicketPriority).Include(t => t.TicketStatus).Include(t => t.TicketType);
+                    return View(allTickets.ToList());
+                case "NotAssigned":
+                // Come here for all not yet assigned
+                    var notTickets = db.Tickets
+                        .Where(tic => tic.TicketStatus.Step <= 30)
+                        .Include(t => t.AssignedToDev).Include(t => t.OwnerUser).Include(t => t.Project).Include(t => t.SkillRequired).Include(t => t.TicketPriority).Include(t => t.TicketStatus).Include(t => t.TicketType);
+                    return View(notTickets.ToList());
+                case "MyNew":
+                    var newTickets = db.Tickets
+                        .Where(t => t.AssignedToDevId == userId && t.TicketStatusId == (int)TS.Status.AssignedToDeveloper);
+                    return View(newTickets.ToList());
+                case "MyDue7":
+                    end = now.AddDays(7);
+                    var due7Tickets = db.Tickets
+                        .Where(t => t.AssignedToDevId == userId
+                            && t.TicketStatusId != (int)TS.Status.Resolved
+                            && t.DueDate >= now && t.DueDate < end);
+                    return View(due7Tickets.ToList());
+                case "MyDue24":
+                    end = now.AddDays(1);
+                    var due24Tickets = db.Tickets
+                        .Where(t => t.AssignedToDevId == userId
+                            && t.TicketStatusId != (int)TS.Status.Resolved
+                            && t.DueDate >= now && t.DueDate < end);
+                    return View(due24Tickets.ToList());
+                case "MyDue30":
+                    end = now.AddDays(30);
+                    var due30Tickets = db.Tickets
+                        .Where(t => t.AssignedToDevId == userId
+                            && t.TicketStatusId != (int)TS.Status.Resolved
+                            && t.DueDate >= now && t.DueDate < end);
+                    return View(due30Tickets.ToList());
+                case "MyOverdue":
+                    var overdueTickets = db.Tickets
+                        .Where(t => t.AssignedToDevId == userId 
+                            && t.TicketStatusId == (int)TS.Status.New
+                            && t.DueDate < DateTimeOffset.UtcNow);
+                    return View(overdueTickets.ToList());
+                case "MyInDevelopment":
+                    var devTickets = db.Tickets
+                        .Where(t => t.AssignedToDevId == userId
+                            && t.TicketStatusId == (int)TS.Status.InDevelopment);
+                    return View(devTickets.ToList());
+                case "MyTesting":
+                    var testingTickets = db.Tickets
+                        .Where(t => t.AssignedToDevId == userId 
+                            && t.TicketStatusId >= (int)TS.Status.ReadyToTest
+                            && t.TicketStatusId != (int)TS.Status.Resolved);
+                    return View(testingTickets.ToList());
+                default:
+                    // For all other scopes, come here
+                    var tickets = db.Tickets
+                        .Where(tic => tic.TicketStatus.Name == scope)
+                        .Include(t => t.AssignedToDev).Include(t => t.OwnerUser).Include(t => t.Project).Include(t => t.SkillRequired).Include(t => t.TicketPriority).Include(t => t.TicketStatus).Include(t => t.TicketType);
+                    return View(tickets.ToList());
             }
         }
 

@@ -61,4 +61,27 @@ div.my-data.dueMonth, td.dueMonth {
 div.my-data.dueLater, td.dueLater {
     color: darkgray;
 }
-
+p.msg {
+    color:green;
+}
+.dashboard-stat .content {
+    text-transform: none;
+    font-variant: small-caps;
+    font-size: 24px;
+}
+.dashboard-stat .details .value {
+    text-align: center;
+    font-size: 48px;
+    float: none;
+}
+.portlet-content .hdr {
+    font-size: 13px;
+    font-variant: small-caps;
+    font-weight: 600;
+}
+.dash-value, hdr-center {
+    text-align: center;
+}
+#content-container .row {
+    margin-bottom: 1em;
+}

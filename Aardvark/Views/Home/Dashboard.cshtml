@@ -12,7 +12,7 @@
     </div> <!-- #content-header -->
     <div id="content-container">
         <div class="row">
-            <div class="col-md-4 col-sm-6">
+            <div class="col-md-4 col-sm-6"> <!-- Projects -->
                 <a href="javascript:;" class="dashboard-stat primary">
                     <div class="visual">
                         <i class="fa fa-star"></i>
@@ -40,8 +40,10 @@
                                 Hrs
                             </div>
                         </div>
-                    @foreach (var project in Model.MyProjects)
-                    {
+                    @if (Model.NumProjects > 0)
+                    { 
+                        foreach (var project in Model.MyProjects)
+                        {
                         <div class="row">
                             <div class="col-sm-1">
                                 <a href="@Url.Action("Details", "Projects", new { id = project.Id})">
@@ -58,12 +60,17 @@
                                 @project.CountHours
                             </div>
                         </div>
+                        }
+                    }
+                    else
+                    {
+                        <h4 class="text-center">(No projects)</h4>
                     }
                     </div> <!-- /.portlet-content -->
                 </div> <!-- /.portlet -->
-            </div> <!-- /.col-md-3 -->
+            </div> <!-- /.col-md-3 -->  <!-- Projects -->
 
-            <div class="col-md-4 col-sm-6">
+            <div class="col-md-4 col-sm-6"> <!-- Tickets -->
                 <a href="javascript:;" class="dashboard-stat secondary">
                     <div class="visual">
                         <i class="fa fa-shopping-cart"></i>
@@ -91,7 +98,8 @@
                                 Hrs
                             </div>
                         </div>
-                    @{
+                    @if (Model.NumActiveTickets > 0)
+                    {
                         foreach (var ticket in Model.MyActiveTickets)
                         {
                         <div class="row">
@@ -115,11 +123,15 @@
                         </div>
                         }
                     }
+                    else
+                    {
+                        <h4 class="text-center">(No active tickets)</h4>
+                    }
                     </div> <!-- /.portlet-content -->
                 </div> <!-- /.portlet -->
-            </div> <!-- /.col-md-3 -->
+            </div> <!-- /.col-md-3 -->  <!-- Tickets -->
 
-            <div class="col-md-4 col-sm-6">
+            <div class="col-md-4 col-sm-6"> <!-- New Tickets -->
                 <a href="javascript:;" class="dashboard-stat tertiary">
                     <div class="visual">
                         <i class="fa fa-clock-o"></i>
@@ -138,8 +150,8 @@
                         </h3>
                     </div> <!-- /.portlet-header -->
                     <div class="portlet-content">
-                        @using (Html.BeginForm())
-                        {
+                    @using (Html.BeginForm())
+                    {
                         @Html.AntiForgeryToken()
                         <div class="table-responsive">
                             <table id="user-signups" class="table table-striped table-checkable">
@@ -157,7 +169,9 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach (var ticket in Model.MyNewTickets)
+                                @if (Model.NumNewTickets > 0)
+                                { 
+                                    foreach (var ticket in Model.MyNewTickets)
                                     {
                                     <tr class="">
                                         <td class="checkbox-column">
@@ -167,29 +181,37 @@
                                         <td>@ticket.Description</td>
                                     </tr>
                                     }
+                                }
                                 </tbody>
                             </table>
                         </div>
+                        if (Model.NumNewTickets > 0)
+                        {
                         <div class="text-center">
                             <input type="submit" value="Pull Selected Tickets" class="btn btn-primary" />
                         </div>
                         }
+                        else
+                        {
+                        <h4 class="text-center">(No new tickets to pull)</h4>
+                        }
+                    }
                     </div> <!-- /.portlet-content -->
                 </div> <!-- /.portlet -->
-            </div> <!-- /.col-md-3 -->
+            </div> <!-- /.col-md-3 -->  <!-- New Tickets -->
 
 
         </div> <!-- /.row -->
         <div class="row">
-            <div class="col-md-4 col-sm-6">
-                <a href="javascript:;" class="dashboard-stat tertiary">
+            <div class="col-md-4 col-sm-6"> <!-- New/Unread Notifications -->
+                <a href="javascript:;" class="dashboard-stat secondary">
                     <div class="visual">
                         <i class="fa fa-clock-o"></i>
                     </div> <!-- /.visual -->
                     <div class="details">
-                        <span class="content">Notifications</span>
+                        <span class="content">New/Unread Notifications</span>
                         <div class="text-center">
-                            <span class="value">@Model.NumNewTickets</span>
+                            <span class="value">@Model.NumNotifications</span>
                         </div>
                     </div> <!-- /.details -->
                 </a> <!-- /.dashboard-stat -->
@@ -211,34 +233,41 @@
                                                 <input type="checkbox" id="check-all" class="icheck-input" />
                                             </th>
                                             <th>
-                                                New Ticket Name
-                                            </th>
-                                            <th>
-                                                Description
+                                                Notification Type
                                             </th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach (var ticket in Model.MyNewTickets)
+                                        @if (Model.NumNotifications > 0)
+                                        { 
+                                        foreach (var note in Model.MyNotifications)
                                         {
-                                            <tr class="">
-                                                <td class="checkbox-column">
-                                                    <input type="checkbox" name="actiony" value="joey" class="icheck-input">
-                                                </td>
-                                                <td>@ticket.Name</td>
-                                                <td>@ticket.Description</td>
-                                            </tr>
+                                        <tr class="">
+                                            <td class="checkbox-column">
+                                                <input type="checkbox" name="notes" value="@note.Id" class="icheck-input">
+                                            </td>
+                                            <td>@note.Name</td>
+                                        </tr>
+                                        }
                                         }
                                     </tbody>
                                 </table>
                             </div>
+                            if (Model.NumNotifications > 0)
+                            { 
                             <div class="text-center">
-                                <input type="submit" value="Pull Selected Tickets" class="btn btn-primary" />
+                                <input type="submit" value="Mark 'Has Been Read'" class="btn btn-primary" />
                             </div>
+                            }
+                            else
+                            {
+                            <h4 class="text-center">(No unread notifications)</h4>
+                            }
                         }
                     </div> <!-- /.portlet-content -->
                 </div> <!-- /.portlet -->
-            </div> <!-- /.col-md-3 -->
+            </div> <!-- /.col-md-3 -->  <!-- New/Unread Notifications -->
+
         </div>
     </div>
 </div> <!-- #content -->

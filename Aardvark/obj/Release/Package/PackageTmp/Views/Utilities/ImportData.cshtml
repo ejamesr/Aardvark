@@ -113,16 +113,17 @@
                     <br />
                     <pre>
 ; Template to use for importing data into Aardvark -- instructions below												
-; Last updated:	8/17/15 9:35 AM											
+; Last updated:	8/24/15 7:54 AM											
 ;												
 #Users												
 FirstName	LastName	UserName	DisplayName	SkillLevel	Email	Phone	RoleAdmin	RoleProjectManager	RoleDeveloper	RoleSubmitter	RoleGuest	
 James	Johnson	Jimmy	Jimmy	Junior	Jimmy@me.com	123.456.7890	Y		Y			
 Bob	Thomas	Bob	Bob	Mid-Level	Bob@me.com	333-444-5555			Y			
 John	Doe	John	JD		John@me.com	(987) 654-3210		Y				
-Patty	Whack	Patty the Wackiest	Patty	Senior	Patty.Whack@ThisOldMan.com			Y	Y			
+Patty	Whack	Patty the Wackiest	Patty	Senior	Patty.Whack@ThisOldMan.com			Y				
 Sue	Jones	Sue	Sue	Senior	Sue@me.com					Y		
-Kermit	The Frog	Kirmy			KirmetTheFrog@me.com							
+Kermit	The Frog	Kirmy			KermitTheFrog@me.com							
+Joe	LeDev	Joe	Joe	Senior	Joe@me.com				Y			
 ; Add additional rows as needed												
 ; Add additional rows as needed												
 ;												
@@ -146,11 +147,25 @@ Second Product	Makes us more money	Bob
 Title	Description	DateCreated	ProjectName	ProjectDescription	TicketCreatorUserName	AssignedDeveloperUserName	DueDate	HoursToComplete	TicketType	TicketPriority	TicketStatus	SkillRequired
 Just an idea	Several customers keep mentioning this	8/12/2015 8:00am	Main Product	"Our main focus, #1"	Sue	Bob	9/30/2015	5	en	Desirable	Deferred	Mid-Level
 Screen flickers	"When entering invoices, the screen keeps flickering"	7/31/2015	Main Product	"Our main focus, #1"	Patty the Wackiest		8/31/2015	2	Bug	Essential	New	Junior
-BSOD	"Every third time I click ""Save"", the computer crashes"	8/11/2015 3:13pm	Second Product	Makes us more money	Sue		8/13/2015	10	Bug	Severe/DataLoss	AssignedToDeveloper	Senior
+BSOD	"Every third time I click ""Save"", the computer crashes"	8/11/2015 3:13pm	Second Product	Makes us more money	Sue	Joe	8/13/2015	10	Bug	Severe/DataLoss	AssignedToDeveloper	Senior
 Just another idea	Several customers keep mentioning this	8/12/2015 8:00am	Main Product	"Our main focus, #1"	Sue	Bob	9/30/2015	5	en	Desirable	Deferred	Mid-Level
-Screen flickers still!	"When entering invoices, the screen keeps flickering"	7/31/2015	Main Product	"Our main focus, #1"	Patty the Wackiest		8/31/2015	2	Bug	Essential	New	Junior
+Screen flickers still!	"When entering invoices, the screen keeps flickering"	7/31/2015	Main Product	"Our main focus, #1"	Patty the Wackiest	Jimmy	8/31/2015	2	Bug	Essential	New	Junior
 BSOD worse	"Every third time I click ""Save"", the computer crashes"	8/11/2015 3:13pm	Second Product	Makes us more money	Sue		8/13/2015	10	Bug	Severe/DataLoss	AssignedToDeveloper	Senior
 Annoying sounds louder	Chirps quite loudly	7/16/2015	Main Product	"Our main focus, #1"	Sue	Bob	8/31/2015	1	Bug	Desirable	New	Junior
+Just an idea - 2	Several customers keep mentioning this	8/12/2015 8:00am	Main Product	"Our main focus, #1"	Sue	Bob	9/30/2015	5	en	Desirable	Deferred	Mid-Level
+Screen flickers - 2	"When entering invoices, the screen keeps flickering"	7/31/2015	Main Product	"Our main focus, #1"	Patty the Wackiest	Jimmy	8/31/2015	2	Bug	Essential	New	Junior
+BSOD - 2	"Every third time I click ""Save"", the computer crashes"	8/11/2015 3:13pm	Second Product	Makes us more money	Sue		8/13/2015	10	Bug	Severe/DataLoss	AssignedToDeveloper	Senior
+Just another idea - 2	Several customers keep mentioning this	8/12/2015 8:00am	Main Product	"Our main focus, #1"	Sue	Bob	9/30/2015	5	en	Desirable	Deferred	Mid-Level
+Screen flickers still! - 2	"When entering invoices, the screen keeps flickering"	7/31/2015	Main Product	"Our main focus, #1"	Patty the Wackiest	Joe	8/31/2015	2	Bug	Essential	New	Junior
+BSOD worse - 2	"Every third time I click ""Save"", the computer crashes"	8/11/2015 3:13pm	Second Product	Makes us more money	Sue		8/13/2015	10	Bug	Severe/DataLoss	AssignedToDeveloper	Senior
+Annoying sounds louder - 2	Chirps quite loudly	7/16/2015	Main Product	"Our main focus, #1"	Sue	Bob	8/31/2015	1	Bug	Desirable	New	Junior
+Just an idea - even more	Several customers keep mentioning this	8/12/2015 8:00am	Main Product	"Our main focus, #1"	Sue	Bob	9/30/2015	5	en	Desirable	Deferred	Mid-Level
+Screen flickers - even more	"When entering invoices, the screen keeps flickering"	7/31/2015	Main Product	"Our main focus, #1"	Patty the Wackiest	Jimmy	8/31/2015	2	Bug	Essential	New	Junior
+BSOD - even more	"Every third time I click ""Save"", the computer crashes"	8/11/2015 3:13pm	Second Product	Makes us more money	Sue		8/13/2015	10	Bug	Severe/DataLoss	AssignedToDeveloper	Senior
+Just another idea - even more	Several customers keep mentioning this	8/12/2015 8:00am	Main Product	"Our main focus, #1"	Sue	Bob	9/30/2015	5	en	Desirable	Deferred	Mid-Level
+Screen flickers still! - even more	"When entering invoices, the screen keeps flickering"	7/31/2015	Main Product	"Our main focus, #1"	Patty the Wackiest	Jimmy	8/31/2015	2	Bug	Essential	New	Junior
+BSOD worse - even more	"Every third time I click ""Save"", the computer crashes"	8/11/2015 3:13pm	Second Product	Makes us more money	Sue	Jimmy	8/13/2015	10	Bug	Severe/DataLoss	AssignedToDeveloper	Senior
+Annoying sounds louder - even more	Chirps quite loudly	7/16/2015	Main Product	"Our main focus, #1"	Sue	Bob	8/31/2015	1	Bug	Desirable	New	Junior
 ; Add additional rows as needed												
 ; Add additional rows as needed												
 ;												

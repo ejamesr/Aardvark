@@ -163,60 +163,31 @@
                 });
             </script>
     }*@
-
-
-@if (ViewBag.Scope == "My")
-{
-    @section Scripts {
-        <script>
-            $(document).ready(function () {
-                $('#sidebar-Tickets').addClass('active');
-                $('#sidebar-Tickets-My').addClass('active');
-            });
-        </script>
-    }
-}
-else if (ViewBag.Scope == "All")
-{
-    @section Scripts {
-        <script>
-            $(document).ready(function () {
-                $('#sidebar-Tickets').addClass('active');
-                $('#sidebar-Tickets-All').addClass('active');
-            });
-        </script>
-    }
-}
-else if (ViewBag.Scope == "NotAssigned")
-{
-    @section Scripts {
-        <script>
-            $(document).ready(function () {
-                $('#sidebar-Tickets').addClass('active');
-                $('#sidebar-Tickets-NotAssigned').addClass('active');
-            });
-        </script>
-    }
-}
-else if (ViewBag.Scope == "ReadyToTest")
-{
-    @section Scripts {
-        <script>
-            $(document).ready(function () {
-                $('#sidebar-Tickets').addClass('active');
-                $('#sidebar-Tickets-ReadyToTest').addClass('active');
-            });
-        </script>
-    }
-}
-else if (ViewBag.Scope == "ReadyToReview")
-{
-    @section Scripts {
-        <script>
-            $(document).ready(function () {
-                $('#sidebar-Tickets').addClass('active');
-                $('#sidebar-Tickets-ReadyToReview').addClass('active');
-            });
-        </script>
-    }
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#sidebar-Tickets').addClass('active');
+            $('#sidebar-Tickets').trigger('click');
+            @if (ViewBag.Scope == "My")
+            {
+            <text>$('#sidebar-Tickets-My').addClass('active');</text>
+            }
+            else if (ViewBag.Scope == "All")
+            {
+            <text>$('#sidebar-Tickets-All').addClass('active');</text>
+            }
+            else if (ViewBag.Scope == "NotAssigned")
+            {
+            <text>$('#sidebar-Tickets-NotAssigned').addClass('active');</text>
+            }
+            else if (ViewBag.Scope == "ReadyToTest")
+            {
+            <text>$('#sidebar-Tickets-ReadyToTest').addClass('active');</text>
+            }
+            else if (ViewBag.Scope == "ReadyToReview")
+            {
+            <text>$('#sidebar-Tickets-ReadyToReview').addClass('active');</text>
+            }
+        });
+    </script>
 }

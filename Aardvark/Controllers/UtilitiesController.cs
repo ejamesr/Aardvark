@@ -400,6 +400,13 @@ namespace Aardvark.Controllers
                                 Section.LogAlert(db, "Ticket on row " + (row + 1) + " had invalid SkillRequired -- set to Junior");
                         }
 
+                        // Last check... if ticket.StatusId is "New" and a developer is assigned, change to "AssignedToDeveloper"
+                        if (ticket.AssignedToDev != null && ticket.TicketStatusId == (int)TS.Status.New)
+                        {
+                            Section.LogAlert(db, "Ticket on row " + (row + 1) + " has assigned developer -- set to AssignedToDeveloper");
+                            ticket.TicketStatusId = (int)TS.Status.AssignedToDeveloper;
+                        }
+
                         // We can add the Ticket now
                         db.Tickets.Add(ticket);
                         db.SaveChanges();
