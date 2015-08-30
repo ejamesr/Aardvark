@@ -133,7 +133,7 @@ namespace Aardvark.Migrations
             //    new TicketPriority { Name = "Desi", Val = Step.Val },               //"Desirable", Val = Step.Val },
             //    new TicketPriority { Name = "Esse", Val = Step.Val },               //"Essential", Val = Step.Val },
             //    new TicketPriority { Name = "Crit", Val = Step.Val },               //"Critical", Val = Step.Val },
-            //    new TicketPriority { Name = "Seve", Val = Step.Val },               //"Severe/DataLoss", Val = Step.Val },
+            //    new TicketPriority { Name = "Seve", Val = Step.Val },               //"SevereDataLoss", Val = Step.Val },
             //    new TicketPriority { Name = "Stop", Val = Step.Val }                //"Showstopper", Val = Step.Val }
             //    );
             context.TicketPriorities.AddOrUpdate(
@@ -142,7 +142,7 @@ namespace Aardvark.Migrations
                 new TicketPriority { Name = "Desirable", Val = Step.Val },
                 new TicketPriority { Name = "Essential", Val = Step.Val },
                 new TicketPriority { Name = "Critical", Val = Step.Val },
-                new TicketPriority { Name = "Severe/DataLoss", Val = Step.Val },
+                new TicketPriority { Name = "SevereDataLoss", Val = Step.Val },
                 new TicketPriority { Name = "Showstopper", Val = Step.Val }
                 );
             //context.TicketTypes.AddOrUpdate(

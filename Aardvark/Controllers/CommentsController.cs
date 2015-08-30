@@ -97,7 +97,7 @@ namespace Aardvark.Controllers
                     comment.DisplayName = "(no name)";
                 db.TicketComments.Add(comment);
                 db.SaveChanges();
-                TicketNotification.Notify(db, comment.Ticket,
+                TicketNotification.Notify(db, comment.TicketId,
                     comment.Created, Notifications.CommentCreated);
 
                                 //            @Html.ActionLink("Details", "Details", "Posts", null, null,
@@ -171,7 +171,7 @@ namespace Aardvark.Controllers
                 orig.Updated = DateTime.UtcNow;
                 db.Entry(orig).State = EntityState.Modified;
                 db.SaveChanges();
-                TicketNotification.Notify(db, orig.Ticket,
+                TicketNotification.Notify(db, orig.TicketId,
                     orig.Updated.Value, Notifications.CommentModified);
                 return RedirectToAction("Details", "Posts", route);
             }
@@ -213,7 +213,7 @@ namespace Aardvark.Controllers
             comment.Deleted = true;
             //db.TicketComments.Remove(comment);
             db.SaveChanges();
-            TicketNotification.Notify(db, comment.Ticket,
+            TicketNotification.Notify(db, comment.TicketId,
                 comment.Updated.Value, Notifications.CommentDeleted);
 
             var route = new System.Web.Routing.RouteValueDictionary();

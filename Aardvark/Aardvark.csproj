@@ -954,7 +954,7 @@
     <Content Include="Views\Attachments\Details.cshtml" />
     <Content Include="Views\Attachments\Edit.cshtml" />
     <Content Include="Views\Attachments\Index.cshtml" />
-    <Content Include="Template.xlsx" />
+    <Content Include="ImportTemplate.xlsx" />
     <Content Include="Views\Utilities\Create.cshtml" />
     <Content Include="Views\Utilities\Delete.cshtml" />
     <Content Include="Views\Utilities\Details.cshtml" />

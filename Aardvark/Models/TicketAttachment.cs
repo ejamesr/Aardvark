@@ -17,6 +17,8 @@ namespace Aardvark.Models
         public string FilePath { get; set; }
         [Required]
         public string Description { get; set; }
+        public string ContentType { get; set; }
+        public int ContentLength { get; set; }
         public DateTimeOffset Created { get; set; }
         public string UserId { get; set; }
         public string FileUrl { get; set; }

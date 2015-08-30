@@ -108,6 +108,12 @@ namespace Aardvark.Models
                 + " (" + Ticket.Title + "): " + NotificationTypes[(int)Type].Msg;
         }
         // Create a notification entry...
+        public static void Notify(ApplicationDbContext db, int ticketId, DateTimeOffset date, Notifications type)
+        {
+            Ticket ticket = db.Tickets.Find(ticketId);
+            Notify(db, ticket, date, type);
+        }
+
         public static void Notify(ApplicationDbContext db, Ticket ticket, DateTimeOffset date, Notifications type)
         {
             // Create new object, init fields and save

@@ -1,0 +1,7 @@
+Debugging Aids
+
+To make an item "float" to the bottom of a container, make sure to select
+the container that is to be pushed down.  Then, simply adjust margin-top to
+achieve the desired result.  This works only when the item being pushed
+does not resize when the window is resized (i.e., for images, make them
+absolute sizes; this will keep the container the proper size).

@@ -892,6 +892,19 @@ namespace Aardvark.Controllers
             return View(db.Logs.ToList());
         }
 
+        private const string ExcelTemplate = "~/ImportTemplate.xlsx";
+
+        // GET: UtilitiesExcelTemplate
+        public ActionResult DownloadTemplate()
+        {
+            // Download the Excel spreadsheet...
+            var fpr = new FilePathResult(ExcelTemplate, 
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+            var fName = System.IO.Path.GetFileName(ExcelTemplate);
+            fpr.FileDownloadName = fName;
+            return fpr;
+        }
+
         // GET: Utilities/Details/5
         public ActionResult Details(int? id)
         {

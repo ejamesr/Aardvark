@@ -7,18 +7,22 @@
         <div class="row">
             <div class="col-sm-8">
                 <p>
-                    You can perform a bulk input Users, Projects, and Tickets data data into Aardvark.
+                    You can perform a bulk input of Users, Projects, Developers, and Tickets data into Aardvark.
                 </p>
                 <p>
                     To begin the process, follow these instructions:
                     <ol>
                         <li>
-                            Copy the Import Template to the
+                            If you click 'Download Template' to download the main template, you may skip to step 5). Otherwise, you can
+                            manually copy the data as follows.
+                        </li>
+                        <li>
+                            Copy the Template Data to the
                             clipboard (click the "Show Template Data" button to display
                             the text to select).
                         </li>
                         <li>
-                            Copy and paste the data into a text editor,
+                            Paste the data into a text editor,
                             such as Notepad or Notepad++. Save the file as a text file.
                         </li>
                         <li>
@@ -26,11 +30,11 @@
                             will display; make sure the Delimited button is selected, then click Finish.
                         </li>
                         <li>
-                            Instructions follow the sample data rows in the template; please read them!
+                            Please read the instructions in the template that follow the sample data rows.
                         </li>
                         <li>
                             Resize columns as desired. The template
-                            includes some "dummy data" (which you can remove or overwrite) showing 
+                            includes "dummy data" (which you can remove or overwrite) showing 
                             the proper format for the data. Enter your
                             data for Users, Projects, ProjectDevelopers, and Tickets.
                         </li>
@@ -50,14 +54,14 @@
                         </li>
                         <li>
                             Then, select Save As to also save it as a Text (Tab-delimited) file.  
-                            NOTE: The formst must be Tab-delimited, not Comma-delimited; otherwise, it won't work.
+                            NOTE: The format must be Tab-delimited, not Comma-delimited; otherwise, it won't work.
                         </li>
                         <li>
                             Open the tab-delimited file with a text editor (Notepad works fine). Select all the data, copy to the
-                            clipboard,  then paste it into the 'Import Data' text box in the Utilities/ImportData screen. 
+                            clipboard, then paste it into the 'Import Data' text box in the Utilities/ImportData screen. 
                         </li>
                         <li>
-                            Click Import Data to start the import process.
+                            Click 'Import Data' to start the import process.
                         </li>
                     </ol>
                 </p>
@@ -68,7 +72,9 @@
                 @if (ViewBag.Msg == "")
                 {
                     <br />
-                    <button type="button" id="TemplateBtn" class="btn btn-primary" onclick="ShowData()">Show Template Data</button>
+                    <button type="button" id="TemplateBtn" class="btn btn-secondary" onclick="ShowData()">Show Template Data</button>
+                    <text>&nbsp; or &nbsp;</text>
+                    @Html.ActionLink("Download Template (Excel spreadsheet)", "DownloadTemplate", null, new { @class = "btn btn-secondary" });
                 }
             </div>
         </div>
@@ -113,7 +119,7 @@
                     <br />
                     <pre>
 ; Template to use for importing data into Aardvark -- instructions below												
-; Last updated:	8/24/15 7:54 AM											
+; Last updated:	8/29/15 11:35 PM											
 ;												
 #Users												
 FirstName	LastName	UserName	DisplayName	SkillLevel	Email	Phone	RoleAdmin	RoleProjectManager	RoleDeveloper	RoleSubmitter	RoleGuest	
@@ -147,25 +153,25 @@ Second Product	Makes us more money	Bob
 Title	Description	DateCreated	ProjectName	ProjectDescription	TicketCreatorUserName	AssignedDeveloperUserName	DueDate	HoursToComplete	TicketType	TicketPriority	TicketStatus	SkillRequired
 Just an idea	Several customers keep mentioning this	8/12/2015 8:00am	Main Product	"Our main focus, #1"	Sue	Bob	9/30/2015	5	en	Desirable	Deferred	Mid-Level
 Screen flickers	"When entering invoices, the screen keeps flickering"	7/31/2015	Main Product	"Our main focus, #1"	Patty the Wackiest		8/31/2015	2	Bug	Essential	New	Junior
-BSOD	"Every third time I click ""Save"", the computer crashes"	8/11/2015 3:13pm	Second Product	Makes us more money	Sue	Joe	8/13/2015	10	Bug	Severe/DataLoss	AssignedToDeveloper	Senior
+BSOD	"Every third time I click ""Save"", the computer crashes"	8/11/2015 3:13pm	Second Product	Makes us more money	Sue	Joe	8/13/2015	10	Bug	SevereDataLoss	AssignedToDeveloper	Senior
 Just another idea	Several customers keep mentioning this	8/12/2015 8:00am	Main Product	"Our main focus, #1"	Sue	Bob	9/30/2015	5	en	Desirable	Deferred	Mid-Level
 Screen flickers still!	"When entering invoices, the screen keeps flickering"	7/31/2015	Main Product	"Our main focus, #1"	Patty the Wackiest	Jimmy	8/31/2015	2	Bug	Essential	New	Junior
-BSOD worse	"Every third time I click ""Save"", the computer crashes"	8/11/2015 3:13pm	Second Product	Makes us more money	Sue		8/13/2015	10	Bug	Severe/DataLoss	AssignedToDeveloper	Senior
+BSOD worse	"Every third time I click ""Save"", the computer crashes"	8/11/2015 3:13pm	Second Product	Makes us more money	Sue		8/13/2015	10	Bug	SevereDataLoss	AssignedToDeveloper	Senior
 Annoying sounds louder	Chirps quite loudly	7/16/2015	Main Product	"Our main focus, #1"	Sue	Bob	8/31/2015	1	Bug	Desirable	New	Junior
 Just an idea - 2	Several customers keep mentioning this	8/12/2015 8:00am	Main Product	"Our main focus, #1"	Sue	Bob	9/30/2015	5	en	Desirable	Deferred	Mid-Level
 Screen flickers - 2	"When entering invoices, the screen keeps flickering"	7/31/2015	Main Product	"Our main focus, #1"	Patty the Wackiest	Jimmy	8/31/2015	2	Bug	Essential	New	Junior
-BSOD - 2	"Every third time I click ""Save"", the computer crashes"	8/11/2015 3:13pm	Second Product	Makes us more money	Sue		8/13/2015	10	Bug	Severe/DataLoss	AssignedToDeveloper	Senior
+BSOD - 2	"Every third time I click ""Save"", the computer crashes"	8/11/2015 3:13pm	Second Product	Makes us more money	Sue		8/13/2015	10	Bug	SevereDataLoss	AssignedToDeveloper	Senior
 Just another idea - 2	Several customers keep mentioning this	8/12/2015 8:00am	Main Product	"Our main focus, #1"	Sue	Bob	9/30/2015	5	en	Desirable	Deferred	Mid-Level
 Screen flickers still! - 2	"When entering invoices, the screen keeps flickering"	7/31/2015	Main Product	"Our main focus, #1"	Patty the Wackiest	Joe	8/31/2015	2	Bug	Essential	New	Junior
-BSOD worse - 2	"Every third time I click ""Save"", the computer crashes"	8/11/2015 3:13pm	Second Product	Makes us more money	Sue		8/13/2015	10	Bug	Severe/DataLoss	AssignedToDeveloper	Senior
-Annoying sounds louder - 2	Chirps quite loudly	7/16/2015	Main Product	"Our main focus, #1"	Sue	Bob	8/31/2015	1	Bug	Desirable	New	Junior
+BSOD worse - 2	"Every third time I click ""Save"", the computer crashes"	8/11/2015 3:13pm	Second Product	Makes us more money	Sue		8/13/2015	10	Bug	SevereDataLoss	AssignedToDeveloper	Senior
+Annoying sounds louder - 2	Chirps quite loudly	7/16/2015	Main Product	"Our main focus, #1"	Sue	Bob	8/31/2015	1	Bug	Desirable	AssignedToDeveloper	Junior
 Just an idea - even more	Several customers keep mentioning this	8/12/2015 8:00am	Main Product	"Our main focus, #1"	Sue	Bob	9/30/2015	5	en	Desirable	Deferred	Mid-Level
-Screen flickers - even more	"When entering invoices, the screen keeps flickering"	7/31/2015	Main Product	"Our main focus, #1"	Patty the Wackiest	Jimmy	8/31/2015	2	Bug	Essential	New	Junior
-BSOD - even more	"Every third time I click ""Save"", the computer crashes"	8/11/2015 3:13pm	Second Product	Makes us more money	Sue		8/13/2015	10	Bug	Severe/DataLoss	AssignedToDeveloper	Senior
+Screen flickers - even more	"When entering invoices, the screen keeps flickering"	7/31/2015	Main Product	"Our main focus, #1"	Patty the Wackiest	Jimmy	8/31/2015	2	Bug	Essential	AssignedToDeveloper	Junior
+BSOD - even more	"Every third time I click ""Save"", the computer crashes"	8/11/2015 3:13pm	Second Product	Makes us more money	Sue		8/13/2015	10	Bug	SevereDataLoss	AssignedToDeveloper	Senior
 Just another idea - even more	Several customers keep mentioning this	8/12/2015 8:00am	Main Product	"Our main focus, #1"	Sue	Bob	9/30/2015	5	en	Desirable	Deferred	Mid-Level
-Screen flickers still! - even more	"When entering invoices, the screen keeps flickering"	7/31/2015	Main Product	"Our main focus, #1"	Patty the Wackiest	Jimmy	8/31/2015	2	Bug	Essential	New	Junior
-BSOD worse - even more	"Every third time I click ""Save"", the computer crashes"	8/11/2015 3:13pm	Second Product	Makes us more money	Sue	Jimmy	8/13/2015	10	Bug	Severe/DataLoss	AssignedToDeveloper	Senior
-Annoying sounds louder - even more	Chirps quite loudly	7/16/2015	Main Product	"Our main focus, #1"	Sue	Bob	8/31/2015	1	Bug	Desirable	New	Junior
+Screen flickers still! - even more	"When entering invoices, the screen keeps flickering"	7/31/2015	Main Product	"Our main focus, #1"	Patty the Wackiest	Jimmy	8/31/2015	2	Bug	Essential	AssignedToDeveloper	Junior
+BSOD worse - even more	"Every third time I click ""Save"", the computer crashes"	8/11/2015 3:13pm	Second Product	Makes us more money	Sue	Jimmy	8/13/2015	10	Bug	SevereDataLoss	AssignedToDeveloper	Senior
+Annoying sounds louder - even more	Chirps quite loudly	7/16/2015	Main Product	"Our main focus, #1"	Sue	Bob	8/31/2015	1	Bug	Desirable	AssignedToDeveloper	Junior
 ; Add additional rows as needed												
 ; Add additional rows as needed												
 ;												
@@ -199,7 +205,7 @@ Annoying sounds louder - even more	Chirps quite loudly	7/16/2015	Main Product	"O
 ; in the sections and replace it with your own custom data.												
 ;												
 "; After making your changes, save this as a normal spreadsheet file. Then, select Save As to also save"												
-"; it as a Text (Tab-delimited) file.  NOTE: The formst must be Tab-delimited, not Comma-delimited; "												
+"; it as a Text (Tab-delimited) file.  NOTE: The format must be Tab-delimited, not Comma-delimited; "												
 "; otherwise, it won't work. "												
 												
 "; Open the tab-delimited file with a text editor (Notepad is fine). Select all the data, copy to the"												
@@ -248,7 +254,7 @@ Annoying sounds louder - even more	Chirps quite loudly	7/16/2015	Main Product	"O
 ; DueDate is the due date for this ticket -- default is tomorrow.												
 ; HoursToComplete is the estimated number of work hours to complete this ticket.												
 "; TicketType: one of Bug, Enhancement, or Unknown."												
-"; TicketPrirority: one of 'Optional', 'Desirable', 'Essential', 'Critical', 'Severe/DataLoss', or 'Showstopper'"												
+"; TicketPrirority: one of 'Optional', 'Desirable', 'Essential', 'Critical', 'SevereDataLoss', or 'Showstopper'"												
 "; TicketStatus: one of 'New', 'Unable to Reproduce', 'Deferred', 'ReadyToAssign', 'AssignedToDeveloper', 'InDevelopment', 'ReadyToTest', 'AssignedToTester', 'InTesting', 'ReadyToReview', or 'Resolved'"												
 "; SkillRequired: one of 'Junior', 'Mid-Level', or 'Senior'"												
 </pre>

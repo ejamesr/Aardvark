@@ -85,3 +85,7 @@ p.msg {
 #content-container .row {
     margin-bottom: 1em;
 }
+div.bump-up {
+    position: relative;
+    top: -96px;
+}
