@@ -31,16 +31,7 @@
                             @Html.DisplayNameFor(model => model.Created)
                         </th>
                         <th class="dt-head-center" data-sortable="true">
-                            @Html.DisplayNameFor(model => model.Method)
-                        </th>
-                        <th class="dt-head-center" data-sortable="true">
                             @Html.DisplayNameFor(model => model.HasBeenRead)
-                        </th>
-                        <th class="dt-head-center" data-sortable="true">
-                            @Html.DisplayNameFor(model => model.UsedEmail)
-                        </th>
-                        <th class="dt-head-center" data-sortable="true">
-                            @Html.DisplayNameFor(model => model.UsedText)
                         </th>
                         <th></th>
                     </tr>
@@ -66,21 +57,10 @@
                                 @Html.DisplayFor(modelItem => item.Created)
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.Method)
-                            </td>
-                            <td>
                                 @Html.DisplayFor(modelItem => item.HasBeenRead)
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.UsedEmail)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.UsedText)
-                            </td>
-                            <td>
-                                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-                                @Html.ActionLink("Details", "Details", new { id = item.Id }) |
-                                @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                                @Html.ActionLink("Details", "Details", new { id = item.Id })
                             </td>
                         </tr>
                     }

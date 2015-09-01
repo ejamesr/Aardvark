@@ -45,12 +45,12 @@ div.my-data.wayOverdue, td.wayOverdue {
     color: red;
 }
 div.my-data.overdue, td.overdue {
-    font-weight: 400;
+    font-weight: 600;
     color: orange;
 }
 div.my-data.dueToday, td.dueToday {
-    font-weight: 400;
-    color: yellow;
+    font-weight: 600;
+    color: blue;
 }
 div.my-data.dueWeek, td.dueWeek {
     color: green;
@@ -78,10 +78,27 @@ p.msg {
     font-size: 13px;
     font-variant: small-caps;
     font-weight: 600;
+    padding-left: 2px;
+    padding-right: 2px;
 }
-.dash-value, hdr-center {
+.dash-value, .hdr-center {
+    padding-left: 2px;
+    padding-right: 2px;
+    text-align: center;
+}
+.left {
+    text-align: left;
+    padding-left: 2px;
+    padding-right: 2px;
+    margin-bottom: 0px;
+}
+.dash-center {
     text-align: center;
 }
 #content-container .row {
     margin-bottom: 1em;
+}
+div.bump-up {
+    position: relative;
+    top: -96px;
 }

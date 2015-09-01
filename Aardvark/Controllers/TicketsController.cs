@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Aardvark.Helpers;
+using Aardvark.Models;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
@@ -6,9 +8,7 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
-using Aardvark.Models;
 using Microsoft.AspNet.Identity;
-using Aardvark.Helpers;
 
 namespace Aardvark.Controllers
 {
@@ -48,7 +48,7 @@ namespace Aardvark.Controllers
                 scope = "";
 
             DateTimeOffset now = DateTimeOffset.UtcNow;
-            DateTimeOffset end;
+            DateTimeOffset start, end;
             switch (scope)
             {
                 case "My":
@@ -96,10 +96,11 @@ namespace Aardvark.Controllers
                             && t.DueDate >= now && t.DueDate < end);
                     return View(due30Tickets.ToList());
                 case "MyOverdue":
+                    start = now.AddDays(-1);
                     var overdueTickets = db.Tickets
-                        .Where(t => t.AssignedToDevId == userId 
-                            && t.TicketStatusId == (int)TS.Status.New
-                            && t.DueDate < DateTimeOffset.UtcNow);
+                        .Where(t => t.AssignedToDevId == userId
+                            && t.DueDate >= start
+                            && t.DueDate < now);
                     return View(overdueTickets.ToList());
                 case "MyInDevelopment":
                     var devTickets = db.Tickets
@@ -284,11 +285,20 @@ namespace Aardvark.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,ProjectId,TicketTypeId,TicketPriorityId,TicketStatusId,AssignedToDevId,SkillRequiredId,Title,Description,DueDate,HoursToComplete")] Ticket ticket)
+        public ActionResult Edit([Bind(Include = "Id,ProjectId,TicketTypeId,TicketPriorityId,TicketStatusId,AssignedToDevId,SkillRequiredId,Title,Description,DueDate,HoursToComplete")] Ticket ticket, string submit)
         {
             if (ModelState.IsValid)
             {
                 Ticket origTicket = db.Tickets.Find(ticket.Id);
+
+                if (submit == "Ready for Testing")
+                {
+                    // Update status...
+                    origTicket.TicketStatusId = (int)TS.Status.ReadyToTest;
+                    db.Entry(origTicket).State = EntityState.Modified;
+                    db.SaveChanges();
+                    return RedirectToAction("Index", new { scope = "My" });
+                }
 
                 // Check each field to see if changed.  If so, copy new value to origTicket and create TicketHistory
                 // But first, remember the current Developer...
@@ -319,7 +329,7 @@ namespace Aardvark.Controllers
                             origTicket.Updated.Value, Notifications.TicketModified);
                     }
                 }
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", new { scope = "My" });
             }
             // Do this in every GET action...
             ViewBag.UserModel = ProjectsHelper.LoadUserModel();

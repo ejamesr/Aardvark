@@ -10,9 +10,12 @@ namespace Aardvark.ViewModels
     public class DashboardItem
     {
         public int Id { get; set; }
+        public int TicketId { get; set; }
         public bool Selected { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
+        public DateTimeOffset Date { get; set; }
+        public Notifications Type { get; set; }
         public string Scope { get; set; }
         public int CountItems { get; set; }
         public int CountHours { get; set; }
@@ -30,17 +33,17 @@ namespace Aardvark.ViewModels
     {
         public const int MaxTopProjects = 5;
         public const int MaxTopNewTickets = 5;
-        public const int MaxNotifications = 5;
+        public const int MaxNotifications = 10;
 
         // For developer
         public int NumProjects { get; set; }
         public int NumActiveTickets { get; set; }
         public int NumNewTickets { get; set; }
-        public int NumNotifications { get; set; }
+        public int NumNewNotifications { get; set; }
 
         public DashboardItem[] MyProjects = new DashboardItem[MaxTopProjects];
         public DashboardItem[] MyNewTickets = new DashboardItem[MaxTopNewTickets];
-        public DashboardItem[] MyNotifications = new DashboardItem[MaxNotifications];
+        public DashboardItem[] MyNewNotifications = new DashboardItem[MaxNotifications];
         public List<DashboardItem> MyActiveTickets = new List<DashboardItem>();
 
         public DashboardItem New;
@@ -120,9 +123,16 @@ namespace Aardvark.ViewModels
                     // Get the tickets according to due date/time
                     DateTimeOffset now = DateTimeOffset.UtcNow;
                     DateTimeOffset start, end;
+                    start = now.AddDays(-1);
+                    di = new DashboardItem("Overdue", "MyOverdue");
+                    var due = tickets.Where(t => t.DueDate >= start && t.DueDate < now);
+                    if ((di.CountItems = due.Count()) > 0)
+                        di.CountHours = due.Sum(t => t.HoursToComplete);
+                    MyActiveTickets.Add(di);
+
                     end = now.AddDays(1);
                     di = new DashboardItem("Due within 24 hours", "MyDue24");
-                    var due = tickets.Where(t => t.DueDate >= now && t.DueDate < end);
+                    due = tickets.Where(t => t.DueDate >= now && t.DueDate < end);
                     if ((di.CountItems = due.Count()) > 0)
                         di.CountHours = due.Sum(t => t.HoursToComplete);
                     MyActiveTickets.Add(di);
@@ -141,13 +151,6 @@ namespace Aardvark.ViewModels
                         di.CountHours = due.Sum(t => t.HoursToComplete);
                     MyActiveTickets.Add(di);
 
-                    start = now.AddDays(-1);
-                    di = new DashboardItem("Overdue", "MyOverdue");
-                    due = tickets.Where(t => t.DueDate >= start && t.DueDate < now);
-                    if ((di.CountItems = due.Count()) > 0)
-                        di.CountHours = due.Sum(t => t.HoursToComplete);
-                    MyActiveTickets.Add(di);
-
                     // Get number of tickets in test...
                     di = new DashboardItem("Sent to testing", "MyTesting");
                     due = tickets.Where(t => t.TicketStatusId >= (int)TS.Status.ReadyToTest);
@@ -159,11 +162,28 @@ namespace Aardvark.ViewModels
                 //
                 // Get Notifications info...
                 //
-                var notifies = db.TicketNotifications.Where(n => n.UserId == userModel.User.Id && !n.HasBeenRead)
+                var notifies = db.TicketNotifications.Where(n => n.UserId == userModel.User.Id && !n.HasBeenRead);
+                NumNewNotifications = notifies.Count();
+                if (NumNewNotifications > 0)
+                {
+                    MyNewNotifications = notifies
+                        .OrderBy(n => n.Created)
                         .Take(MaxNotifications)
-                        .Select(n => new DashboardItem() { Id = n.Id, Name = n.Type.ToString() })
+                        .Select(n => new DashboardItem()
+                        {
+                            Id = n.Id,
+                            TicketId = n.TicketId,
+                            Type = n.Type,
+                            Date = n.Created
+                        })
                         .ToArray<DashboardItem>();
-                NumNotifications = notifies.Count();
+                    // Now, fill out Description field for each...
+                    for (int i = 0; i < MyNewNotifications.Length; i++)
+                    {
+                        var notice = db.TicketNotifications.Find(MyNewNotifications[i].Id);
+                        MyNewNotifications[i].Description = notice.ToDescription();
+                    }
+                }
             }
             else
             {

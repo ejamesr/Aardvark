@@ -30,13 +30,14 @@
                     </div> <!-- /.portlet-header -->
                     <div class="portlet-content">
                         <div class="row">
-                            <div class="col-sm-7 col-sm-offset-1 hdr">
+                            <div class="col-sm-1 col-xs-1 hdr"></div>
+                            <div class="col-sm-7 col-xs-7 hdr">
                                 Project Name
                             </div>
-                            <div class="col-sm-2 hdr hdr-center">
+                            <div class="col-sm-2 col-xs-2 hdr hdr-center">
                                 Tickets
                             </div>
-                            <div class="col-sm-2 hdr hdr-center">
+                            <div class="col-sm-2 col-xs-2 hdr hdr-center">
                                 Hrs
                             </div>
                         </div>
@@ -45,18 +46,18 @@
                         foreach (var project in Model.MyProjects)
                         {
                         <div class="row">
-                            <div class="col-sm-1">
+                            <div class="col-sm-1 col-xs-1 dash-value">
                                 <a href="@Url.Action("Details", "Projects", new { id = project.Id})">
                                     <i class="fa fa-eye"></i>
                                 </a>
                             </div>
-                            <div class="col-sm-7">
+                            <div class="col-sm-7 col-xs-7 left">
                                 @project.Name
                             </div>
-                            <div class="col-sm-2 dash-value">
+                            <div class="col-sm-2 col-xs-2 dash-value">
                                 @project.CountItems
                             </div>
-                            <div class="col-sm-2 dash-value">
+                            <div class="col-sm-2 col-xs-2 dash-value">
                                 @project.CountHours
                             </div>
                         </div>
@@ -88,13 +89,14 @@
                     </div> <!-- /.portlet-header -->
                     <div class="portlet-content">
                         <div class="row">
-                            <div class="col-sm-7 col-sm-offset-1 hdr">
+                            <div class="col-sm-1 col-xs-1 hdr"></div>
+                            <div class="col-sm-7 col-xs-7 hdr">
                                 Ticket Status
                             </div>
-                            <div class="col-sm-2 hdr hdr-center">
+                            <div class="col-sm-2 col-xs-2 hdr hdr-center">
                                 Num
                             </div>
-                            <div class="col-sm-2 hdr hdr-center">
+                            <div class="col-sm-2 col-xs-2 hdr hdr-center">
                                 Hrs
                             </div>
                         </div>
@@ -103,21 +105,21 @@
                         foreach (var ticket in Model.MyActiveTickets)
                         {
                         <div class="row">
-                            <div class="col-sm-1">
-                                @if (ticket.CountItems > 0)
-                                {   
+                            <div class="col-sm-1 col-xs-1 dash-value">
+                            @if (ticket.CountItems > 0)
+                            {
                                 <a href="@Url.Action("Index", "Tickets", new { id = ticket.Id, scope = ticket.Scope})">
                                     <i class="fa fa-eye"></i>
                                 </a>
-                                }
+                            }
                             </div>
-                            <div class="col-sm-7">
+                            <div class="col-sm-7 col-xs-7 left">
                                 @ticket.Name
                             </div>
-                            <div class="col-sm-2 dash-value">
+                            <div class="col-sm-2 col-xs-2 dash-value">
                                 @ticket.CountItems
                             </div>
-                            <div class="col-sm-2 dash-value">
+                            <div class="col-sm-2 col-xs-2 dash-value">
                                 @ticket.CountHours
                             </div>
                         </div>

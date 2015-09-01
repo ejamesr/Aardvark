@@ -14,10 +14,10 @@ namespace Aardvark.Models
         private readonly string _msg;
 
         protected Enumeration() { }
-        protected Enumeration(string displayName, string msg)
+        protected Enumeration(Notifications type, string msg)
         {
-            _value = 0;
-            _displayName = displayName;
+            _value = (int)type;
+            _displayName = type.ToString();
             _msg = msg;
         }
         public int Value
@@ -26,7 +26,7 @@ namespace Aardvark.Models
         }
         public string DisplayName
         {
-            get { return DisplayName; }
+            get { return _displayName; }
         }
         public string Msg
         {
@@ -65,7 +65,7 @@ namespace Aardvark.Models
         public class NotificationType : Enumeration
         {
             public NotificationType() { }
-            public NotificationType(string displayName, string msg) : base(displayName, msg)
+            public NotificationType(Notifications type, string msg) : base(type, msg)
             {
 
             }
@@ -73,20 +73,20 @@ namespace Aardvark.Models
 
         public static List<NotificationType> NotificationTypes = new List<NotificationType> {
             // Use a dummy entry so first 'real' type is item 1
-            new NotificationType("", ""),
+            new NotificationType(Notifications.AssignedToTicket, "Dummy"),
             // A Developer should be notified of these events:
-            new NotificationType("AssignedToTicket", "You have been assigned to this ticket"),
-            new NotificationType("RemovedFromTicket", "You have been removed from this ticket"),
+            new NotificationType(Notifications.AssignedToTicket, "You have been assigned to this ticket"),
+            new NotificationType(Notifications.RemovedFromTicket, "You have been removed from this ticket"),
         
             // Notifications sent for these only when initiated by another person
-            new NotificationType("TicketModified", "Ticket has been modified"),
-            new NotificationType("TicketDeleted", "Ticket has beem deleted"),
-            new NotificationType("CommentAdded", "Comment has been added to this ticket"),
-            new NotificationType("CommentModified", "Comment for this ticket has been modified"),
-            new NotificationType("CommentDeleted", "Comment for this ticket has been deleted"),
-            new NotificationType("AttachmentAdded", "Attachment has been added to this ticket"),
-            new NotificationType("AttachmentModified", "Attachment for this ticket has been modified"),
-            new NotificationType("AttachmentDeleted", "Attachment for this ticket has been deleted")
+            new NotificationType(Notifications.TicketModified, "Ticket has been modified"),
+            new NotificationType(Notifications.TicketDeleted, "Ticket has beem deleted"),
+            new NotificationType(Notifications.CommentCreated, "Comment has been added to this ticket"),
+            new NotificationType(Notifications.CommentModified, "Comment for this ticket has been modified"),
+            new NotificationType(Notifications.CommentDeleted, "Comment for this ticket has been deleted"),
+            new NotificationType(Notifications.AttachmentCreated, "Attachment has been added to this ticket"),
+            new NotificationType(Notifications.AttachmentModified, "Attachment for this ticket has been modified"),
+            new NotificationType(Notifications.AttachmentDeleted, "Attachment for this ticket has been deleted")
         };
 
         public int Id { get; set; }
@@ -107,6 +107,14 @@ namespace Aardvark.Models
             return "Ticket # " + TicketId
                 + " (" + Ticket.Title + "): " + NotificationTypes[(int)Type].Msg;
         }
+
+        public string ToDescription()
+        {
+            string desc = NotificationTypes[(int)Type].DisplayName;
+            desc = "Tk#" + TicketId + ":" + Ticket.Title + "-" + desc;
+            return desc;
+        }
+
         // Create a notification entry...
         public static void Notify(ApplicationDbContext db, int ticketId, DateTimeOffset date, Notifications type)
         {

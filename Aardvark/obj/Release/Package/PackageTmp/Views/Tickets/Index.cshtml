@@ -142,9 +142,11 @@
                                 @Html.DisplayFor(modelItem => item.HoursToComplete)
                             </td>
                             <td>
-                                <a href="@Url.Action("Edit", new { id = item.Id })"><i class="fa fa-pencil-square-o"></i></a>
+                                <a href="@Url.Action("Edit", new { id = item.Id })" title="Edit" ><i class="fa fa-pencil-square-o"></i></a>
                                 <br />
-                                <a href="@Url.Action("Details", new { id = item.Id })"><i class="fa fa-folder-open-o"></i></a>
+                                <a href="@Url.Action("Details", new { id = item.Id})" title="Details" ><i class="fa fa-folder-open-o"></i></a>
+                                <br />
+                                <a href="@Url.Action("Index", "Attachments", new { id = item.Id})" title="Attachments"><i class="fa fa-paperclip"></i></a>
                             </td>
                         </tr>
                     }

@@ -80,6 +80,8 @@ namespace Aardvark.Controllers
             switch (result)
             {
                 case SignInStatus.Success:
+                    if (returnUrl == null)
+                        return RedirectToAction("Dashboard", "Home");
                     return RedirectToLocal(returnUrl);
                 case SignInStatus.LockedOut:
                     return View("Lockout");

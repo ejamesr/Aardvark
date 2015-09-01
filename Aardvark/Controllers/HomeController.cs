@@ -69,9 +69,9 @@ namespace Aardvark.Controllers
             return View(model);
         }
 
-        // GET: Home/ManageUsers
+        // GET: Home/DashboardNewTickets
         [HttpPost]
-        public ActionResult Dashboard(int[] checks)
+        public ActionResult DashboardNewTickets(int[] checks)
         {
             // 'checks' is a list of the ticket Ids that are being pulled
             if (checks != null)
@@ -85,6 +85,24 @@ namespace Aardvark.Controllers
                         db.Entry(ticket).State = EntityState.Modified;
                         db.SaveChanges();
                     }
+                }
+            }
+            return RedirectToAction("Dashboard");
+        }
+
+        // GET: Home/DashboardNewTickets
+        [HttpPost]
+        public ActionResult DashboardNotificationsRead(int[] checks)
+        {
+            // 'checks' is a list of the notification Ids that have been read
+            if (checks != null)
+            {
+                foreach (var id in checks)
+                {
+                    var notice = db.TicketNotifications.Find(id);
+                    notice.ThisHasBeenRead();
+                    db.Entry(notice).State = EntityState.Modified;
+                    db.SaveChanges();
                 }
             }
             return RedirectToAction("Dashboard");
