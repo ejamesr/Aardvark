@@ -4,79 +4,78 @@
     ViewBag.Title = "Details";
 }
 
-<h2>Details</h2>
+<div id="content">
+    <div id="content-header">
+        <h1>TicketNotification</h1>
+    </div> <!-- #content-header -->
+    <div id="content-container">
+        <h2>Details</h2>
 
-<div>
-    <h4>TicketNotification</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Ticket.Title)
-        </dt>
+        <div>
+            <h4>Ticket Notification - Ticket #@Model.TicketId</h4>
+            <h5>Ticket title: @Model.Ticket.Title</h5>
+            <h5>Ticket desc: &nbsp;@Model.Ticket.Description</h5>
+            <hr />
+            <dl class="dl-horizontal">
+                <dt>
+                    @Html.LabelFor(model => model.Ticket.Title, "Title")
+                </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.Ticket.Title)
-        </dd>
+                <dd>
+                    @Html.DisplayFor(model => model.Ticket.Title)
+                </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.User.FirstName)
-        </dt>
+                <dt>
+                    @Html.LabelFor(model => model.User.FirstName, "First Name")
+                </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.User.FirstName)
-        </dd>
+                <dd>
+                    @Html.DisplayFor(model => model.User.FirstName)
+                </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Type)
-        </dt>
+                <dt>
+                    @Html.LabelFor(model => model.Type, "Type")
+                </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.Type)
-        </dd>
+                <dd>
+                    @Html.DisplayFor(model => model.Type)
+                </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Created)
-        </dt>
+                <dt>
+                    @Html.LabelFor(model => model.Created, "Created")
+                </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.Created)
-        </dd>
+                <dd>
+                    @Html.DisplayFor(model => model.Created)
+                </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Method)
-        </dt>
+                <dt>
+                    @Html.LabelFor(model => model.Method, "Method")
+                </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.Method)
-        </dd>
+                <dd>
+                    @Html.DisplayFor(model => model.Method)
+                </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.HasBeenRead)
-        </dt>
+                <dt>
+                    @Html.LabelFor(model => model.HasBeenRead, "Has Been Read")
+                </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.HasBeenRead)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.UsedEmail)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.UsedEmail)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.UsedText)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.UsedText)
-        </dd>
-
-    </dl>
+                <dd>
+                    @Html.DisplayFor(model => model.HasBeenRead)
+                </dd>
+            </dl>
+        </div>
+        <p>
+            @Html.ActionLink("Back to previous page", null, null, null, new { href = Request.UrlReferrer })
+        </p>
+    </div>
 </div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>
+@section Scripts {
+    <script>
+    $(document).ready(function () {
+        $('#sidebar-Notifications').addClass('active');
+    });
+    </script>
+}
+

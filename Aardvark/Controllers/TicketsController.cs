@@ -65,11 +65,22 @@ namespace Aardvark.Controllers
                     var allTickets = db.Tickets.Include(t => t.AssignedToDev).Include(t => t.OwnerUser).Include(t => t.Project).Include(t => t.SkillRequired).Include(t => t.TicketPriority).Include(t => t.TicketStatus).Include(t => t.TicketType);
                     return View(allTickets.ToList());
                 case "NotAssigned":
-                // Come here for all not yet assigned
+                    // Come here for all not yet assigned
                     var notTickets = db.Tickets
-                        .Where(tic => tic.TicketStatus.Step <= 30)
+                        .Where(tic => tic.AssignedToDevId == null)
                         .Include(t => t.AssignedToDev).Include(t => t.OwnerUser).Include(t => t.Project).Include(t => t.SkillRequired).Include(t => t.TicketPriority).Include(t => t.TicketStatus).Include(t => t.TicketType);
                     return View(notTickets.ToList());
+                case "Problem":
+                // Come here for tickets that don't look right (i.e., not assigned by status too low)
+                    DateTimeOffset oneYear = DateTimeOffset.UtcNow.AddYears(-1);
+                    var problems = db.Tickets
+                        .Where(tic => (tic.TicketStatus.Step <= 30 && tic.AssignedToDevId != null)
+                            || (tic.TicketStatus.Step >= 40 && tic.AssignedToDevId == null)
+                            || tic.DueDate == DateTimeOffset.MinValue || tic.HoursToComplete == 0
+                            || tic.DueDate <= oneYear
+                            || tic.TicketStatusId == (int)TS.Status.Deferred || tic.TicketStatusId == (int)TS.Status.UnableToReproduce)
+                        .OrderByDescending(tic => tic.TicketStatusId).ThenBy(tic => tic.Id);
+                    return View(problems.ToList());
                 case "MyNew":
                     var newTickets = db.Tickets
                         .Where(t => t.AssignedToDevId == userId && t.TicketStatusId == (int)TS.Status.AssignedToDeveloper);
@@ -213,7 +224,7 @@ namespace Aardvark.Controllers
 
                 db.Tickets.Add(ticket);
                 db.SaveChanges();
-                TicketNotification.Notify(db, ticket,
+                TN.Notify(db, ticket,
                     ticket.Created, Notifications.AssignedToTicket);
                 return RedirectToAction("Index");
             }
@@ -318,14 +329,14 @@ namespace Aardvark.Controllers
                         // Remember the current Dev, swap vars in order to remove...
                         string newDevId = origTicket.AssignedToDevId;
                         origTicket.AssignedToDevId = origDevId;
-                        TicketNotification.Notify(db, origTicket,
+                        TN.Notify(db, origTicket,
                             origTicket.Updated.Value, Notifications.RemovedFromTicket);
 
                         // And now reset to correct new Dev and issue notifications
                         origTicket.AssignedToDevId = newDevId;
-                        TicketNotification.Notify(db, origTicket,
+                        TN.Notify(db, origTicket,
                             origTicket.Updated.Value, Notifications.AssignedToTicket);
-                        TicketNotification.Notify(db, origTicket,
+                        TN.Notify(db, origTicket,
                             origTicket.Updated.Value, Notifications.TicketModified);
                     }
                 }
@@ -369,7 +380,7 @@ namespace Aardvark.Controllers
             ViewBag.UserModel = ProjectsHelper.LoadUserModel();
             Ticket ticket = db.Tickets.Find(id);
             ticket.SetUpdated();
-            TicketNotification.Notify(db, ticket,
+            TN.Notify(db, ticket,
                 ticket.Updated.Value, Notifications.TicketDeleted);
             db.Tickets.Remove(ticket);
             db.SaveChanges();

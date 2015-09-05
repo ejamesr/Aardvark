@@ -124,7 +124,7 @@ namespace Aardvark.Controllers
                 ticketAttachment.Created = DateTimeOffset.UtcNow;
                 db.TicketAttachments.Add(ticketAttachment);
                 db.SaveChanges();
-                TicketNotification.Notify(db, ticketAttachment.TicketId, 
+                TN.Notify(db, ticketAttachment.TicketId, 
                     ticketAttachment.Created, Notifications.AttachmentCreated);
                 return RedirectToAction("Index", new { id = @ticketAttachment.TicketId });
             }
@@ -168,7 +168,7 @@ namespace Aardvark.Controllers
             {
                 db.Entry(ticketAttachment).State = EntityState.Modified;
                 db.SaveChanges();
-                TicketNotification.Notify(db, ticketAttachment.TicketId,
+                TN.Notify(db, ticketAttachment.TicketId,
                     DateTimeOffset.UtcNow, Notifications.AttachmentModified);  // No Updated date to pull, so get current
                 return RedirectToAction("Index");
             }
@@ -200,7 +200,7 @@ namespace Aardvark.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             TicketAttachment ticketAttachment = db.TicketAttachments.Find(id);
-            TicketNotification.Notify(db, ticketAttachment.TicketId,
+            TN.Notify(db, ticketAttachment.TicketId,
                 ticketAttachment.Created, Notifications.AttachmentDeleted);
             db.TicketAttachments.Remove(ticketAttachment);
             db.SaveChanges();

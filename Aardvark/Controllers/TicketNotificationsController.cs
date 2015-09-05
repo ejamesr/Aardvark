@@ -28,12 +28,20 @@ namespace Aardvark.Controllers
                 var userId = helper.GetCurrentUserId();
 
                 // Now get My notifications...
-                var ticketNotifications = db.TicketNotifications.Where(n => n.UserId == userId);
+                var ticketNotifications = db.TicketNotifications.Where(n => n.UserId == userId)
+                    .OrderBy(n => n.HasBeenRead).ThenByDescending(n => n.Created);
                 return View(ticketNotifications.ToList());
             }
             else if (scope == "All")
             {
-                var ticketNotifications = db.TicketNotifications.Include(t => t.Ticket).Include(t => t.User);
+                var ticketNotifications = db.TicketNotifications.Include(t => t.Ticket).Include(t => t.User)
+                    .OrderBy(n => n.HasBeenRead).ThenByDescending(n => n.Created);
+                return View(ticketNotifications.ToList());
+            }
+            else if (scope == "MyAssignedToTicket")
+            {
+                var notificationType = Notifications.AssignedToTicket;
+                var ticketNotifications = db.TicketNotifications.Where(n => n.Type == notificationType);
                 return View(ticketNotifications.ToList());
             }
             else
@@ -42,6 +50,30 @@ namespace Aardvark.Controllers
                 var ticketNotifications = db.TicketNotifications.Where(n => n.Type == notificationType);
                 return View(ticketNotifications.ToList());
             }
+            //else
+            //{
+            //    var notificationType = (Notifications)Enum.Parse(typeof(Notifications), scope);
+            //    var ticketNotifications = db.TicketNotifications.Where(n => n.Type == notificationType);
+            //    return View(ticketNotifications.ToList());
+            //}
+            //else
+            //{
+            //    var notificationType = (Notifications)Enum.Parse(typeof(Notifications), scope);
+            //    var ticketNotifications = db.TicketNotifications.Where(n => n.Type == notificationType);
+            //    return View(ticketNotifications.ToList());
+            //}
+            //else
+            //{
+            //    var notificationType = (Notifications)Enum.Parse(typeof(Notifications), scope);
+            //    var ticketNotifications = db.TicketNotifications.Where(n => n.Type == notificationType);
+            //    return View(ticketNotifications.ToList());
+            //}
+            //else
+            //{
+            //    var notificationType = (Notifications)Enum.Parse(typeof(Notifications), scope);
+            //    var ticketNotifications = db.TicketNotifications.Where(n => n.Type == notificationType);
+            //    return View(ticketNotifications.ToList());
+            //}
         }
 
         // GET: TicketNotifications/Details/5
@@ -52,7 +84,7 @@ namespace Aardvark.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            TicketNotification ticketNotification = db.TicketNotifications.Find(id);
+            TN ticketNotification = db.TicketNotifications.Find(id);
             if (ticketNotification == null)
             {
                 return HttpNotFound();
@@ -74,7 +106,7 @@ namespace Aardvark.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,TicketId,UserId,Type,Created,Method,HasBeenRead,UsedEmail,UsedText")] TicketNotification ticketNotification)
+        public ActionResult Create([Bind(Include = "Id,TicketId,UserId,Type,Created,Method,HasBeenRead,UsedEmail,UsedText")] TN ticketNotification)
         {
             if (ModelState.IsValid)
             {
@@ -97,7 +129,7 @@ namespace Aardvark.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            TicketNotification ticketNotification = db.TicketNotifications.Find(id);
+            TN ticketNotification = db.TicketNotifications.Find(id);
             if (ticketNotification == null)
             {
                 return HttpNotFound();
@@ -112,7 +144,7 @@ namespace Aardvark.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,TicketId,UserId,Type,Created,Method,HasBeenRead,UsedEmail,UsedText")] TicketNotification ticketNotification)
+        public ActionResult Edit([Bind(Include = "Id,TicketId,UserId,Type,Created,Method,HasBeenRead,UsedEmail,UsedText")] TN ticketNotification)
         {
             if (ModelState.IsValid)
             {
@@ -134,7 +166,7 @@ namespace Aardvark.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            TicketNotification ticketNotification = db.TicketNotifications.Find(id);
+            TN ticketNotification = db.TicketNotifications.Find(id);
             if (ticketNotification == null)
             {
                 return HttpNotFound();
@@ -147,7 +179,7 @@ namespace Aardvark.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            TicketNotification ticketNotification = db.TicketNotifications.Find(id);
+            TN ticketNotification = db.TicketNotifications.Find(id);
             db.TicketNotifications.Remove(ticketNotification);
             db.SaveChanges();
             return RedirectToAction("Index");

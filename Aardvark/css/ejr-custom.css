@@ -81,6 +81,9 @@ p.msg {
     padding-left: 2px;
     padding-right: 2px;
 }
+.portlet-content {
+    /*min-height: 300px;*/
+}
 .dash-value, .hdr-center {
     padding-left: 2px;
     padding-right: 2px;

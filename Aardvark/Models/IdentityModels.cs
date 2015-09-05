@@ -67,7 +67,7 @@ namespace Aardvark.Models
         // aardvark-ejr         - on website
         //
         public ApplicationDbContext()
-            : base("DefaultConnection", throwIfV1Schema: false)
+            : base("aardvark-ejr", throwIfV1Schema: false)
         {
         }
 
@@ -82,7 +82,7 @@ namespace Aardvark.Models
         public DbSet<TicketPriority> TicketPriorities { get; set; }
         public DbSet<Project> Projects { get; set; }
         public DbSet<SkillLevel> SkillLevels { get; set; }
-        public DbSet<TicketNotification> TicketNotifications { get; set; }
+        public DbSet<TN> TicketNotifications { get; set; }
         public DbSet<TicketHistory> TicketHistories { get; set; }
         public DbSet<TicketComment> TicketComments { get; set; }
         public DbSet<TicketAttachment> TicketAttachments { get; set; }

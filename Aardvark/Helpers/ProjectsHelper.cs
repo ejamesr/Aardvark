@@ -69,6 +69,7 @@ namespace Aardvark.Helpers
             public bool IsPM;
             public bool IsDeveloper;
             public bool IsSubmitter;
+            public string DashboardTitle;
         }
 
         public static UserModel LoadUserModel()

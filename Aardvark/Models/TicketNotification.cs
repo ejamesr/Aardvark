@@ -53,7 +53,7 @@ namespace Aardvark.Models
     }
 
     // List of all notifications sent
-    public class TicketNotification
+    public class TN
     {
         public enum NotificationMethod
         {
@@ -125,7 +125,7 @@ namespace Aardvark.Models
         public static void Notify(ApplicationDbContext db, Ticket ticket, DateTimeOffset date, Notifications type)
         {
             // Create new object, init fields and save
-            TicketNotification tn = new TicketNotification();
+            TN tn = new TN();
             // Don't need to create notification if the Developer is same as the User who generated the event
             if (ticket.AssignedToDevId != ticket.OwnerUserId)
             {

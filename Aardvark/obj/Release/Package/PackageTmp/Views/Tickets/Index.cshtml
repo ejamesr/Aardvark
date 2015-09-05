@@ -10,6 +10,30 @@
         <p>
             @Html.ActionLink("Create New Ticket", "Create")
         </p>
+    @if (ViewBag.Scope == "Problem")
+    {
+        // Display list of things to check...
+        <p>
+            Look for the following inconsistencies:
+        </p>
+        <ul>
+            <li>
+                No developer assigned, yet Status is ReadyToAssign or later
+            </li>
+            <li>
+                Developer assigned, yet Status is New
+            </li>
+            <li>
+                Status is Deferred or UnableToReproduce
+            </li>
+            <li>
+                No due date (or more than 1 year overdue)
+            </li>
+            <li>
+                Hours is 0
+            </li>
+        </ul>
+    }
         <br />
         <div class="table-responsive">
             <table class="table table-striped table-bordered table-hover table-highlight" id="table-Users"
@@ -189,6 +213,10 @@
             else if (ViewBag.Scope == "ReadyToReview")
             {
             <text>$('#sidebar-Tickets-ReadyToReview').addClass('active');</text>
+            }
+        else if (ViewBag.Scope == "Problem")
+            {
+                <text>$('#sidebar-Tickets-Problem').addClass('active');</text>
             }
         });
     </script>

@@ -81,6 +81,9 @@ p.msg {
     padding-left: 2px;
     padding-right: 2px;
 }
+.portlet-content {
+    /*min-height: 300px;*/
+}
 .dash-value, .hdr-center {
     padding-left: 2px;
     padding-right: 2px;
@@ -101,4 +104,7 @@ p.msg {
 div.bump-up {
     position: relative;
     top: -96px;
+}
+div.col-xs-12 {
+    min-width: 400px;
 }

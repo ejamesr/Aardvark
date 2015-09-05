@@ -56,16 +56,44 @@ namespace Aardvark.ViewModels
         public DashboardModel(ProjectsHelper.UserModel userModel, ApplicationDbContext db)
         {
             // Load up the data for display on dashboard
+            // For everyone, show Notifications...
+            //
+            // Get Notifications info...
+            //
+            var notifies = db.TicketNotifications.Where(n => n.UserId == userModel.User.Id && !n.HasBeenRead);
+            NumNewNotifications = notifies.Count();
+            if (NumNewNotifications > 0)
+            {
+                MyNewNotifications = notifies
+                    .OrderBy(n => n.Created)
+                    .Take(MaxNotifications)
+                    .Select(n => new DashboardItem()
+                    {
+                        Id = n.Id,
+                        TicketId = n.TicketId,
+                        Type = n.Type,
+                        Date = n.Created
+                    })
+                    .ToArray<DashboardItem>();
+                // Now, fill out Description field for each...
+                for (int i = 0; i < MyNewNotifications.Length; i++)
+                {
+                    var notice = db.TicketNotifications.Find(MyNewNotifications[i].Id);
+                    MyNewNotifications[i].Description = notice.ToDescription();
+                }
+            }
+
             if (userModel.IsAdmin || userModel.IsGuest)
             {
-
+                userModel.DashboardTitle = userModel.IsGuest ? "Dashboard - Guest" : "Dashboard - Admin";
             }
             else if (userModel.IsPM)
             {
-
+                userModel.DashboardTitle = "Dashboard - Project Manager";
             }
             else if (userModel.IsDeveloper)
             {
+                userModel.DashboardTitle = "Dashboard - Developer";
                 //
                 // Get Projects info...
                 //
@@ -157,32 +185,6 @@ namespace Aardvark.ViewModels
                     if ((di.CountItems = due.Count()) > 0)
                         di.CountHours = due.Sum(t => t.HoursToComplete);
                     MyActiveTickets.Add(di);
-                }
-
-                //
-                // Get Notifications info...
-                //
-                var notifies = db.TicketNotifications.Where(n => n.UserId == userModel.User.Id && !n.HasBeenRead);
-                NumNewNotifications = notifies.Count();
-                if (NumNewNotifications > 0)
-                {
-                    MyNewNotifications = notifies
-                        .OrderBy(n => n.Created)
-                        .Take(MaxNotifications)
-                        .Select(n => new DashboardItem()
-                        {
-                            Id = n.Id,
-                            TicketId = n.TicketId,
-                            Type = n.Type,
-                            Date = n.Created
-                        })
-                        .ToArray<DashboardItem>();
-                    // Now, fill out Description field for each...
-                    for (int i = 0; i < MyNewNotifications.Length; i++)
-                    {
-                        var notice = db.TicketNotifications.Find(MyNewNotifications[i].Id);
-                        MyNewNotifications[i].Description = notice.ToDescription();
-                    }
                 }
             }
             else

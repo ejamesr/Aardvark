@@ -179,6 +179,10 @@
                         <li class="dropdown">
                             <a class="dropdown-toggle" id="menu-User" data-toggle="dropdown" href="javascript:;">
                                 <i class="fa fa-user"></i>
+                                @{
+                    var x = ViewBag.UserModel;
+                    int x2 = 2;
+                                }
                                 @ViewBag.UserModel.DisplayName
                                 <span class="caret"></span>
                             </a>
@@ -458,6 +462,12 @@ else {
                         Ready to Review
                     </a>
                 </li>
+                <li>
+                    <a href="@Url.Action("Index", "Tickets", new { scope="Problem" })" id="sidebar-Tickets-Problem">
+                        <i class="fa fa-pencil-square-o"></i>
+                        Problem Tickets
+                    </a>
+                </li>
 
             </ul>
         </li>
@@ -653,6 +663,12 @@ else {
                         Ready to Review
                     </a>
                 </li>
+                <li>
+                    <a href="@Url.Action("Index", "Tickets", new { scope="Problem" })" id="sidebar-Tickets-Problem">
+                        <i class="fa fa-pencil-square-o"></i>
+                        Problem Tickets
+                    </a>
+                </li>
 
             </ul>
         </li>
@@ -815,53 +831,35 @@ else {
                         My Notifications
                     </a>
                 </li>
-                <li>
-                    <a href="@Url.Action("Index", "TicketNotifications", new { scope = "All" })" id="sidebar-Notifications-All">
-                        <i class="fa fa-list-ol"></i>
-                        All Notifications
-                    </a>
-                </li>
                 <li class="divider"></li>
                 <li>
-                    <a href="@Url.Action("Index", "TicketNotifications", new { scope = "AssignedToTicket" })" id="sidebar-Notifications-AssignedToTicket">
+                    <a href="@Url.Action("Index", "TicketNotifications", new { scope = "MyAssignedToTicket" })" id="sidebar-Notifications-AssignedToTicket">
                         <i class="fa fa-list-ul"></i>
                         AssignedToTicket
                     </a>
                 </li>
                 <li>
-                    <a href="@Url.Action("Index", "TicketNotifications", new { scope = "RemovedFromTicket" })" id="sidebar-Notifications-RemovedFromTicket">
+                    <a href="@Url.Action("Index", "TicketNotifications", new { scope = "MyRemovedFromTicket" })" id="sidebar-Notifications-RemovedFromTicket">
                         <i class="fa fa-list-ul"></i>
                         RemovedFromTicket
                     </a>
                 </li>
                 <li>
-                    <a href="@Url.Action("Index", "TicketNotifications", new { scope = "TicketModified" })" id="sidebar-Notifications-TicketModified">
+                    <a href="@Url.Action("Index", "TicketNotifications", new { scope = "MyTicketModified" })" id="sidebar-Notifications-TicketModified">
                         <i class="fa fa-list-ul"></i>
                         TicketModified
                     </a>
                 </li>
                 <li>
-                    <a href="@Url.Action("Index", "TicketNotifications", new { scope = "CommentCreated" })" i id="sidebar-Notifications-CommentCreated">
+                    <a href="@Url.Action("Index", "TicketNotifications", new { scope = "MyComments" })" i id="sidebar-Notifications-Comments">
                         <i class="fa fa-list-ul"></i>
-                        CommentCreated
+                        Comments
                     </a>
                 </li>
                 <li>
-                    <a href="@Url.Action("Index", "TicketNotifications", new { scope = "CommentModified" })" id="sidebar-Notifications-CommentModified">
+                    <a href="@Url.Action("Index", "TicketNotifications", new { scope = "MyAttachments" })" id="sidebar-Notifications-Attachments">
                         <i class="fa fa-list-ul"></i>
-                        CommentModified
-                    </a>
-                </li>
-                <li>
-                    <a href="@Url.Action("Index", "TicketNotifications", new { scope = "AttachmentCreated" })" id="sidebar-Notifications-AttachmentCreated">
-                        <i class="fa fa-list-ul"></i>
-                        AttachmentCreated
-                    </a>
-                </li>
-                <li>
-                    <a href="@Url.Action("Index", "TicketNotifications", new { scope = "AttachmentModified" })" id="sidebar-Notifications-AttachmentModified">
-                        <i class="fa fa-list-ul"></i>
-                        AttachmentModified
+                        Attachments
                     </a>
                 </li>
             </ul>
@@ -894,22 +892,6 @@ else {
 @helper IsSubmitter()
 {
     <ul id="main-nav" class="open-active">
-
-        <li class="dropdown" id="Projects">
-            <a href="javascript:;" id="sidebar-Projects">
-                <i class="fa fa-tasks"></i>
-                Projects
-                <span class="caret"></span>
-            </a>
-            <ul class="sub-nav">
-                <li id="Projects-My">
-                    <a href="@Url.Action("Index", "Projects", new { scope = "My"})" id="sidebar-Projects-My">
-                        <i class="fa fa-list-ul"></i>
-                        My Projects
-                    </a>
-                </li>
-            </ul>
-        </li>
 
         <li class="dropdown">
             <a href="javascript:;" id="sidebar-Tickets">
@@ -945,20 +927,6 @@ else {
 @helper IsNoRole()
 { 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 }
