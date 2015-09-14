@@ -164,6 +164,12 @@ namespace Aardvark.Controllers
                             && t.TicketStatusId >= (int)TS.Status.ReadyToTest
                             && t.TicketStatusId != (int)TS.Status.Resolved);
                     return View(testingTickets.ToList());
+                case "Resolved":
+                    // This is for Admin to see which tickets might have been accidentally resolved too early
+                    // Allows for them to be adjusted
+                    var resolvedTickets = db.Tickets
+                        .Where(t => t.TicketStatusId == (int)TS.Status.Resolved);
+                    return View(resolvedTickets.ToList());
                 default:
                     // For all other scopes, come here
                     var tickets = db.Tickets
@@ -344,7 +350,7 @@ namespace Aardvark.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,ProjectId,TicketTypeId,TicketPriorityId,TicketStatusId,AssignedToDevId,SkillRequiredId,Title,Description,DueDate,HoursToComplete")] Ticket ticket, string submit)
+        public ActionResult Edit([Bind(Include = "Id,ProjectId,TicketTypeId,TicketPriorityId,TicketStatusId,AssignedToDevId,SkillRequiredId,Title,Created,Description,DueDate,HoursToComplete")] Ticket ticket, string submit)
         {
             CheckCookies();
             if (ModelState.IsValid)
@@ -355,6 +361,12 @@ namespace Aardvark.Controllers
                 // But first, remember the current Developer...
                 string origDevId = origTicket.AssignedToDevId;
 
+                if (submit == "Ready for Testing")
+                {
+                    // Update status...
+                    origTicket.TicketStatusId = (int)TS.Status.ReadyToTest;
+                }
+
                 // WasChanged updates all the fields, origTicket is new version...
                 DateTimeOffset dtChanged = ticket.WasChanged(db, origTicket);
 
@@ -363,16 +375,6 @@ namespace Aardvark.Controllers
                 var helper = new UserRolesHelper();
                 if (ticket.AssignedToDevId != helper.GetCurrentUserId())
                     TicketNotification.Notify(db, origTicket, dtChanged, TicketNotification.EType.TicketModified);
-
-                if (submit == "Ready for Testing")
-                {
-                    // Update status...
-                    origTicket.TicketStatusId = (int)TS.Status.ReadyToTest;
-                    db.Entry(origTicket).State = EntityState.Modified;
-                    db.SaveChanges();
-                    return RedirectToAction("Index", new { scope = "My" });
-                }
-
 
                 if (dtChanged != DateTimeOffset.MinValue)
                 {

@@ -137,7 +137,7 @@ namespace Aardvark.Models
                 if (ticket.AssignedToDevId != ticket.OwnerUserId)
                 {
                     tn.TicketId = ticket.Id;
-                    tn.UserId = ticket.OwnerUserId;
+                    tn.UserId = ticket.AssignedToDevId;
                     tn.Type = type;
                     tn.Created = DateTimeOffset.UtcNow;
                     db.TicketNotifications.Add(tn);
@@ -145,39 +145,39 @@ namespace Aardvark.Models
                 }
             }
         }
-        public static void NotifyAttachmentCreated(ApplicationDbContext db, int ticketId, DateTimeOffset date)
-        {
-            TicketNotification.Notify(db, ticketId, date, TicketNotification.EType.AttachmentCreated);
-        }
-        public static void NotifyAttachmentEdited(ApplicationDbContext db, int ticketId, string userId, DateTimeOffset date)
-        {
-            TicketNotification.Notify(db, ticketId, date, TicketNotification.EType.AttachmentModified);
-        }
-        public static void NotifyAttachmentDeleted(ApplicationDbContext db, int ticketId, string userId, DateTimeOffset date)
-        {
-            TicketNotification.Notify(db, ticketId, date, TicketNotification.EType.AttachmentDeleted);
-        }
-        public static void NotifyCommentCreated(ApplicationDbContext db, int ticketId, string userId, DateTimeOffset date)
-        {
-            TicketNotification.Notify(db, ticketId, date, TicketNotification.EType.CommentCreated);
-        }
-        public static void NotifyCommentEdited(ApplicationDbContext db, int ticketId, string userId, DateTimeOffset date)
-        {
-            TicketNotification.Notify(db, ticketId, date, TicketNotification.EType.CommentModified);
-        }
-        public static void NotifyCommentDeleted(ApplicationDbContext db, int ticketId, string userId, DateTimeOffset date)
-        {
-            TicketNotification.Notify(db, ticketId, date, TicketNotification.EType.CommentDeleted);
-        }
-        public static void NotifyAssignedToTicket(ApplicationDbContext db, int ticketId, string userId, DateTimeOffset date)
-        {
-            TicketNotification.Notify(db, ticketId, date, TicketNotification.EType.AssignedToTicket);
-        }
-        public static void NotifyTicketModified(ApplicationDbContext db, int ticketId, string userId, DateTimeOffset date)
-        {
-            TicketNotification tn = new TicketNotification();
-            TicketNotification.Notify(db, ticketId, date, TicketNotification.EType.TicketModified);
-        }
+        //public static void NotifyAttachmentCreated(ApplicationDbContext db, int ticketId, DateTimeOffset date)
+        //{
+        //    TicketNotification.Notify(db, ticketId, date, TicketNotification.EType.AttachmentCreated);
+        //}
+        //public static void NotifyAttachmentEdited(ApplicationDbContext db, int ticketId, string userId, DateTimeOffset date)
+        //{
+        //    TicketNotification.Notify(db, ticketId, date, TicketNotification.EType.AttachmentModified);
+        //}
+        //public static void NotifyAttachmentDeleted(ApplicationDbContext db, int ticketId, string userId, DateTimeOffset date)
+        //{
+        //    TicketNotification.Notify(db, ticketId, date, TicketNotification.EType.AttachmentDeleted);
+        //}
+        //public static void NotifyCommentCreated(ApplicationDbContext db, int ticketId, string userId, DateTimeOffset date)
+        //{
+        //    TicketNotification.Notify(db, ticketId, date, TicketNotification.EType.CommentCreated);
+        //}
+        //public static void NotifyCommentEdited(ApplicationDbContext db, int ticketId, string userId, DateTimeOffset date)
+        //{
+        //    TicketNotification.Notify(db, ticketId, date, TicketNotification.EType.CommentModified);
+        //}
+        //public static void NotifyCommentDeleted(ApplicationDbContext db, int ticketId, string userId, DateTimeOffset date)
+        //{
+        //    TicketNotification.Notify(db, ticketId, date, TicketNotification.EType.CommentDeleted);
+        //}
+        //public static void NotifyAssignedToTicket(ApplicationDbContext db, int ticketId, string userId, DateTimeOffset date)
+        //{
+        //    TicketNotification.Notify(db, ticketId, date, TicketNotification.EType.AssignedToTicket);
+        //}
+        //public static void NotifyTicketModified(ApplicationDbContext db, int ticketId, string userId, DateTimeOffset date)
+        //{
+        //    TicketNotification tn = new TicketNotification();
+        //    TicketNotification.Notify(db, ticketId, date, TicketNotification.EType.TicketModified);
+        //}
         public void ThisHasBeenRead()
         {
             // This can only be modified by the person assigned to it, by clicking a button

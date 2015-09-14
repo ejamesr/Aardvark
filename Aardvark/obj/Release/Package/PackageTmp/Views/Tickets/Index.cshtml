@@ -214,9 +214,13 @@
             {
             <text>$('#sidebar-Tickets-ReadyToReview').addClass('active');</text>
             }
-        else if (ViewBag.Scope == "Problem")
+            else if (ViewBag.Scope == "Problem")
             {
                 <text>$('#sidebar-Tickets-Problem').addClass('active');</text>
+            }
+            else if (ViewBag.Scope == "Resolved")
+            {
+                <text>$('#sidebar-Tickets-Resolved').addClass('active');</text>
             }
         });
     </script>

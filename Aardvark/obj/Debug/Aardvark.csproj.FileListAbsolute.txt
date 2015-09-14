@@ -62,4 +62,3 @@ C:\Users\ejame_000\Documents\Bootcamp\Projects\Aardvark\Aardvark\bin\System.Web.
 C:\Users\ejame_000\Documents\Bootcamp\Projects\Aardvark\Aardvark\bin\System.Net.Http.Formatting.xml
 C:\Users\ejame_000\Documents\Bootcamp\Projects\Aardvark\Aardvark\bin\System.Web.Http.xml
 C:\Users\ejame_000\Documents\Bootcamp\Projects\Aardvark\Aardvark\bin\System.Web.Http.WebHost.xml
-C:\Users\ejame_000\Documents\Bootcamp\Projects\Aardvark\Aardvark\obj\Debug\Aardvark.csprojResolveAssemblyReference.cache
