@@ -43,7 +43,7 @@ namespace Aardvark.Controllers
 
         // GET: Comments/Create
         [Authorize]
-        public ActionResult Create(int? id, string anchor, int page, int? cid = null)    // 
+        public ActionResult Create(int? id, string anchor, int? page, int? cid = null)    // 
         {
             // Do this in every GET action...
             ViewBag.UserModel = ProjectsHelper.LoadUserModel();
@@ -97,8 +97,8 @@ namespace Aardvark.Controllers
                     comment.DisplayName = "(no name)";
                 db.TicketComments.Add(comment);
                 db.SaveChanges();
-                TN.Notify(db, comment.TicketId,
-                    comment.Created, Notifications.CommentCreated);
+                TicketNotification.Notify(db, comment.TicketId,
+                    comment.Created, TicketNotification.EType.CommentCreated);
 
                                 //            @Html.ActionLink("Details", "Details", "Posts", null, null,
                                 //anchor, new { id = ViewBag.id, page = ViewBag.page }, null)
@@ -171,8 +171,8 @@ namespace Aardvark.Controllers
                 orig.Updated = DateTime.UtcNow;
                 db.Entry(orig).State = EntityState.Modified;
                 db.SaveChanges();
-                TN.Notify(db, orig.TicketId,
-                    orig.Updated.Value, Notifications.CommentModified);
+                TicketNotification.Notify(db, orig.TicketId,
+                    orig.Updated.Value, TicketNotification.EType.CommentModified);
                 return RedirectToAction("Details", "Posts", route);
             }
 
@@ -213,8 +213,8 @@ namespace Aardvark.Controllers
             comment.Deleted = true;
             //db.TicketComments.Remove(comment);
             db.SaveChanges();
-            TN.Notify(db, comment.TicketId,
-                comment.Updated.Value, Notifications.CommentDeleted);
+            TicketNotification.Notify(db, comment.TicketId,
+                comment.Updated.Value, TicketNotification.EType.CommentDeleted);
 
             var route = new System.Web.Routing.RouteValueDictionary();
             route.Add("id", id);

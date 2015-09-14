@@ -16,36 +16,76 @@ namespace Aardvark.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
+        private void CheckCookies()
+        {
+            return;
+
+            var cookies = Request.Cookies;
+            HttpCookie cookieLast = Request.Cookies["lastCookie"];
+            HttpCookie cookieA = Request.Cookies["cookieA"];
+            HttpCookie cookieB = Request.Cookies["cookieB"];
+            HttpCookie cookieC = Request.Cookies["cookieC"];
+            HttpCookie cookieD = Request.Cookies["cookieD"];
+
+            if (cookieLast == null || cookieA == null
+                || cookieB == null || cookieC == null || cookieD == null)
+            {
+                // First cookie, so set them all up right up front
+                string path = Request.UrlReferrer.PathAndQuery;
+                cookieLast = new HttpCookie("cookieLast", "A");
+                cookieA = new HttpCookie("cookieA", path);
+                cookieB = new HttpCookie("cookieB", path);
+                cookieC = new HttpCookie("cookieC", path);
+                cookieD = new HttpCookie("cookieD", path);
+                Response.Cookies.Add(cookieLast);
+                Response.Cookies.Add(cookieA);
+                Response.Cookies.Add(cookieB);
+                Response.Cookies.Add(cookieC);
+                Response.Cookies.Add(cookieD);
+                return;
+            }
+
+            // Determine the next cookie to work with...
+            HttpCookie curCookie;
+            switch (cookieLast.Value)
+            {
+                case "A":
+                    curCookie = cookieB;
+                    cookieLast.Value = "B";
+                    break;
+                case "B":
+                    curCookie = cookieC;
+                    cookieLast.Value = "C";
+                    break;
+                case "C":
+                    curCookie = cookieD;
+                    cookieLast.Value = "D";
+                    break;
+                case "D":
+                    curCookie = cookieA;
+                    cookieLast.Value = "A";
+                    break;
+                default:
+                    return;
+            }
+            curCookie.Value = Request.UrlReferrer.PathAndQuery;
+            Response.Cookies.Add(curCookie);
+            Response.SetCookie(cookieLast);
+        }
+
         // GET: Tickets
         public ActionResult Index(string scope)
         {
-            //
-            // Code to run to fix the Created date for all tickets...
-            //
-            //var tk = db.Tickets;
-            //var zero = new DateTimeOffset();
-            //var now = DateTimeOffset.UtcNow.AddDays(-2.0);
-            //DateTimeOffset max;
-            //foreach (var ticket in tk) {
-            //    if (ticket.Created == zero)
-            //        ticket.Created = now;
-            //    max = ticket.Created;
-            //    if (ticket.Updated != null)
-            //        max = ticket.Updated > max ? ticket.Updated.Value : max;
-            //    if (max > ticket.MostRecentUpdate)
-            //        ticket.MostRecentUpdate = max;
-            //}
-            //db.SaveChanges();
-            //
-
             // First, get this user...
             UserRolesHelper helper = new UserRolesHelper();
             var userId = helper.GetCurrentUserId();
             // Do this in every GET action...
             ViewBag.UserModel = ProjectsHelper.LoadUserModel();
-            ViewBag.Scope = scope ?? "";
-            if (scope == null)
-                scope = "";
+            if (string.IsNullOrEmpty(scope))
+                scope = "My";
+            ViewBag.Scope = scope;
+
+            CheckCookies();
 
             DateTimeOffset now = DateTimeOffset.UtcNow;
             DateTimeOffset start, end;
@@ -83,7 +123,7 @@ namespace Aardvark.Controllers
                     return View(problems.ToList());
                 case "MyNew":
                     var newTickets = db.Tickets
-                        .Where(t => t.AssignedToDevId == userId && t.TicketStatusId == (int)TS.Status.AssignedToDeveloper);
+                        .Where(t => t.AssignedToDevId == userId && t.TicketStatusId == (int)TS.Status.AssignedToDev);
                     return View(newTickets.ToList());
                 case "MyDue7":
                     end = now.AddDays(7);
@@ -136,6 +176,8 @@ namespace Aardvark.Controllers
         // GET: Tickets/Details/5
         public ActionResult Details(string anchor, int? id, int? page)
         {
+            CheckCookies();
+
             // Do this in every GET action...
             ViewBag.UserModel = ProjectsHelper.LoadUserModel();
             if (id == null)
@@ -154,6 +196,7 @@ namespace Aardvark.Controllers
         [Authorize(Roles="Admin,Guest,ProjectManager,Developer,Submitter")]
         public ActionResult Create()
         {
+            CheckCookies();
             Ticket model = new Ticket();
             model.DueDate = DateTimeOffset.UtcNow.AddDays(10);
             model.HoursToComplete = 1;
@@ -163,11 +206,15 @@ namespace Aardvark.Controllers
             var highest = helper.GetHighestRole(id);
             ViewBag.HighestUserRole = highest;
 
+            // Do this in every GET action...
+            var uModel = ProjectsHelper.LoadUserModel();
+            ViewBag.UserModel = uModel;
+
             // If user is Submitter only (or has no role), don't allow Skill, Due Date, or HoursToComplete to show
             ViewBag.BaseOptionsOnly = (roles == null || ((roles.Count == 1) && (roles[0] == R.Submitter))) ? true : false;
 
             // If Admin, allow to select Developer when creating the ticket
-            if (roles.Contains(R.Admin) || roles.Contains(R.Guest) || roles.Contains(R.ProjectManager))
+            if (uModel.IsAdmin || uModel.IsPM)
             {
                 var roleDev = db.Roles.FirstOrDefault(r => r.Name == R.Developer);
                 ViewBag.CanAssignDeveloper = true;
@@ -185,8 +232,6 @@ namespace Aardvark.Controllers
                 ViewBag.CanAssignDeveloper = false;
             }
 
-            // Do this in every GET action...
-            ViewBag.UserModel = ProjectsHelper.LoadUserModel();
             ViewBag.OwnerUserId = new SelectList(db.Users, "Id", "FirstName");
             ViewBag.ProjectId = new SelectList(db.Projects, "Id", "Name");
             ViewBag.SkillRequiredId = new SelectList(db.SkillLevels, "Id", "Name");
@@ -203,6 +248,7 @@ namespace Aardvark.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "ProjectId,TicketTypeId,TicketPriorityId,TicketStatusId,OwnerUserId,AssignedToDevId,SkillRequiredId,Title,Description,DueDate,HoursToComplete")] Ticket ticket)
         {
+            CheckCookies();
             if (ModelState.IsValid)
             {
                 // Set default info...
@@ -224,8 +270,8 @@ namespace Aardvark.Controllers
 
                 db.Tickets.Add(ticket);
                 db.SaveChanges();
-                TN.Notify(db, ticket,
-                    ticket.Created, Notifications.AssignedToTicket);
+                TicketNotification.Notify(db, ticket,
+                    ticket.Created, TicketNotification.EType.AssignedToTicket);
                 return RedirectToAction("Index");
             }
 
@@ -244,8 +290,10 @@ namespace Aardvark.Controllers
         // GET: Tickets/Edit/5
         public ActionResult Edit(int? id)
         {
+            CheckCookies();
             // Do this in every GET action...
-            ViewBag.UserModel = ProjectsHelper.LoadUserModel();
+            var uModel = ProjectsHelper.LoadUserModel();
+            ViewBag.UserModel = uModel;
 
             if (id == null)
             {
@@ -262,7 +310,7 @@ namespace Aardvark.Controllers
             var roles = helper.ListUserRoles(userId);
 
             // If Admin, allow to select Developer when creating the ticket
-            if (roles.Contains(R.Admin) || roles.Contains(R.Guest) || roles.Contains(R.ProjectManager))
+            if (uModel.IsAdmin || uModel.IsPM)
             {
                 var roleDev = db.Roles.FirstOrDefault(r => r.Name == R.Developer);
                 ViewBag.CanAssignDeveloper = true;
@@ -298,9 +346,23 @@ namespace Aardvark.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "Id,ProjectId,TicketTypeId,TicketPriorityId,TicketStatusId,AssignedToDevId,SkillRequiredId,Title,Description,DueDate,HoursToComplete")] Ticket ticket, string submit)
         {
+            CheckCookies();
             if (ModelState.IsValid)
             {
                 Ticket origTicket = db.Tickets.Find(ticket.Id);
+
+                // Check each field to see if changed.  If so, copy new value to origTicket and create TicketHistory
+                // But first, remember the current Developer...
+                string origDevId = origTicket.AssignedToDevId;
+
+                // WasChanged updates all the fields, origTicket is new version...
+                DateTimeOffset dtChanged = ticket.WasChanged(db, origTicket);
+
+                // If the current user is not the assigned Dev, need to send notification
+                // Get current user...
+                var helper = new UserRolesHelper();
+                if (ticket.AssignedToDevId != helper.GetCurrentUserId())
+                    TicketNotification.Notify(db, origTicket, dtChanged, TicketNotification.EType.TicketModified);
 
                 if (submit == "Ready for Testing")
                 {
@@ -311,16 +373,13 @@ namespace Aardvark.Controllers
                     return RedirectToAction("Index", new { scope = "My" });
                 }
 
-                // Check each field to see if changed.  If so, copy new value to origTicket and create TicketHistory
-                // But first, remember the current Developer...
-                string origDevId = origTicket.AssignedToDevId;
 
-                DateTimeOffset dtChanged = ticket.WasChanged(db, origTicket);
                 if (dtChanged != DateTimeOffset.MinValue)
                 {
                     origTicket.SetUpdated(dtChanged);
                     db.Entry(origTicket).State = EntityState.Modified;
                     db.SaveChanges();
+
 
                     // Need to see if the Assigned Dev was changed... if so, send out 
                     //  one notification to previous Dev, two notifications to new Dev
@@ -329,15 +388,15 @@ namespace Aardvark.Controllers
                         // Remember the current Dev, swap vars in order to remove...
                         string newDevId = origTicket.AssignedToDevId;
                         origTicket.AssignedToDevId = origDevId;
-                        TN.Notify(db, origTicket,
-                            origTicket.Updated.Value, Notifications.RemovedFromTicket);
+                        TicketNotification.Notify(db, origTicket,
+                            origTicket.Updated.Value, TicketNotification.EType.RemovedFromTicket);
 
                         // And now reset to correct new Dev and issue notifications
                         origTicket.AssignedToDevId = newDevId;
-                        TN.Notify(db, origTicket,
-                            origTicket.Updated.Value, Notifications.AssignedToTicket);
-                        TN.Notify(db, origTicket,
-                            origTicket.Updated.Value, Notifications.TicketModified);
+                        TicketNotification.Notify(db, origTicket,
+                            origTicket.Updated.Value, TicketNotification.EType.AssignedToTicket);
+                        TicketNotification.Notify(db, origTicket,
+                            origTicket.Updated.Value, TicketNotification.EType.TicketModified);
                     }
                 }
                 return RedirectToAction("Index", new { scope = "My" });
@@ -357,6 +416,7 @@ namespace Aardvark.Controllers
         // GET: Tickets/Delete/5
         public ActionResult Delete(int? id)
         {
+            CheckCookies();
             // Do this in every GET action...
             ViewBag.UserModel = ProjectsHelper.LoadUserModel();
             if (id == null)
@@ -376,12 +436,13 @@ namespace Aardvark.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
+            CheckCookies();
             // Do this in every GET action...
             ViewBag.UserModel = ProjectsHelper.LoadUserModel();
             Ticket ticket = db.Tickets.Find(id);
             ticket.SetUpdated();
-            TN.Notify(db, ticket,
-                ticket.Updated.Value, Notifications.TicketDeleted);
+            TicketNotification.Notify(db, ticket,
+                ticket.Updated.Value, TicketNotification.EType.TicketDeleted);
             db.Tickets.Remove(ticket);
             db.SaveChanges();
             return RedirectToAction("Index");

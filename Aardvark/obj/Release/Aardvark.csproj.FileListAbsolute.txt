@@ -55,3 +55,11 @@ C:\Users\ejame_000\Documents\Bootcamp\Projects\Aardvark\Aardvark\obj\Release\Aar
 C:\Users\ejame_000\Documents\Bootcamp\Projects\Aardvark\Aardvark\obj\Release\Aardvark.pdb
 C:\Users\ejame_000\Documents\Bootcamp\Projects\Aardvark\Aardvark\obj\Release\Aardvark.Migrations.InitialMigration.resources
 C:\Users\ejame_000\Documents\Bootcamp\Projects\Aardvark\Aardvark\obj\Release\Aardvark.csproj.GenerateResource.Cache
+C:\Users\ejame_000\Documents\Bootcamp\Projects\Aardvark\Aardvark\bin\SendGrid.SmtpApi.dll
+C:\Users\ejame_000\Documents\Bootcamp\Projects\Aardvark\Aardvark\bin\SendGridMail.dll
+C:\Users\ejame_000\Documents\Bootcamp\Projects\Aardvark\Aardvark\bin\System.Net.Http.Formatting.dll
+C:\Users\ejame_000\Documents\Bootcamp\Projects\Aardvark\Aardvark\bin\System.Web.Http.dll
+C:\Users\ejame_000\Documents\Bootcamp\Projects\Aardvark\Aardvark\bin\System.Web.Http.WebHost.dll
+C:\Users\ejame_000\Documents\Bootcamp\Projects\Aardvark\Aardvark\bin\System.Net.Http.Formatting.xml
+C:\Users\ejame_000\Documents\Bootcamp\Projects\Aardvark\Aardvark\bin\System.Web.Http.xml
+C:\Users\ejame_000\Documents\Bootcamp\Projects\Aardvark\Aardvark\bin\System.Web.Http.WebHost.xml

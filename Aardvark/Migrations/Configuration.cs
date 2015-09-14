@@ -103,7 +103,7 @@ namespace Aardvark.Migrations
             //    new TicketStatus { Name = "UnRep", Step = Step.Val },               //"UnableToReproduce", Step = Step.Val },
             //    new TicketStatus { Name = "Deferred", Step = Step.Val },            //"Deferred", Step = Step.Val },
             //    new TicketStatus { Name = "R-Dev", Step = Step.Val },               //"ReadyToAssign", Step = Step.Val },
-            //    new TicketStatus { Name = "AtoDev", Step = Step.Val },              //"AssignedToDeveloper", Step = Step.Val },
+            //    new TicketStatus { Name = "AtoDev", Step = Step.Val },              //"AssignedToDev", Step = Step.Val },
             //    new TicketStatus { Name = "InDev", Step = Step.Val },               //"InDevelopment", Step = Step.Val },
             //    new TicketStatus { Name = "R-Test", Step = Step.Val },              //"ReadyToTest", Step = Step.Val },
             //    new TicketStatus { Name = "AtoTest", Step = Step.Val },             //"AssignedToTester", Step = Step.Val },
@@ -117,7 +117,7 @@ namespace Aardvark.Migrations
                 new TicketStatus { Name = "UnableToReproduce", Step = Step.Val },
                 new TicketStatus { Name = "Deferred", Step = Step.Val },
                 new TicketStatus { Name = "ReadyToAssign", Step = Step.Val },
-                new TicketStatus { Name = "AssignedToDeveloper", Step = Step.Val },
+                new TicketStatus { Name = "AssignedToDev", Step = Step.Val },
                 new TicketStatus { Name = "InDevelopment", Step = Step.Val },
                 new TicketStatus { Name = "ReadyToTest", Step = Step.Val },
                 new TicketStatus { Name = "AssignedToTester", Step = Step.Val },
@@ -175,7 +175,7 @@ namespace Aardvark.Migrations
                 new NewPerson("Patty", "Whack", "Patty-PM", "PattyWhack@ThisOldMan.com", R.PM, "Ab1234."),
                 new NewPerson("John", "Smith", "John", "john@me.com", R.Submitter, "Ab1234."),
                 new NewPerson("Eric", "Ruff", "Eric", mainAdmin, R.Admin, "Eric7777!"),
-                new NewPerson("Guest", "", "Guest", "Guest@me.com", R.Guest, "Ab1234.")
+                new NewPerson("Guest", "", "Guest", "Guest@me.com", R.Guest, "Guest1234.")
                           };
             NewUserWithRole(context, users);
             context.SaveChanges();      // Update...
@@ -256,6 +256,14 @@ namespace Aardvark.Migrations
                     // Add additional roles for me...
                     if (user.Email == "ejames.ruff@gmail.com")
                     {
+                        manager.AddToRole(au.Id, R.Dev);
+                        manager.AddToRole(au.Id, R.PM);
+                        manager.AddToRole(au.Id, R.Submitter);
+                    }
+                    // Add additional roles for Guest...
+                    if (user.Email ==  R.GuestEmail)
+                    {
+                        manager.AddToRole(au.Id, R.Admin);
                         manager.AddToRole(au.Id, R.Dev);
                         manager.AddToRole(au.Id, R.PM);
                         manager.AddToRole(au.Id, R.Submitter);

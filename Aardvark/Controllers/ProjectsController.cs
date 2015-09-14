@@ -24,7 +24,8 @@ namespace Aardvark.Controllers
             var Roles = new UserRolesHelper().ListUserRoles(userId);
             ViewBag.Roles = Roles;
             // Do this in every GET action...
-            ViewBag.UserModel = ProjectsHelper.LoadUserModel();
+            var model = ProjectsHelper.LoadUserModel();
+            ViewBag.UserModel = model;
             ViewBag.Scope = scope;
 
             if (scope == "My")
@@ -36,13 +37,13 @@ namespace Aardvark.Controllers
             else
             {
                 // Restrict list according to role
-                if (Roles.Contains(R.Admin) || Roles.Contains(R.Guest))
+                if (model.IsAdmin)
                 {
                     // Show all projects without restriction
                     var projects = db.Projects.Include(p => p.Users);
                     return View(projects.ToList());
                 }
-                else if (Roles.Contains(R.ProjectManager))
+                else if (model.IsPM)
                 {
                     // Person is both PM and Dev, so show union...ed
                     var projects = db.Users.Find(userId).Projects
@@ -176,7 +177,8 @@ namespace Aardvark.Controllers
         public ActionResult Details(int? id)
         {
             // Do this in every GET action...
-            ViewBag.UserModel = ProjectsHelper.LoadUserModel();
+            var model = ProjectsHelper.LoadUserModel();
+            ViewBag.UserModel = model;
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -190,7 +192,7 @@ namespace Aardvark.Controllers
             ViewBag.ProjectManagerDisplayName = helper.GetProjectManagerDisplayName((int)id);
             var Roles = helper.ListUserRoles(User.Identity.GetUserId());
             // Determine if OK to assign Developers...
-            if (Roles.Contains(R.Admin) || Roles.Contains(R.Guest) || Roles.Contains(R.ProjectManager))
+            if (model.IsAdmin || model.IsPM)
             {
                 ViewBag.CanAssignDeveloper = true;
             }

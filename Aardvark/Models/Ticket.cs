@@ -176,7 +176,7 @@ namespace Aardvark.Models
         public virtual ICollection<TicketAttachment> Attachments { get; set; }
         public virtual ICollection<TicketComment> Comments { get; set; }
         public virtual ICollection<TicketHistory> Histories { get; set; }
-        public virtual ICollection<TN> Notifications { get; set; }
+        public virtual ICollection<TicketNotification> Notifications { get; set; }
 
         public Ticket()
         {
@@ -184,7 +184,7 @@ namespace Aardvark.Models
             this.Attachments = new HashSet<TicketAttachment>();
             this.Comments = new HashSet<TicketComment>();
             this.Histories = new HashSet<TicketHistory>();
-            this.Notifications = new HashSet<TN>();
+            this.Notifications = new HashSet<TicketNotification>();
         }
 
         public void SetCreated()
@@ -210,8 +210,8 @@ namespace Aardvark.Models
         }
         public void NotifyNewTicket(ApplicationDbContext db)
         {
-            TN.Notify(db, this, this.Created, 
-                Aardvark.Models.Notifications.AssignedToTicket);
+            TicketNotification.Notify(db, this, this.Created,
+                Aardvark.Models.TicketNotification.EType.AssignedToTicket);
 
         }
     }

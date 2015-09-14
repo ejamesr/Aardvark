@@ -11,8 +11,45 @@
         <h1>@ViewBag.UserModel.DashboardTitle</h1>
     </div> <!-- #content-header -->
     <div id="content-container">
+    @if (ViewBag.UserModel.IsGuest)
+    {
+        // Show Import button at the top, front and center
         <div class="row">
+            <div class="col-sm-5">
+                <h3>Unique feature:</h3>
+                <h5>Hover over the button for more info</h5>
+            </div>
+            <div class="col-sm-3">
+                <a href="@Url.Action("ImportData", "Utilities")" class="btn btn-primary" title=
+"
+This is a unique (and very cool!) feature of Aardvark!
 
+You can quickly import any amount of data into Aardvark.
+This feature provides an Excel spreadsheet template you can
+download. The template allows you to enter any number of
+Users, Projects, Tickets, and other related information in
+order to quickly get you going with Aardvark.
+
+Complete instructions are provided in the spreadsheet. Once
+you have entered your data in the spreadsheet, you can upload
+the information into Aardvark.
+
+A log file (you can access it via the sidebar menu on the
+left as Utilities > View Log) shows the status of each data 
+row.  Small errors are automatically corrected; status 
+messages are shown in the log for each imported row. For any 
+row that cannot be imported, the log file gives detailed
+explanations.
+                   
+Click the button for more information.
+">
+                    Import Data into Aardvark
+                </a>
+            </div>
+        </div>
+        <hr />
+    }
+        <div class="row">
             <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
                 <!-- New/Unread Notifications -->
                 <a href="javascript:;" class="dashboard-stat secondary">

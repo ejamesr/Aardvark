@@ -124,8 +124,8 @@ namespace Aardvark.Controllers
                 ticketAttachment.Created = DateTimeOffset.UtcNow;
                 db.TicketAttachments.Add(ticketAttachment);
                 db.SaveChanges();
-                TN.Notify(db, ticketAttachment.TicketId, 
-                    ticketAttachment.Created, Notifications.AttachmentCreated);
+                TicketNotification.Notify(db, ticketAttachment.TicketId, 
+                    ticketAttachment.Created, TicketNotification.EType.AttachmentCreated);
                 return RedirectToAction("Index", new { id = @ticketAttachment.TicketId });
             }
 
@@ -168,8 +168,8 @@ namespace Aardvark.Controllers
             {
                 db.Entry(ticketAttachment).State = EntityState.Modified;
                 db.SaveChanges();
-                TN.Notify(db, ticketAttachment.TicketId,
-                    DateTimeOffset.UtcNow, Notifications.AttachmentModified);  // No Updated date to pull, so get current
+                TicketNotification.Notify(db, ticketAttachment.TicketId,
+                    DateTimeOffset.UtcNow, TicketNotification.EType.AttachmentModified);  // No Updated date to pull, so get current
                 return RedirectToAction("Index");
             }
             ViewBag.TicketId = new SelectList(db.Tickets, "Id", "Title", ticketAttachment.TicketId);
@@ -200,8 +200,8 @@ namespace Aardvark.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             TicketAttachment ticketAttachment = db.TicketAttachments.Find(id);
-            TN.Notify(db, ticketAttachment.TicketId,
-                ticketAttachment.Created, Notifications.AttachmentDeleted);
+            TicketNotification.Notify(db, ticketAttachment.TicketId,
+                ticketAttachment.Created, TicketNotification.EType.AttachmentDeleted);
             db.TicketAttachments.Remove(ticketAttachment);
             db.SaveChanges();
             // Do this in every GET action...

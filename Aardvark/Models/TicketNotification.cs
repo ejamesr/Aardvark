@@ -3,58 +3,103 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using Aardvark.Helpers;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Aardvark.Models
 {
-    public abstract class Enumeration
-    {
-        // This gives me an enum class like in Java
-        private readonly int _value;
-        private readonly string _displayName;
-        private readonly string _msg;
-
-        protected Enumeration() { }
-        protected Enumeration(Notifications type, string msg)
-        {
-            _value = (int)type;
-            _displayName = type.ToString();
-            _msg = msg;
-        }
-        public int Value
-        {
-            get { return _value; }
-        }
-        public string DisplayName
-        {
-            get { return _displayName; }
-        }
-        public string Msg
-        {
-            get { return _msg; }
-        }
-        public override string ToString()
-        {
-            return DisplayName;
-        }
-    }
-
-    public enum Notifications : int
-    {
-        AssignedToTicket = 1,
-        RemovedFromTicket,
-        TicketModified,
-        TicketDeleted,
-        CommentCreated,
-        CommentModified,
-        CommentDeleted,
-        AttachmentCreated,
-        AttachmentModified,
-        AttachmentDeleted
-    }
-
     // List of all notifications sent
-    public class TN
+    public class TicketNotification
     {
+        public int Id { get; set; }
+        public int TicketId { get; set; }
+        public string UserId { get; set; }
+
+        /// <summary>
+        /// The notification type from the enumeration 'E'
+        /// </summary>
+        public EType Type { get; set; }
+        public DateTimeOffset Created { get; set; }
+        public NotificationMethod Method { get; set; }
+        public bool HasBeenRead { get; private set; }
+        public bool UsedEmail { get; set; }
+        public bool UsedText { get; set; }
+
+        public virtual Ticket Ticket { get; set; }
+        public virtual ApplicationUser User { get; set; }
+
+        public TicketNotification()
+        {
+
+        }
+        public TicketNotification(EType type)
+        {
+            Type = type;
+        }
+
+        /// <summary>
+        /// The enumeration of TicketNotification types.  The same names are used to help generate
+        /// the type name as a string (class Str), the messsage associated with the type (class Msg),
+        /// and to return all the names in an array (field List).
+        /// </summary>
+        public enum EType
+        {
+            AssignedToTicket = 1,
+            RemovedFromTicket,
+            TicketModified,
+            TicketDeleted,
+            CommentCreated,
+            CommentModified,
+            CommentDeleted,
+            AttachmentCreated,
+            AttachmentModified,
+            AttachmentDeleted,
+        }
+
+        [NotMapped]
+        private static readonly string[] msgs = {
+            "You have been assigned to this ticket",
+            "You have been removed from this ticket",
+            "Ticket has been modified",
+            "Ticket has beem deleted",
+            "Comment has been added to this ticket",
+            "Comment for this ticket has been modified",
+            "Comment for this ticket has been deleted",
+            "Attachment has been added to this ticket",
+            "Attachment for this ticket has been modified",
+            "Attachment for this ticket has been deleted"
+        };
+        //[NotMapped]
+        //private static int[] steps = { 10, 20, 30, 40, 50, 60, 70, 80, 90, 100 };
+        [NotMapped]
+        private static string[] vals = Enum.GetNames(typeof(EType));
+
+
+        [NotMapped]
+        public string Msg { get { return msgs[(int)Type-1];}}
+        [NotMapped]
+        public string Str { get { return vals[(int)Type-1]; } }
+        //[NotMapped]
+        //public int Step { get { return steps[(int)Type]; } }
+
+
+        // Static methods to get list, msg, str, step
+        public static string[] GetList()
+        {
+            return vals;
+        }
+        public static string GetMsg(EType type)
+        {
+            return msgs[(int)type-1];
+        }
+        public static string GetStr(EType type)
+        {
+            return vals[(int)type - 1];
+        }
+        //public static int GetStep(EType type){
+        //    return steps[(int)type];
+        //}
+
+
         public enum NotificationMethod
         {
             ByDefault = 1,          // Default is to simply list the pending notifications
@@ -62,121 +107,77 @@ namespace Aardvark.Models
             ByText = 3,
         }
 
-        public class NotificationType : Enumeration
-        {
-            public NotificationType() { }
-            public NotificationType(Notifications type, string msg) : base(type, msg)
-            {
-
-            }
-        }
-
-        public static List<NotificationType> NotificationTypes = new List<NotificationType> {
-            // Use a dummy entry so first 'real' type is item 1
-            new NotificationType(Notifications.AssignedToTicket, "Dummy"),
-            // A Developer should be notified of these events:
-            new NotificationType(Notifications.AssignedToTicket, "You have been assigned to this ticket"),
-            new NotificationType(Notifications.RemovedFromTicket, "You have been removed from this ticket"),
-        
-            // Notifications sent for these only when initiated by another person
-            new NotificationType(Notifications.TicketModified, "Ticket has been modified"),
-            new NotificationType(Notifications.TicketDeleted, "Ticket has beem deleted"),
-            new NotificationType(Notifications.CommentCreated, "Comment has been added to this ticket"),
-            new NotificationType(Notifications.CommentModified, "Comment for this ticket has been modified"),
-            new NotificationType(Notifications.CommentDeleted, "Comment for this ticket has been deleted"),
-            new NotificationType(Notifications.AttachmentCreated, "Attachment has been added to this ticket"),
-            new NotificationType(Notifications.AttachmentModified, "Attachment for this ticket has been modified"),
-            new NotificationType(Notifications.AttachmentDeleted, "Attachment for this ticket has been deleted")
-        };
-
-        public int Id { get; set; }
-        public int TicketId { get; set; }
-        public string UserId { get; set; }
-        
-        public Notifications Type { get; set; }
-        public DateTimeOffset Created { get; set; }
-        public NotificationMethod Method { get; set; }
-        public bool HasBeenRead { get; private set; }
-        public bool UsedEmail { get; set; }
-        public bool UsedText { get; set; }
-        public virtual Ticket Ticket { get; set; }
-        public virtual ApplicationUser User { get; set; }
-
         public override string ToString()
         {
-            return "Ticket # " + TicketId
-                + " (" + Ticket.Title + "): " + NotificationTypes[(int)Type].Msg;
+            string str =  "Ticket # " + TicketId
+                + " (" + Ticket.Title + "): " + Str;
+            return str;
         }
 
         public string ToDescription()
         {
-            string desc = NotificationTypes[(int)Type].DisplayName;
-            desc = "Tk#" + TicketId + ":" + Ticket.Title + "-" + desc;
+            string desc = "Tk#" + TicketId + ":" + Ticket.Title + "-" + Msg;
             return desc;
         }
 
         // Create a notification entry...
-        public static void Notify(ApplicationDbContext db, int ticketId, DateTimeOffset date, Notifications type)
+        public static void Notify(ApplicationDbContext db, int ticketId, DateTimeOffset date, EType type)
         {
             Ticket ticket = db.Tickets.Find(ticketId);
             Notify(db, ticket, date, type);
         }
 
-        public static void Notify(ApplicationDbContext db, Ticket ticket, DateTimeOffset date, Notifications type)
+        public static void Notify(ApplicationDbContext db, Ticket ticket, DateTimeOffset date, EType type)
         {
             // Create new object, init fields and save
-            TN tn = new TN();
+            TicketNotification tn = new TicketNotification();
             // Don't need to create notification if the Developer is same as the User who generated the event
-            if (ticket.AssignedToDevId != ticket.OwnerUserId)
+            if (ticket.AssignedToDevId != null)
             {
-                tn.TicketId = ticket.Id;
-                tn.UserId = ticket.OwnerUserId;
-                tn.Type = type;
-                tn.Created = DateTimeOffset.UtcNow;
-                db.TicketNotifications.Add(tn);
-                db.SaveChanges();
+                if (ticket.AssignedToDevId != ticket.OwnerUserId)
+                {
+                    tn.TicketId = ticket.Id;
+                    tn.UserId = ticket.OwnerUserId;
+                    tn.Type = type;
+                    tn.Created = DateTimeOffset.UtcNow;
+                    db.TicketNotifications.Add(tn);
+                    db.SaveChanges();
+                }
             }
         }
-        //public static void NotifyAttachmentCreated(ApplicationDbContext db, int ticketId, string userId, DateTimeOffset date)
-        //{
-        //    TicketNotification tn = new TicketNotification();
-        //    tn.Notify(db, ticketId, userId, date, Notifications.AttachmentAdded);
-        //}
-        //public static void NotifyAttachmentEdited(ApplicationDbContext db, int ticketId, string userId, DateTimeOffset date)
-        //{
-        //    TicketNotification tn = new TicketNotification();
-        //    tn.Notify(db, ticketId, userId, date, Notifications.AttachmentModified);
-        //}
-        //public static void NotifyAttachmentDeleted(ApplicationDbContext db, int ticketId, string userId, DateTimeOffset date)
-        //{
-        //    TicketNotification tn = new TicketNotification();
-        //    tn.Notify(db, ticketId, userId, date, Notifications.AttachmentDeleted);
-        //}
-        //public static void NotifyCommentCreated(ApplicationDbContext db, int ticketId, string userId, DateTimeOffset date)
-        //{
-        //    TicketNotification tn = new TicketNotification();
-        //    tn.Notify(db, ticketId, userId, date, Notifications.CommentAdded);
-        //}
-        //public static void NotifyCommentEdited(ApplicationDbContext db, int ticketId, string userId, DateTimeOffset date)
-        //{
-        //    TicketNotification tn = new TicketNotification();
-        //    tn.Notify(db, ticketId, userId, date, Notifications.CommentAdded);
-        //}
-        //public static void NotifyCommentDeleted(ApplicationDbContext db, int ticketId, string userId, DateTimeOffset date)
-        //{
-        //    TicketNotification tn = new TicketNotification();
-        //    tn.Notify(db, ticketId, userId, date, Notifications.CommentAdded);
-        //}
-        //public static void NotifyAssignedToTicket(ApplicationDbContext db, int ticketId, string userId, DateTimeOffset date)
-        //{
-        //    TicketNotification tn = new TicketNotification();
-        //    tn.Notify(db, ticketId, userId, date, Notifications.AssignedToTicket);
-        //}
-        //public static void NotifyTicketModified(ApplicationDbContext db, int ticketId, string userId, DateTimeOffset date)
-        //{
-        //    TicketNotification tn = new TicketNotification();
-        //    tn.Notify(db, ticketId, userId, date, Notifications.TicketModified);
-        //}
+        public static void NotifyAttachmentCreated(ApplicationDbContext db, int ticketId, DateTimeOffset date)
+        {
+            TicketNotification.Notify(db, ticketId, date, TicketNotification.EType.AttachmentCreated);
+        }
+        public static void NotifyAttachmentEdited(ApplicationDbContext db, int ticketId, string userId, DateTimeOffset date)
+        {
+            TicketNotification.Notify(db, ticketId, date, TicketNotification.EType.AttachmentModified);
+        }
+        public static void NotifyAttachmentDeleted(ApplicationDbContext db, int ticketId, string userId, DateTimeOffset date)
+        {
+            TicketNotification.Notify(db, ticketId, date, TicketNotification.EType.AttachmentDeleted);
+        }
+        public static void NotifyCommentCreated(ApplicationDbContext db, int ticketId, string userId, DateTimeOffset date)
+        {
+            TicketNotification.Notify(db, ticketId, date, TicketNotification.EType.CommentCreated);
+        }
+        public static void NotifyCommentEdited(ApplicationDbContext db, int ticketId, string userId, DateTimeOffset date)
+        {
+            TicketNotification.Notify(db, ticketId, date, TicketNotification.EType.CommentModified);
+        }
+        public static void NotifyCommentDeleted(ApplicationDbContext db, int ticketId, string userId, DateTimeOffset date)
+        {
+            TicketNotification.Notify(db, ticketId, date, TicketNotification.EType.CommentDeleted);
+        }
+        public static void NotifyAssignedToTicket(ApplicationDbContext db, int ticketId, string userId, DateTimeOffset date)
+        {
+            TicketNotification.Notify(db, ticketId, date, TicketNotification.EType.AssignedToTicket);
+        }
+        public static void NotifyTicketModified(ApplicationDbContext db, int ticketId, string userId, DateTimeOffset date)
+        {
+            TicketNotification tn = new TicketNotification();
+            TicketNotification.Notify(db, ticketId, date, TicketNotification.EType.TicketModified);
+        }
         public void ThisHasBeenRead()
         {
             // This can only be modified by the person assigned to it, by clicking a button

@@ -1,5 +1,8 @@
 ﻿using Aardvark.Models;
+using Aardvark.ViewModels;
 using Aardvark.Helpers;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -7,18 +10,42 @@ using System.Data.Entity;
 using System.Data.Entity.Validation;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using System.Windows;
-using System.Text;
-using Microsoft.AspNet.Identity.EntityFramework;
-using Microsoft.AspNet.Identity;
 
 namespace Aardvark.Controllers
 {
     public class UtilitiesController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
+
+        // GET: Utilities/ViewLog
+        [Authorize(Roles = "Admin,Guest")]
+        public ActionResult ViewLog()
+        {
+            // Do this in every GET action...
+            ViewBag.UserModel = ProjectsHelper.LoadUserModel();
+            ViewBag.Msg = "";
+            var model = db.Logs.Select(n => new LogView()
+                    {
+                        Id = n.Id,
+                        Created = n.Created,
+                        Name = n.Name,
+                        Msg = n.Msg
+                    })
+                    .ToArray<LogView>();
+            return View(model);
+        }
+
+        // GET: Utilities/ResetLog
+        [Authorize(Roles = "Admin,Guest")]
+        public ActionResult ResetLog()
+        {
+            // This will clear the Logs file...
+            return RedirectToAction("ViewLog");
+        }
 
         // GET: Utilities/ImportData
         [Authorize(Roles="Admin,Guest")]
@@ -291,7 +318,7 @@ namespace Aardvark.Controllers
                             if (!helper.IsUserInRole(user.Id, R.Developer))
                             {
                                 Section.LogErr(db, "Ticket on row " + (row + 1) + " has AssignedDeveloper [" + user.UserName
-                                    + "] not in 'Developer' role -- leaving field blank will continue");
+                                    + "] not in 'Developer' role -- leaving field blank, will continue");
                             }
                             else
                             {
@@ -400,11 +427,11 @@ namespace Aardvark.Controllers
                                 Section.LogAlert(db, "Ticket on row " + (row + 1) + " had invalid SkillRequired -- set to Junior");
                         }
 
-                        // Last check... if ticket.StatusId is "New" and a developer is assigned, change to "AssignedToDeveloper"
+                        // Last check... if ticket.StatusId is "New" and a developer is assigned, change to "AssignedToDev"
                         if (ticket.AssignedToDev != null && ticket.TicketStatusId == (int)TS.Status.New)
                         {
-                            Section.LogAlert(db, "Ticket on row " + (row + 1) + " has assigned developer -- set to AssignedToDeveloper");
-                            ticket.TicketStatusId = (int)TS.Status.AssignedToDeveloper;
+                            Section.LogAlert(db, "Ticket on row " + (row + 1) + " has assigned developer -- set to AssignedToDev");
+                            ticket.TicketStatusId = (int)TS.Status.AssignedToDev;
                         }
 
                         // We can add the Ticket now

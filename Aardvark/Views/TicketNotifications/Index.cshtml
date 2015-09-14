@@ -19,6 +19,9 @@
                             #
                         </th>
                         <th class="dt-head-center" data-sortable="true">
+                            @Html.DisplayNameFor(model => model.Ticket.Id)
+                        </th>
+                        <th class="dt-head-center" data-sortable="true">
                             @Html.DisplayNameFor(model => model.Ticket.Title)
                         </th>
                         <th class="dt-head-center" data-sortable="true">
@@ -43,6 +46,9 @@
                         <tr>
                             <td>
                                 @Html.DisplayFor(modelItem => item.Id)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Ticket.Id)
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.Ticket.Title)

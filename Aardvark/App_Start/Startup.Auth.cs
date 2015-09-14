@@ -1,11 +1,12 @@
-﻿using System;
+﻿using Aardvark.Helpers;
+using Aardvark.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.Google;
 using Owin;
-using Aardvark.Models;
+using System;
 
 namespace Aardvark
 {
@@ -63,6 +64,16 @@ namespace Aardvark
             //    ClientId = "",
             //    ClientSecret = ""
             //});
+
+            //// Test some of the types...
+            //var a = TicketNotification.EType.AttachmentModified;
+            //var b = TicketNotification.GetMsg(TicketNotification.EType.AttachmentModified);
+            //var d = TicketNotification.GetStr(TicketNotification.EType.AttachmentModified);
+
+            //var e = new TicketNotification(TicketNotification.EType.RemovedFromTicket);
+            //string x = e.Str;
+            //string y = e.Msg;
+            //var z = e.Type;
         }
     }
 }

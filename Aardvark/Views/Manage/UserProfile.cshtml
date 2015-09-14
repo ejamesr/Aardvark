@@ -6,83 +6,124 @@
     </div> <!-- #content-header -->
     <div id="content-container">
         <h2>Edit your profile</h2>
-        @if (ViewBag.Msg != null)
-        {
-            // Display error message...
-            <h3>Please fix error: @ViewBag.Msg</h3>
-            <br />
-        }
-        @using (Html.BeginForm("UserProfile", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
-        {
-            @Html.AntiForgeryToken()
-            <hr />
-            @Html.ValidationSummary("", new { @class = "text-danger" })
-            @Html.HiddenFor(m => m.Id)
-            <div class="form-group">
-                @Html.Label("First Name", new { @class = "col-md-2 control-label" })
-                <div class="col-md-4">
-                    @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control" })
-                </div>
+    @if (ViewBag.Msg != null)
+    {
+        // Display error message...
+        <h3>Please fix error: @ViewBag.Msg</h3>
+        <br />
+    }
+    @using (Html.BeginForm("UserProfile", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+    {
+        @Html.AntiForgeryToken()
+        <hr />
+        @Html.ValidationSummary("", new { @class = "text-danger" })
+        @Html.HiddenFor(m => m.Id)
+        <div class="form-group">
+            @Html.Label("First Name", new { @class = "col-md-2 control-label" })
+            <div class="col-md-4">
+                @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control" })
             </div>
-            <div class="form-group">
-                @Html.Label("Last Name", new { @class = "col-md-2 control-label" })
-                <div class="col-md-4">
-                    @Html.TextBoxFor(m => m.LastName, new { @class = "form-control" })
-                </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("Last Name", new { @class = "col-md-2 control-label" })
+            <div class="col-md-4">
+                @Html.TextBoxFor(m => m.LastName, new { @class = "form-control" })
             </div>
-            <div class="form-group">
-                @Html.Label("Display Name", new { @class = "col-md-2 control-label" })
-                <div class="col-md-4">
-                    @Html.TextBoxFor(m => m.DisplayName, new { @class = "form-control",
-           title = "This is the name displayed at the top of each screen" })
-                </div>
+        </div>
+    if (ViewBag.UserModel.IsGuest)
+    {
+        //These should be disabled -- don't want the user to change these!!
+        @Html.HiddenFor(m => m.DisplayName)
+        @Html.HiddenFor(m => m.UserName)
+        @Html.HiddenFor(m => m.Email)
+        <div class="form-group">
+            @Html.Label("Display Name", new { @class = "col-md-2 control-label" })
+            <div class="col-md-4">
+                @Html.TextBoxFor(m => m.DisplayName, new
+                    {
+                        @class = "form-control",
+                        disabled="disabled",
+                        title = "This is the name displayed at the top of each screen (disabled for 'Guest')"
+                    })
             </div>
-            <div class="form-group">
-                @Html.Label("User Name", new { @class = "col-md-2 control-label" })
-                <div class="col-md-4">
-                    @Html.TextBoxFor(m => m.UserName, new { @class = "form-control",
-                   title = "This is your login name; it must be unique" })
-                </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("User Name", new { @class = "col-md-2 control-label" })
+            <div class="col-md-4">
+                @Html.TextBoxFor(m => m.UserName, new
+                    {
+                        @class = "form-control",
+                        disabled="disabled",
+                        title = "This is your login name; it must be unique (disabled for 'Guest')"
+                    })
             </div>
-    <div class="form-group">
-        @Html.Label("Email Address", new { @class = "col-md-2 control-label" })
-        <div class="col-md-4">
-            @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
         </div>
-    </div>
-    <div class="form-group">
-        @Html.Label("Phone Number", new { @class = "col-md-2 control-label" })
-        <div class="col-md-4">
-            @Html.TextBoxFor(m => m.Phone, new { @class = "form-control", onchange = "PhoneChanged(this)" })
-        </div>
-    </div>
-    <div class="form-group">
-        @Html.Label("Text Msg Number", new { @class = "col-md-2 control-label" })
-        <div class="col-md-4">
-            @Html.TextBoxFor(m => m.TextMsgNumber, new { @class = "form-control" })
-        </div>
-        <div class="col-md-2">
-            <input type="checkbox" id="SameAsPhone" name="SameAsPhone" value="true" onchange="TxtSameAsPhone(this)" />
-            &nbsp;Same as phone?
-        </div>
-    </div>
-    <div class="form-group">
-        @Html.Label("Notifications", new { @class = "col-md-2 control-label" })
-        <div class="col-md-4">
-            <input type="checkbox" @((bool)Model.NotifyByText ? "checked" : "") name="NotifyByText" value="true" />
-            &nbsp;by text?
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" @((bool)Model.NotifyByEmail ? "checked" : "") name="NotifyByEmail" value="true" />
-            &nbsp;by email?
-        </div>
-    </div>
-            <div class="form-group">
-                <div class="col-md-offset-2 col-md-2">
-                    <input type="submit" class="btn btn-primary" name ="submit" value="Save" />
-                </div>
-                <div class="col-md-2">
-                    <input type="submit" class="btn btn-info" name="submit" value="Cancel" />
-                </div>
+        <div class="form-group">
+            @Html.Label("Email Address", new { @class = "col-md-2 control-label" })
+            <div class="col-md-4">
+                @Html.TextBoxFor(m => m.Email, new { @class = "form-control",
+                        disabled="disabled",
+                        title = "This is your email address (disabled for 'Guest')"
+                    })
             </div>
+        </div>
+    }
+    else
+    {
+        <div class="form-group">
+            @Html.Label("Display Name", new { @class = "col-md-2 control-label" })
+            <div class="col-md-4">
+                @Html.TextBoxFor(m => m.DisplayName, new { @class = "form-control",
+        title = "This is the name displayed at the top of each screen" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("User Name", new { @class = "col-md-2 control-label" })
+            <div class="col-md-4">
+                @Html.TextBoxFor(m => m.UserName, new { @class = "form-control",
+                title = "This is your login name; it must be unique" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("Email Address", new { @class = "col-md-2 control-label" })
+            <div class="col-md-4">
+                @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+            </div>
+        </div>
+    }
+        <div class="form-group">
+            @Html.Label("Phone Number", new { @class = "col-md-2 control-label" })
+            <div class="col-md-4">
+                @Html.TextBoxFor(m => m.Phone, new { @class = "form-control", onchange = "PhoneChanged(this)" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("Text Msg Number", new { @class = "col-md-2 control-label" })
+            <div class="col-md-4">
+                @Html.TextBoxFor(m => m.TextMsgNumber, new { @class = "form-control" })
+            </div>
+            <div class="col-md-2">
+                <input type="checkbox" id="SameAsPhone" name="SameAsPhone" value="true" onchange="TxtSameAsPhone(this)" />
+                &nbsp;Same as phone?
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("Notifications", new { @class = "col-md-2 control-label" })
+            <div class="col-md-4">
+                <input type="checkbox" @((bool)Model.NotifyByText ? "checked" : "") name="NotifyByText" value="true" />
+                &nbsp;by text?
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" @((bool)Model.NotifyByEmail ? "checked" : "") name="NotifyByEmail" value="true" />
+                &nbsp;by email?
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-2">
+                <input type="submit" class="btn btn-primary" name ="submit" value="Save" />
+            </div>
+            <div class="col-md-2">
+                <input type="submit" class="btn btn-info" name="submit" value="Cancel" />
+            </div>
+        </div>
         }
     </div>
 </div>

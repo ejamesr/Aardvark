@@ -2,8 +2,8 @@
 @using Aardvark.Models;
 @{
     ViewBag.Title = "Create";
-    int page = ViewBag.page;
-    string anchor = ViewBag.anchor;
+    //int page = ViewBag.page;
+    //string anchor = ViewBag.anchor;
     Ticket ticket = ViewBag.Ticket;
 }
 <div id="content">
@@ -99,7 +99,7 @@
                     @Html.Label("Comment", htmlAttributes: new { @class = "control-label col-sm-2" })
                     <div class="col-sm-6">
                         @Html.TextAreaFor(model => model.Body, 4, 90,
-                            new { htmlAttributes = new { @class = "form-control", title = "Enter your comments here" } })
+                           new { @class = "form-control", title = "Enter your comments here" })
                         @Html.ValidationMessageFor(model => model.Body, "", new { @class = "text-danger" })
                     </div>
                 </div>
@@ -117,13 +117,14 @@
                 @* Add the fragment info here... *@
                 <div class="hidden">
                     <input type="text" name="id" value=@ViewBag.id />
-                    <input type="text" name="page" value=@ViewBag.page />
-                    <input type="text" name="anchor" value=@ViewBag.anchor />
+                    @*<input type="text" name="page" value=@ViewBag.page />
+                    <input type="text" name="anchor" value=@ViewBag.anchor />*@
                 </div>
                 <div class="form-group">
                     <div class="row">
                         <div class="col-sm-2">
-                            @Html.ActionLink("Back to List", "Index", "Posts", null, new { @page = ViewBag.PageNumber })
+                            <a href="@Request.UrlReferrer.PathAndQuery">Back to Ticket</a> |
+                            @Html.ActionLink("Back to List", "Index", "Tickets", null, null)
                         </div>
                         <div class="col-md-4">
                             <input type="submit" value="Create" class="btn btn-primary" />

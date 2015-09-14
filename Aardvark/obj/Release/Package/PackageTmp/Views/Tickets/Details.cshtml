@@ -16,10 +16,10 @@
         <h3>Ticket # @Model.Id: @Model.Title</h3>
         <hr />
         <div class="row my-row">
-            <div class="col-sm-1 my-label">
+            <div class="col-sm-2 col-xs-3 col-md-2 my-label">
                 Description
             </div>
-            <div class="col-sm-8 my-data">
+            <div class="col-sm-10 col-xs-9 col-md-10 my-data">
                 @Model.Description
             </div>
         </div>
@@ -28,25 +28,25 @@
             <div class="col-sm-1 col-xs-2 my-label">
                 Type
             </div>
-            <div class="col-sm-1 col-xs-4 my-data">
+            <div class="col-sm-2 col-xs-4 my-data">
                 @Model.TicketType.Name
             </div>
             <div class="col-sm-1 col-xs-2 my-label">
                 Priority
             </div>
-            <div class="col-sm-1 col-xs-4 my-data">
+            <div class="col-sm-2 col-xs-4 my-data">
                 @Model.TicketPriority.Name
             </div>
             <div class="col-sm-1 col-xs-2 my-label">
                 Status
             </div>
-            <div class="col-sm-1 col-xs-4 my-data">
+            <div class="col-sm-2 col-xs-4 my-data">
                 @Model.TicketStatus.Name
             </div>
             <div class="col-sm-1 col-xs-2 my-label">
                 Skill
             </div>
-            <div class="col-sm-1 col-xs-4 my-data">
+            <div class="col-sm-2 col-xs-4 my-data">
                 @Model.SkillRequired.Name
             </div>
         </div>
@@ -55,7 +55,7 @@
             <div class="col-sm-2 col-xs-3 my-label">
                 Assigned to
             </div>
-            <div class="col-sm-2 col-xs-3 my-data">
+            <div class="col-sm-2 col-xs-9 my-data">
                 @if (Model.AssignedToDevId == null)
                 {
                     <text>not assigned</text>
@@ -67,85 +67,89 @@
             </div>
 
             <div class="col-sm-2 col-xs-3 my-label">
-                Owner/Creator
+                Owner/ Creator
             </div>
-            <div class="col-sm-2 col-xs-3 my-data">
+            <div class="col-sm-2 col-xs-9 my-data">
                 @Html.DisplayFor(model => model.OwnerUser.UserName)
             </div>
         </div>
 
         <div class="row my-row">
-            <div class="col-sm-2 my-label">
+            <div class="col-sm-2 col-xs-3 my-label">
                 Created
             </div>
-            <div class="col-sm-2 my-data">
+            <div class="col-sm-2 col-xs-3 my-data">
                 @Model.Created.ToString("d")
             </div>
-            <div class="col-sm-2 my-label">
+            <div class="col-sm-2 col-xs-3 my-label">
                 Updated
             </div>
-            <div class="col-sm-1 my-data">
-                @if (Model.Updated != null)
+            <div class="col-sm-2 col-xs-3 my-data">
+                @if (Model.Updated.HasValue)
                 {
-                    Model.Updated.Value.ToString("d");
+                    @Model.Updated.Value.ToString("d");
                 }
                 else
                 { <text>not updated</text>}
             </div>
-            <div class="col-sm-2 my-label">
+            <div class="col-sm-2 col-xs-3 my-label pull-left">
                 Est Hours
             </div>
-            <div class="col-sm-2 my-data">
+            <div class="col-sm-2 col-xs-3 my-data">
                 @Model.HoursToComplete
             </div>
         </div>
 
         <div class="row my-row">
-            <div class="col-sm-2 my-label">
+            <div class="col-sm-2 col-xs-3 my-label">
                 Last Activity
             </div>
-            <div class="col-sm-2 my-data">
+            <div class="col-sm-2 col-xs-3 my-data">
                 @Model.MostRecentUpdate.ToString("d")
             </div>
 
-            <div class="col-sm-2 my-label">
+            <div class="col-sm-2 col-xs-3 my-label">
                 Due Date
             </div>
-            <div class="col-sm-2 my-data">
+            <div class="col-sm-2 col-xs-3 my-data">
                 @Model.DueDate.ToString("d")
             </div>
             @{
                 var status = ProjectsHelper.TicketDueStatus(Model.DueDate);
             }
-            <div class="col-sm-3 my-data @status[1]">
+            <div class="col-sm-3 col-xs-3 my-data @status[1]">
                 @status[0]
             </div>
         </div>
 
         <div class="row my-row">
-            <div class="col-sm-2 my-label">
+            <div class="col-sm-2 col-xs-3 my-label">
                 Project Name
             </div>
-            <div class="col-sm-8 my-data">
+            <div class="col-sm-8 col-xs-9 my-data">
                 @Model.Project.Name
             </div>
         </div>
 
         <div class="row my-row">
-            <div class="col-sm-2 my-label">
+            <div class="col-sm-2 col-xs-3 my-label">
                 Description
             </div>
-            <div class="col-sm-8 my-data">
+            <div class="col-sm-8 col-xs-9 my-data">
                 @Model.Project.Description
             </div>
         </div>
 
 
         <div class="row">
-            <div class="col-sm-2">
+            <div class="col-sm-3 col-md-2">
                 <p>
+                    @{
+                        var r = Request.UrlReferrer;
+                        int r2 = 3;
+                    }
                     @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-                    @Html.ActionLink("Back to List", "Index")
+                    <a href="@Request.UrlReferrer.PathAndQuery">Back to List</a>
                 </p>
             </div>
             @{
@@ -173,14 +177,18 @@
                 var route = new { id = modelId, anchor = anchorName, page = ViewBag.PageNumber };
     //var route2 = new { id = c.PostId, anchor = anchorName, page = ViewBag.PageNumber, cid = c.Id };
 
-    <div class="col-sm-3 col-sm-offset-1">
-        <div class="btn-group btn-color btn-group-justified" role="group" aria-label="...">
-            @Html.ActionLink("Add comment", "Create", "Comments",
-                    new { id = Model.Id, anchor = "noneYet", page = "1" }, new { @class = "btn btn-info" })
-            @Html.ActionLink("Attachments", "Index", "Attachments",
-                    new { id = Model.Id }, new { @class = "btn btn-info" })
-        </div>
-    </div>
+            <div class="col-sm-6 col-md-4">
+                <div class="" role="group" aria-label="...">
+                    @*@Html.ActionLink("Add comment", "Create", "Comments",
+                            new { id = Model.Id, anchor = "noneYet", page = "1" }, new { @class = "btn btn-info" })
+                    @Html.ActionLink("Attachments", "Index", "Attachments",
+                            new { id = Model.Id }, new { @class = "btn btn-info" })*@
+                    @Html.ActionLink("Add comment", "Create", "Comments",
+                        new { id = Model.Id }, new { @class = "btn btn-info" })
+                    @Html.ActionLink("Attachments", "Index", "Attachments",
+                        new { id = Model.Id }, new { @class = "btn btn-info" })
+                </div>
+            </div>
             }
         </div>
         @if (numC >= 1)
@@ -193,16 +201,6 @@
             </div>
         }
         <hr />
-        <div class="row">
-            <div class="col-sm-5 col-sm-offset-1">
-                @if (User.IsInRole("Admin"))
-                {
-                    @Html.ActionLink("Edit post", "Edit", new { id = Model.Id, @page = ViewBag.PageNumber })
-                    <span> | </span>
-                }
-                @Html.ActionLink("Back to List", "Index", new { @page = ViewBag.PageNumber })
-            </div>
-        </div>
         <div class="row">
             <h3>
                 Ticket histories

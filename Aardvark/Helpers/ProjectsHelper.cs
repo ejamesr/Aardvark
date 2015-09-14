@@ -63,6 +63,7 @@ namespace Aardvark.Helpers
             public ApplicationUser User;
             public string UserName;
             public string DisplayName;
+            public string DisplayNameWithRole;
             public string Role;
             public bool IsAdmin;
             public bool IsGuest;
@@ -76,27 +77,42 @@ namespace Aardvark.Helpers
         {
             UserRolesHelper helper = new UserRolesHelper();
             UserModel model = new UserModel();
+            model.IsAdmin = model.IsGuest = model.IsPM = model.IsDeveloper = model.IsSubmitter = false;
             var user = helper.GetCurrentUser();
+            model.User = user;
             if (user == null)
             {
                 model.IsLoggedIn = false;
-                model.User = user;
-                model.UserName = model.DisplayName = "Not logged in";
+                model.UserName = model.DisplayName = model.DisplayNameWithRole = "Not logged in";
                 model.Role = "None";
-                model.IsAdmin = model.IsDeveloper = model.IsPM = model.IsSubmitter = model.IsGuest = false;
             }
             else
             {
                 model.IsLoggedIn = true;
-                model.User = user;
                 model.UserName = user.UserName;
-                model.Role = helper.GetHighestRole(user.Id);
+                model.Role = helper.GetActiveUserRole(user.Id);
                 model.DisplayName = user.DisplayName.Length > 0 ? user.DisplayName : user.UserName;
-                model.IsAdmin = helper.IsUserInRole(user.Id, R.Admin);
-                model.IsGuest = helper.IsUserInRole(user.Id, R.Guest);
-                model.IsPM = helper.IsUserInRole(user.Id, R.PM);
-                model.IsDeveloper = helper.IsUserInRole(user.Id, R.Developer);
-                model.IsSubmitter = helper.IsUserInRole(user.Id, R.Submitter);
+                model.DisplayNameWithRole = string.IsNullOrEmpty(model.Role) ? 
+                    model.DisplayName : model.DisplayName + " (as " + model.Role + ")";
+                if (user.UserName.Equals(R.GuestUserName))
+                    model.IsGuest = true;
+            }
+            // Set proper "Is..." flag...
+            switch (model.Role){
+                case "Admin":
+                    model.IsAdmin = true;
+                    break;
+                case "ProjectManager":
+                    model.IsPM = true;
+                    break;
+                case "Developer":
+                    model.IsDeveloper = true;
+                    break;
+                case "Submitter":
+                    model.IsSubmitter = true;
+                    break;
+                default:
+                    break;
             }
             return (model);
         }

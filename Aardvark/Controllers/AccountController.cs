@@ -1,15 +1,17 @@
-﻿using System;
+﻿using Aardvark.Models;
+using Aardvark.Helpers;
+using Aardvark.ViewModels;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
+using Microsoft.Owin.Security;
+using System;
+using System.Data.Entity;
 using System.Globalization;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.Owin;
-using Microsoft.Owin.Security;
-using Aardvark.Models;
-using Aardvark.Helpers;
 
 namespace Aardvark.Controllers
 {
@@ -63,6 +65,33 @@ namespace Aardvark.Controllers
         }
 
         //
+        // GET: /Account/Guest
+        [AllowAnonymous]
+        public async Task<ActionResult> Guest(string returnUrl)
+        {
+            // Duplicate the code from Login POST in order to login as Guest...
+            var result = await SignInManager.PasswordSignInAsync(R.GuestUserName, "Guest1234.", false, shouldLockout: false);
+            if (result == SignInStatus.Success)
+            {
+                // This should always be the case!!
+                // So setup default login as Admin
+                ApplicationDbContext db = new ApplicationDbContext();
+                var user = db.Users.FirstOrDefault(u => u.UserName == R.GuestUserName);
+                user.ActiveRole = R.Admin;
+                db.Entry(user).State = EntityState.Modified;
+                db.SaveChanges();
+
+                // Now send the roles (concatenated)...
+                string roles = "-Admin-ProjectManager-Developer-Submitter";
+                return RedirectToAction("Index", "Home", new { myRoles = roles });
+            }
+
+            // If failure, just go back to login...
+            ViewBag.ReturnUrl = returnUrl;
+            return RedirectToAction("Login");
+        }
+
+        //
         // POST: /Account/Login
         [HttpPost]
         [AllowAnonymous]
@@ -77,9 +106,40 @@ namespace Aardvark.Controllers
             // This doesn't count login failures towards account lockout
             // To enable password failures to trigger account lockout, change to shouldLockout: true
             var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
+            //
+            // IMPORTANT NOTE: The first parameter above (model.Email) is really the UserName... the PasswordSignInAsync function
+            // expects the UserName here, and NOT the email.  So don't try to match up the email in the code below or it will fail!
             switch (result)
             {
                 case SignInStatus.Success:
+                    // If user has multiple roles, ask which one should become the active one
+                    ApplicationDbContext db = new ApplicationDbContext();
+                    var user = db.Users.FirstOrDefault(u => u.UserName == model.Email); // See IMPORTANT NOTE above! (this is really UserName)
+                    UserRolesHelper helper = new UserRolesHelper();
+                    var userRoles = helper.ListUserRoles(user.Id);
+                    string role = "";
+                    switch (userRoles.Count()) {
+                        case 0:
+                            user.ActiveRole = R.NewUser;
+                            break;
+                        case 1:
+                            user.ActiveRole = userRoles[0];
+                            break;
+                        default:
+                            // More than one role, so show modal to allow user to select the login role
+                            // But first, set the highest role as the active one...
+                            user.ActiveRole = helper.GetHighestRole(user.Id);
+                            db.Entry(user).State = EntityState.Modified;
+                            db.SaveChanges();
+
+                            // Now send the roles (concatenated)...
+                            for (int i = 0; i < userRoles.Count; i++)
+                                role += "-" + userRoles[i];
+                            return RedirectToAction("Index", "Home", new { myRoles = role });
+                    }
+                    // For just one role, finish up here
+                    db.Entry(user).State = EntityState.Modified;
+                    db.SaveChanges();
                     if (returnUrl == null)
                         return RedirectToAction("Dashboard", "Home");
                     return RedirectToLocal(returnUrl);
@@ -94,6 +154,14 @@ namespace Aardvark.Controllers
             }
         }
 
+        //// GET: /Account/SelectRole
+        //[Authorize(Roles="Admin, ProjectManager, Developer, Submitter")]
+        //public ActionResult SelectRole(string myRoles)
+        //{
+        //    // Do this in every GET action...
+        //    ViewBag.UserModel = ProjectsHelper.LoadUserModel();
+        //    return View(new SelectRole(myRoles));
+        //}
         //
         // GET: /Account/VerifyCode
         [AllowAnonymous]

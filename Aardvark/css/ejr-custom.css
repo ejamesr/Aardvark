@@ -108,3 +108,9 @@ div.bump-up {
 div.col-xs-12 {
     min-width: 400px;
 }
+#content-container .row > div {
+    margin-bottom: 5px;
+}
+input.set-role {
+    width: 200px;
+}

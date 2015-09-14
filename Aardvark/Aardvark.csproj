@@ -219,7 +219,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModels\Dashboard.cs" />
+    <Compile Include="ViewModels\LogView.cs" />
     <Compile Include="ViewModels\ProfileView.cs" />
+    <Compile Include="ViewModels\SelectRole.cs" />
     <None Include="Properties\PublishProfiles\aardvark-ejr %282%29.pubxml" />
     <None Include="Properties\PublishProfiles\aardvark-ejr.pubxml" />
     <None Include="Properties\PublishProfiles\aardvark.pubxml" />
@@ -231,6 +233,8 @@
     <Content Include="Views\TicketNotifications\Details.cshtml" />
     <Content Include="Views\TicketNotifications\Edit.cshtml" />
     <Content Include="Views\TicketNotifications\Index.cshtml" />
+    <Content Include="Views\Account\SelectRole.cshtml" />
+    <Content Include="Views\Utilities\ViewLog.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="BulkUpdateIdeas.txt" />

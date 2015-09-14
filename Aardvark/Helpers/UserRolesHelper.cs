@@ -18,7 +18,8 @@ namespace Aardvark.Helpers
         // And this avoids the performance issues using .ToString() with reflection in an enum.
 
         // These are all the available roles
-        private static string[] roles = {"Admin", "Guest", "ProjectManager", "Developer", "Submitter", "NewUser"};
+        private static readonly string[] roles = {"Admin", "Guest", "ProjectManager", "Developer", "Submitter", "NewUser"};
+        private static readonly string guestUserName = "Guest@me.com"; // Same as Email, UserName
 
         // Return all...
         public static ICollection<string> List() { return roles;}
@@ -32,6 +33,14 @@ namespace Aardvark.Helpers
         public static string Guest
         {
             get { return roles[1]; }
+        }
+        public static string GuestUserName
+        {
+            get { return guestUserName; }
+        }
+        public static string GuestEmail
+        {
+            get { return guestUserName; }
         }
         public static string Demo
         {
@@ -101,7 +110,7 @@ namespace Aardvark.Helpers
             UnableToReproduce,
             Deferred,
             ReadyToAssign,
-            AssignedToDeveloper,
+            AssignedToDev,
             InDevelopment,
             ReadyToTest,
             AssignedToTester,
@@ -114,7 +123,7 @@ namespace Aardvark.Helpers
                 "",         // This is a "dummy" value so that all strings match the record Id in the db table
                 Status.New.ToString(), Status.UnableToReproduce.ToString(),
                 Status.Deferred.ToString(), Status.ReadyToAssign.ToString(),
-                Status.AssignedToDeveloper.ToString(), Status.InDevelopment.ToString(), 
+                Status.AssignedToDev.ToString(), Status.InDevelopment.ToString(), 
                 Status.ReadyToTest.ToString(), Status.AssignedToTester.ToString(), 
                 Status.InTesting.ToString(), Status.ReadyToReview.ToString(), 
                 Status.Resolved.ToString()
@@ -135,7 +144,7 @@ namespace Aardvark.Helpers
             s = UnableToReproduce;
             s = Deferred;
             s = ReadyToAssign;
-            s = AssignedToDeveloper;
+            s = AssignedToDev;
             s = InDevelopment;
             s = ReadyToTest;
             s = AssignedToTester;
@@ -154,7 +163,7 @@ namespace Aardvark.Helpers
         public static string UnableToReproduce { get { return statuses[(int)Status.UnableToReproduce]; } }
         public static string Deferred { get { return statuses[(int)Status.Deferred]; } }
         public static string ReadyToAssign { get { return statuses[(int)Status.ReadyToAssign]; } }
-        public static string AssignedToDeveloper { get { return statuses[(int)Status.AssignedToDeveloper]; } }
+        public static string AssignedToDev { get { return statuses[(int)Status.AssignedToDev]; } }
         public static string InDevelopment { get { return statuses[(int)Status.InDevelopment]; } }
         public static string ReadyToTest { get { return statuses[(int)Status.ReadyToTest]; } }
         public static string AssignedToTester { get { return statuses[(int)Status.AssignedToTester]; } }
@@ -175,6 +184,13 @@ namespace Aardvark.Helpers
         public string GetCurrentUserId()
         {
             return HttpContext.Current.User.Identity.GetUserId();
+        }
+
+        public string GetActiveUserRole(string userId)
+        {
+            var db = new ApplicationDbContext();
+            var user = db.Users.Find(GetCurrentUserId());
+            return user.ActiveRole;
         }
 
         public ApplicationUser GetCurrentUser()

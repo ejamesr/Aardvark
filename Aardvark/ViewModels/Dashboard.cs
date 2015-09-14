@@ -15,7 +15,7 @@ namespace Aardvark.ViewModels
         public string Name { get; set; }
         public string Description { get; set; }
         public DateTimeOffset Date { get; set; }
-        public Notifications Type { get; set; }
+        public TicketNotification.EType Type { get; set; }
         public string Scope { get; set; }
         public int CountItems { get; set; }
         public int CountHours { get; set; }
@@ -115,11 +115,11 @@ namespace Aardvark.ViewModels
                 var tickets = db.Tickets
                     .Where(t => t.AssignedToDevId == userModel.User.Id 
                         && t.TicketStatusId != (int)TS.Status.Resolved
-                        && t.TicketStatusId >= (int)TS.Status.AssignedToDeveloper);
+                        && t.TicketStatusId >= (int)TS.Status.AssignedToDev);
                 if ((NumActiveTickets = tickets.Count()) > 0)
                 {
                     // Get new tickets, then setup info on active tickets
-                    var newTickets = tickets.Where(t => t.TicketStatusId == (int)TS.Status.AssignedToDeveloper);
+                    var newTickets = tickets.Where(t => t.TicketStatusId == (int)TS.Status.AssignedToDev);
                     NumNewTickets = newTickets.Count();
                     MyNewTickets = newTickets
                         .Take(MaxTopNewTickets)

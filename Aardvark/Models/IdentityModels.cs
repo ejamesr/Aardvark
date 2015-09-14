@@ -22,6 +22,10 @@ namespace Aardvark.Models
         public Nullable<int> SkillLevelId { get; set; }
         public bool EmailNotification { get; set; }
         public bool TextNotification { get; set; }
+        /// <summary>
+        /// This is the active role being used by current User; helpful when User has multiple roles
+        /// </summary>
+        public string ActiveRole { get; set; }
 
         public virtual SkillLevel SkillLevel { get; set; }
         [InverseProperty("AssignedToDev")]
@@ -66,11 +70,19 @@ namespace Aardvark.Models
         // DefaultConnection    - local copy
         // aardvark-ejr         - on website
         //
+#if true
+        // Set to true to use local DefaultConnection
+        public ApplicationDbContext()
+            : base("DefaultConnection", throwIfV1Schema: false)
+        {
+        }
+#else
+        // Or set to false to use website aardvark-ejr
         public ApplicationDbContext()
             : base("aardvark-ejr", throwIfV1Schema: false)
         {
         }
-
+#endif
         public static ApplicationDbContext Create()
         {
             return new ApplicationDbContext();
@@ -82,7 +94,7 @@ namespace Aardvark.Models
         public DbSet<TicketPriority> TicketPriorities { get; set; }
         public DbSet<Project> Projects { get; set; }
         public DbSet<SkillLevel> SkillLevels { get; set; }
-        public DbSet<TN> TicketNotifications { get; set; }
+        public DbSet<TicketNotification> TicketNotifications { get; set; }
         public DbSet<TicketHistory> TicketHistories { get; set; }
         public DbSet<TicketComment> TicketComments { get; set; }
         public DbSet<TicketAttachment> TicketAttachments { get; set; }

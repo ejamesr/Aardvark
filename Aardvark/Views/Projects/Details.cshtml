@@ -182,7 +182,7 @@
         </div>
         <div class="row">
             <div class="col-sm-4 col-sm-offset-1">
-                @if (ViewBag.Roles.Contains(R.Admin) || ViewBag.Roles.Contains(R.Guest))
+                @if (ViewBag.UserModel.IsAdmin)
                 {
                     @Html.ActionLink("Edit", "Edit", "Tickets", new { id = Model.Id }, null)
                 }

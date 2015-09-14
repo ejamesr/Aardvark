@@ -15,7 +15,7 @@ namespace Aardvark.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
-        public ActionResult Index(string message)
+        public ActionResult Index(string message, string myRoles)
         {
             //// Code to get rid of all cookies...
             //UserRolesHelper helper = new UserRolesHelper();
@@ -30,7 +30,24 @@ namespace Aardvark.Controllers
             // Do this in every GET action...
             ViewBag.UserModel = ProjectsHelper.LoadUserModel();
             ViewBag.Message = message;
+            ViewBag.MyRoles = myRoles;
             return View(Model);
+        }
+
+        public ActionResult SelectRole(string MyRole)
+        {
+            // Strip out any extra portion...
+            MyRole = MyRole.Replace(" (default)", "");
+            // User has selected a role, so make it active
+            ApplicationDbContext db = new ApplicationDbContext();
+            UserRolesHelper helper = new UserRolesHelper();
+            var user = db.Users.Find(helper.GetCurrentUserId());
+            user.ActiveRole = MyRole;
+            db.Entry(user).State = EntityState.Modified;
+            db.SaveChanges();
+            // Do this in every GET action...
+            ViewBag.UserModel = ProjectsHelper.LoadUserModel();
+            return RedirectToAction("Dashboard");
         }
 
         public ActionResult About()
@@ -79,7 +96,7 @@ namespace Aardvark.Controllers
                 foreach (var id in checks)
                 {
                     var ticket = db.Tickets.Find(id);
-                    if (ticket.TicketStatusId == (int)TS.Status.AssignedToDeveloper)
+                    if (ticket.TicketStatusId == (int)TS.Status.AssignedToDev)
                     {
                         ticket.TicketStatusId = (int)TS.Status.InDevelopment;
                         db.Entry(ticket).State = EntityState.Modified;
@@ -124,15 +141,18 @@ namespace Aardvark.Controllers
             int nRoles = roles.Count;
 
             // Create list of users
-            List<ManageUsersData> users = db.Users.Select(u => new ManageUsersData()
-            {
-                Id = u.Id,
-                UserName = u.UserName,
-                Email = u.Email,
-                DisplayName = u.DisplayName,
-                First = u.FirstName,
-                Last = u.LastName
-            }).ToList();
+            List<ManageUsersData> users = db.Users
+                .Where(u => u.UserName != R.GuestUserName)
+                .Select(u => new ManageUsersData()
+                    {
+                        Id = u.Id,
+                        UserName = u.UserName,
+                        Email = u.Email,
+                        DisplayName = u.DisplayName,
+                        First = u.FirstName,
+                        Last = u.LastName
+                    })
+                .ToList();
 
             // And for each user, create list of roles and generate 
             foreach (var user in users)

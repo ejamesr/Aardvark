@@ -1,4 +1,8 @@
 ﻿@using Microsoft.AspNet.Identity
+@{
+    var userModel = ViewBag.UserModel;
+    int dumyInt = 2; // put breakbpoint here in order to see userModel!
+}
 @*For each page, use ProjectsHelper.LoadUserModel() to obtain the following:
     public class UserModel {
         public bool IsLoggedIn;
@@ -183,7 +187,7 @@
                     var x = ViewBag.UserModel;
                     int x2 = 2;
                                 }
-                                @ViewBag.UserModel.DisplayName
+                                @ViewBag.UserModel.DisplayNameWithRole
                                 <span class="caret"></span>
                             </a>
 
@@ -194,12 +198,25 @@
                                         &nbsp;&nbsp;My Profile
                                     </a>
                                 </li>
+                                @if (ViewBag.UserModel.IsGuest)
+                                {
+                                    //Don't allow Guest to change the password
+                                <li>
+                                    <a href="#" id="menu-User-Password" title="Change my password (disabled for 'Guest''')">
+                                        <i class="fa fa-key"></i>
+                                        &nbsp;&nbsp;My Password
+                                    </a>
+                                </li>
+                                }
+                                else
+                                {
                                 <li>
                                     <a href="@Url.Action("ChangePassword", "Manage")" id="menu-User-Password" title="Change my password">
                                         <i class="fa fa-key"></i>
                                         &nbsp;&nbsp;My Password
                                     </a>
                                 </li>
+                                }
                                 @*<li>
                                     <a href="#">
                                         <i class="fa fa-calendar"></i>
@@ -572,6 +589,18 @@ else {
                         Import Data
                     </a>
                 </li>
+                <li>
+                    <a href="@Url.Action("ViewLog", "Utilities")" id="sidebar-Utilities-ViewLog">
+                        <i class="fa fa-arrow-up"></i>
+                        View Log
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("ResetLog", "Utilities")" id="sidebar-Utilities-ResetLog">
+                        <i class="fa fa-arrow-up"></i>
+                        Reset/Clear Log
+                    </a>
+                </li>
             </ul>
         </li>
 
@@ -926,7 +955,4 @@ else {
                 
 @helper IsNoRole()
 { 
-}
-
-
 }
