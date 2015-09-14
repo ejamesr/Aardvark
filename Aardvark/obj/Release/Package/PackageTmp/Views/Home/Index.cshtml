@@ -105,31 +105,30 @@
                     string roles = ViewBag.MyRoles;
                     string defaultRole = " (default)";
                     using (Html.BeginForm("SelectRole", "Home"))
-                    { 
-                    <br />
+                    {
                     if (roles.IndexOf(R.Admin) > -1)
                     {
                     <input type="submit" class="set-role btn btn-secondary" name="MyRole" value="@R.Admin@defaultRole" />
+                    <br /><br />
                     defaultRole = "";
                     }
                     if (roles.IndexOf(R.ProjectManager) > -1)
                     {
-                    <br /><br />
                     <input type="submit" class="set-role btn btn-secondary" name="MyRole" value="@R.ProjectManager@defaultRole" />
+                    <br /><br />
                         defaultRole = "";
                     }
-                    if (roles.IndexOf(R.Admin) > -1)
+                    if (roles.IndexOf(R.Developer) > -1)
                     {
-                    <br /><br />
                     <input type="submit" class="set-role btn btn-secondary" name="MyRole" value="@R.Dev@defaultRole" />
+                    <br /><br />
                         defaultRole = "";
                     }
-                    if (roles.IndexOf(R.Admin) > -1)
+                    if (roles.IndexOf(R.Submitter) > -1)
                     {
-                    <br /><br />
                     <input type="submit" class="set-role btn btn-secondary" name="MyRole" value="@R.Submitter@defaultRole" />
+                    <br /><br />
                     }
-                    <br />
                     }
                 }
                 </div>

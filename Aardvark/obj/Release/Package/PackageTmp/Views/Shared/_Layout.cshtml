@@ -265,7 +265,7 @@
             <nav id="sidebar">
                 @if (Request.IsAuthenticated)
                 {
-                    if (ViewBag.UserModel.IsAdmin || ViewBag.UserModel.IsGuest)
+                    if (ViewBag.UserModel.IsAdmin)
                     {
                         @IsAdmin()
                     }

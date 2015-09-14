@@ -13,10 +13,13 @@
     <div id="content-container">
     @if (ViewBag.UserModel.IsGuest)
     {
+        // But if not logged in as Admin, show "teaser"
+    if (ViewBag.UserModel.IsAdmin)
+        { 
         // Show Import button at the top, front and center
         <div class="row">
             <div class="col-sm-5">
-                <h3>Unique feature:</h3>
+                <h3>Unique Import Data feature: &nbsp; <i class="fa fa-arrow-circle-right"></i></h3>
                 <h5>Hover over the button for more info</h5>
             </div>
             <div class="col-sm-3">
@@ -48,6 +51,19 @@ Click the button for more information.
             </div>
         </div>
         <hr />
+    }
+    else
+    {
+        // Guest not acting in Admin role, so show info
+        <div class="row">
+            <div class="col-sm-5">
+                You are currently logged in as Guest in a non-Admin role; you will be restricted in the same
+                way as others who login with this role. To see more features of
+                Aardvark, log off and then re-login as Guest, selecting the Admin role.
+            </div>
+        </div>
+        
+    }
     }
         <div class="row">
             <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">

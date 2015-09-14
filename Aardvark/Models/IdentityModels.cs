@@ -70,7 +70,7 @@ namespace Aardvark.Models
         // DefaultConnection    - local copy
         // aardvark-ejr         - on website
         //
-#if true
+#if false
         // Set to true to use local DefaultConnection
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
