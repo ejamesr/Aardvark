@@ -23,8 +23,21 @@ namespace Aardvark.Controllers
 
         // GET: Utilities/ViewLog
         [Authorize(Roles = "Admin,Guest")]
-        public ActionResult ViewLog()
+        public ActionResult ViewLog(string LogAction)
         {
+            // Possible values for 'action'...
+            // null or empty    - normal, display log files
+            // "ConfirmReset"   - display modal dialog to confirm deleting Logs file
+            // "TruncateLogs"   - time to truncate the Logs file
+
+            // See if time to truncate Logs file...
+            if (LogAction == "TruncateLogs")
+            {
+                // This will clear the Logs file...
+                db.Database.ExecuteSqlCommand("TRUNCATE TABLE Logs");
+                LogAction = "";        // clear
+            }
+
             // Do this in every GET action...
             ViewBag.UserModel = ProjectsHelper.LoadUserModel();
             ViewBag.Msg = "";
@@ -36,14 +49,21 @@ namespace Aardvark.Controllers
                         Msg = n.Msg
                     })
                     .ToArray<LogView>();
+
+            // Remember action...
+            ViewBag.LogAction = LogAction;
             return View(model);
         }
 
         // GET: Utilities/ResetLog
         [Authorize(Roles = "Admin,Guest")]
-        public ActionResult ResetLog()
+        public ActionResult ResetLog(string action)
         {
+            // If first time, go to view to display modal dialog...
+            if (string.IsNullOrEmpty(action))
+                return View();
             // This will clear the Logs file...
+            db.Database.ExecuteSqlCommand("TRUNCATE TABLE Logs");
             return RedirectToAction("ViewLog");
         }
 

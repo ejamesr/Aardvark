@@ -3,7 +3,6 @@
 @using Aardvark.ViewModels;
 @{
     IEnumerable<LogView> data = Model;
-    int dummy = 2;
 }
 <div id="content">
     <div id="content-header">
@@ -54,6 +53,7 @@
                             <td>
                                 @Html.DisplayFor(modelItem => item.Msg)
                             </td>
+                            <td> </td>
                             @*<td>
                                 <a href="@Url.Action("Edit", new { id = item.Id })" title="Edit"><i class="fa fa-pencil-square-o"></i></a>
                                 <br />
@@ -83,8 +83,46 @@
     <script>
         $(document).ready(function () {
             $('#sidebar-Utilities').addClass('active');
+            $('#sidebar-Utilities').trigger('click');
             $('#sidebar-Utilities-ViewLog').addClass('active');
         });
     </script>
+    @if (ViewBag.LogAction == "ConfirmReset") { 
+    <script>
+        $(window).load(function () {
+            $('#ConfirmReset').modal('show');
+        });
+    </script>
+    }
 }
 
+@if (ViewBag.LogAction == "ConfirmReset")
+{
+// Modal to confirm reset...
+<!-- Modal -->
+<div class="modal fade" id="ConfirmReset" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Truncate Logs File</h4>
+            </div>
+            <div class="modal-body">
+                <h4>Click to delete all entries in Logs file:</h4>
+                <br />
+                @using (Html.BeginForm("ViewLog", "Utilities"))
+                {
+                <div class="center">
+                    <input type="submit" class="btn btn-primary" name="LogAction" value="TruncateLogs" />
+                    <br /><br />
+                </div>
+                <div class="center">
+                    <input type="submit" class="btn btn-secondary" name="LogAction" value="Cancel" />
+                    <br /><br />
+                </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+}

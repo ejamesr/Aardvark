@@ -68,8 +68,7 @@ namespace Aardvark.Models
             "Attachment for this ticket has been modified",
             "Attachment for this ticket has been deleted"
         };
-        //[NotMapped]
-        //private static int[] steps = { 10, 20, 30, 40, 50, 60, 70, 80, 90, 100 };
+
         [NotMapped]
         private static string[] vals = Enum.GetNames(typeof(EType));
 
@@ -78,9 +77,6 @@ namespace Aardvark.Models
         public string Msg { get { return msgs[(int)Type-1];}}
         [NotMapped]
         public string Str { get { return vals[(int)Type-1]; } }
-        //[NotMapped]
-        //public int Step { get { return steps[(int)Type]; } }
-
 
         // Static methods to get list, msg, str, step
         public static string[] GetList()
@@ -95,10 +91,6 @@ namespace Aardvark.Models
         {
             return vals[(int)type - 1];
         }
-        //public static int GetStep(EType type){
-        //    return steps[(int)type];
-        //}
-
 
         public enum NotificationMethod
         {
