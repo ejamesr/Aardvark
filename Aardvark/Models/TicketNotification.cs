@@ -4,10 +4,12 @@ using System.Linq;
 using System.Web;
 using Aardvark.Helpers;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Web.Mvc;
 
 namespace Aardvark.Models
 {
     // List of all notifications sent
+    [Authorize]
     public class TicketNotification
     {
         public int Id { get; set; }

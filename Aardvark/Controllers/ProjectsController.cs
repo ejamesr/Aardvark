@@ -60,6 +60,7 @@ namespace Aardvark.Controllers
         }
 
         // GET: Projects/AssignPM
+        [Authorize(Roles="Admin, Guest")]
         public ActionResult AssignPM()
         {
             // Do this in every GET action...
